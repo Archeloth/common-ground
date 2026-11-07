@@ -9,15 +9,16 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 1 — blobs on screen.** The 16 hand-placed Willowbrook neighborhoods are
-drawn as soft, raised blobs on a canvas (seeded shapes — the same seed always gives
-the same town), with a river between the two banks. Hover lifts a neighborhood,
-click selects it, and you can pan by dragging and zoom with the wheel or a pinch.
-The seeded generator and neighbourhood geometry are unit-tested, and the scenario
-data is validated on load.
+**Milestone 2 — neighborhood data and panel.** Click any blob to open its side
+panel: name, kind and description (from the kinds catalog in
+`src/data/neighborhoods.json`), residents, engagement, project slots, the six need
+bars and a placeholder satisfaction (the plan's weighted formula — reasons and
+smoothing arrive in Milestone 4). Nearby neighbors and bridges are listed, every
+kind is validated against the simulation's kind union, and all visible strings go
+through one `t("key")` function, ready for translation.
 
 Controls: **drag** to pan · **scroll / pinch** to zoom · **hover** to inspect ·
-**click** to select.
+**click** to select · **Esc** to close the panel.
 
 ## Stack and decisions
 
@@ -35,7 +36,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (seeded rng, blob geometry, hit-testing, camera, scenario data)
+yarn test      # Vitest unit tests (rng, blob geometry, hit-testing, camera, scenario + kinds data, satisfaction)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```
