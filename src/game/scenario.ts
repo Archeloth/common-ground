@@ -57,11 +57,16 @@ export function validateScenario(s: ScenarioDef): void {
 }
 
 // The scenario is hand-tuned content; validating it on every load is cheap
-// (16 neighborhoods) and failing here beats failing at draw time.
+// (16 neighborhoods) and failing here beats failing at draw time. The result
+// is cached so App and TownMap can both use the same instance.
+let cachedScenario: ScenarioDef | null = null
+
 export function loadScenario(): ScenarioDef {
-  const scenario = willowbrook as unknown as ScenarioDef
-  validateScenario(scenario)
-  return scenario
+  if (!cachedScenario) {
+    cachedScenario = willowbrook as unknown as ScenarioDef
+    validateScenario(cachedScenario)
+  }
+  return cachedScenario
 }
 
 export function neighborhoodById(s: ScenarioDef, id: string): NeighborhoodDef {

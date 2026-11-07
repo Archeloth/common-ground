@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { loadScenario, neighborhoodById, scenarioBounds } from '../game/scenario'
+import { kindById, loadKinds } from '../game/kinds'
 import { blobPoints } from '../game/blob'
 import type { Point } from '../game/geometry'
 import { pointInPolygon } from '../game/geometry'
@@ -7,6 +8,7 @@ import type { Camera } from './render/camera'
 import { cameraThatFits, panBy, screenToWorld, worldToScreen, zoomAt } from './render/camera'
 import { buildPath2D, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
 import { COLORS, KIND_COLORS, shade } from './render/colors'
+import { t } from './i18n'
 import './TownMap.css'
 
 // Pointer travel below this counts as a click, above it as a drag-pan.
@@ -19,11 +21,17 @@ const RIVER_HALF_DEPTH = 34
 // Scenario content is static data (not save state), so load it once at module
 // level. No ref means reads during render are lint-clean.
 const scenario = loadScenario()
+const kinds = loadKinds()
+
+interface TownMapProps {
+  selectedId: string | null
+  onSelectionChange: (id: string | null) => void
+}
 
 // Canvas view of the town. The camera and interaction state live in refs so
 // panning and zooming never re-render React; the rAF loop redraws only when a
 // dirty flag is set (performance playbook: a paused town costs almost nothing).
-export default function TownMap() {
+export default function TownMap({ selectedId, onSelectionChange }: TownMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const cameraRef = useRef<Camera>({ x: 0, y: 0, zoom: 1 })
@@ -36,11 +44,10 @@ export default function TownMap() {
   const pinchRef = useRef<{ dist: number; x: number; y: number } | null>(null)
 
   const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [selectedId, setSelectedId] = useState<string | null>(null)
 
   const hovered = hoveredId ? neighborhoodById(scenario, hoveredId) : null
-  const selected = selectedId ? neighborhoodById(scenario, selectedId) : null
-  const label = hovered ?? selected
+  // The hover chip follows the pointer; the selection opens the side panel.
+  const label = hovered
 
   const pointsFor = useCallback((id: string): Point[] => {
     let points = pointsCacheRef.current.get(id)
@@ -121,6 +128,22 @@ export default function TownMap() {
     observer.observe(container)
     return () => observer.disconnect()
   }, [])
+
+  // Mirror the controlled selection into a ref the draw loop can read without a
+  // re-render, and redraw so the outline matches the panel.
+  useEffect(() => {
+    selectedIdRef.current = selectedId
+    dirtyRef.current = true
+  }, [selectedId])
+
+  // Esc closes the panel (the plan's controls: Esc to cancel/escape).
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onSelectionChange(null)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [onSelectionChange])
 
   // Render loop: draw only when something changed.
   useEffect(() => {
@@ -210,9 +233,7 @@ export default function TownMap() {
       const drag = dragRef.current
       if (drag && !drag.moved && pointersRef.current.size === 1) {
         const local = toLocal(e.clientX, e.clientY)
-        const id = hitTest(local.x, local.y)
-        selectedIdRef.current = id
-        setSelectedId(id)
+        onSelectionChange(hitTest(local.x, local.y))
         dirtyRef.current = true
       }
       pointersRef.current.delete(e.pointerId)
@@ -248,7 +269,7 @@ export default function TownMap() {
       canvas.removeEventListener('pointercancel', onPointerCancel)
       canvas.removeEventListener('pointerleave', onPointerLeave)
     }
-  }, [toLocal, hitTest])
+  }, [toLocal, hitTest, onSelectionChange])
 
   return (
     <div ref={containerRef} className="town-map">
@@ -257,7 +278,10 @@ export default function TownMap() {
         <div className="neighborhood-chip" role="status">
           <strong>{label.name}</strong>
           <span>
-            {label.kind.replaceAll('_', ' ')} · {label.residents.toLocaleString('en-GB')} residents
+            {t('chip.subtitle', {
+              kind: kindById(kinds, label.kind).name,
+              residents: label.residents.toLocaleString('en-GB'),
+            })}
           </span>
         </div>
       )}

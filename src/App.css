@@ -24,6 +24,12 @@
   font-size: 0.9rem;
 }
 
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
 .app-help {
   margin: 0;
   padding: 0.4rem 1rem;
