@@ -1,14 +1,35 @@
 .app {
-  max-width: 720px;
-  padding: 2rem;
-  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ccd6b8;
 }
 
-.tagline {
+.app-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(31, 43, 28, 0.12);
+}
+
+.app-header h1 {
+  margin: 0;
   font-size: 1.15rem;
 }
 
-.status {
-  color: #4a6b42;
-  font-size: 0.95rem;
+.app-status {
+  color: #4a5c44;
+  font-size: 0.9rem;
 }
+
+.app-help {
+  margin: 0;
+  padding: 0.4rem 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #4a5c44;
+  background: rgba(255, 255, 255, 0.5);
+}
+

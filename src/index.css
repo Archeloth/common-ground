@@ -3,18 +3,22 @@
   line-height: 1.5;
   color: #2d3929;
   background-color: #eaf2e4;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  display: grid;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -23,3 +27,4 @@ body {
     transition: none !important;
   }
 }
+

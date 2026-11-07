@@ -11,5 +11,8 @@ Rules for this folder:
 - **Every visible string goes through one `t("key")` function** from day one, so
   contributors can translate the game later.
 
-This is where the 2.5D Canvas blob renderer will live (Milestone 1), kept separate
-from the simulation in `../game`.
+Current layout: `TownMap.tsx` (the interactive canvas — render loop, camera in a
+ref, pointer input), and `render/` with the flat colour palette (`colors.ts`),
+the pure camera maths (`camera.ts`), and the Canvas drawing helpers
+(`draw.ts`). The 2.5D blob renderer lives here, kept fully separate from the
+simulation in `../game`.
