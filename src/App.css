@@ -1,0 +1,14 @@
+.app {
+  max-width: 720px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.tagline {
+  font-size: 1.15rem;
+}
+
+.status {
+  color: #4a6b42;
+  font-size: 0.95rem;
+}
