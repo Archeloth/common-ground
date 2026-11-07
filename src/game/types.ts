@@ -4,15 +4,21 @@
 // JSON.stringify later (development plan, coding standards item 6).
 // Content ids use snake_case ("community_garden"), components PascalCase.
 
-export type NeighborhoodKind =
-  | 'old_town'
-  | 'apartments'
-  | 'suburb'
-  | 'riverside'
-  | 'industrial_edge'
-  | 'retail_park'
-  | 'farmland'
-  | 'woodland'
+// The eight neighborhood kinds. The array is the single source of truth: the
+// union type is derived from it, so a new kind automatically forces a catalog
+// entry in data/neighborhoods.json and the kinds test keeps them in sync.
+export const NEIGHBORHOOD_KINDS = [
+  'old_town',
+  'apartments',
+  'suburb',
+  'riverside',
+  'industrial_edge',
+  'retail_park',
+  'farmland',
+  'woodland',
+] as const
+
+export type NeighborhoodKind = (typeof NEIGHBORHOOD_KINDS)[number]
 
 export type NeedId = 'energy' | 'food' | 'mobility' | 'green' | 'waste' | 'housing'
 

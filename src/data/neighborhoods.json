@@ -1,0 +1,52 @@
+{
+  "kinds": [
+    {
+      "id": "old_town",
+      "name": "Old town",
+      "description": "Historic streets, tight-knit community groups — but older buildings make retrofits trickier.",
+      "defaultSlots": 4
+    },
+    {
+      "id": "apartments",
+      "name": "Apartment blocks",
+      "description": "Dense housing with big heating bills; the largest retrofit payoff in town.",
+      "defaultSlots": 3
+    },
+    {
+      "id": "suburb",
+      "name": "Suburb",
+      "description": "Family homes with large roofs and lawns, built around the car.",
+      "defaultSlots": 4
+    },
+    {
+      "id": "riverside",
+      "name": "Riverside",
+      "description": "Tight against the water; flood risk in wet years and real wetland potential.",
+      "defaultSlots": 3
+    },
+    {
+      "id": "industrial_edge",
+      "name": "Industrial edge",
+      "description": "Workshops and empty mills with big, flat roofs calling out for solar.",
+      "defaultSlots": 4
+    },
+    {
+      "id": "retail_park",
+      "name": "Retail park",
+      "description": "Vast car parks — prime ground for solar canopies, short on public life.",
+      "defaultSlots": 3
+    },
+    {
+      "id": "farmland",
+      "name": "Farmland",
+      "description": "Grows more food than it uses; hungry for a local market and healthy soil.",
+      "defaultSlots": 4
+    },
+    {
+      "id": "woodland",
+      "name": "Woodland",
+      "description": "A habitat reserve that quietly protects its neighbours' biodiversity.",
+      "defaultSlots": 2
+    }
+  ]
+}
