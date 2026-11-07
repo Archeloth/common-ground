@@ -9,10 +9,15 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 0 — baseline.** Vite + React + TypeScript scaffold (function components
-and hooks only, strict TypeScript), the basic linter from the Vite template, and the
-simulation folder layout. The page is a placeholder shell; the actual game starts
-with Milestone 1 (neighborhood blobs on a canvas).
+**Milestone 1 — blobs on screen.** The 16 hand-placed Willowbrook neighborhoods are
+drawn as soft, raised blobs on a canvas (seeded shapes — the same seed always gives
+the same town), with a river between the two banks. Hover lifts a neighborhood,
+click selects it, and you can pan by dragging and zoom with the wheel or a pinch.
+The seeded generator and neighbourhood geometry are unit-tested, and the scenario
+data is validated on load.
+
+Controls: **drag** to pan · **scroll / pinch** to zoom · **hover** to inspect ·
+**click** to select.
 
 ## Stack and decisions
 
@@ -30,7 +35,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (simulation specs start in Milestone 1)
+yarn test      # Vitest unit tests (seeded rng, blob geometry, hit-testing, camera, scenario data)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```
