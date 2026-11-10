@@ -9,13 +9,20 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 2 — neighborhood data and panel.** Click any blob to open its side
-panel: name, kind and description (from the kinds catalog in
-`src/data/neighborhoods.json`), residents, engagement, project slots, the six need
-bars and a placeholder satisfaction (the plan's weighted formula — reasons and
-smoothing arrive in Milestone 4). Nearby neighbors and bridges are listed, every
-kind is validated against the simulation's kind union, and all visible strings go
-through one `t("key")` function, ready for translation.
+**Milestone 3 — projects and slots.** Every neighborhood has project slots you can
+fill from three projects (community garden, rooftop solar, retrofit program — the
+catalog in `src/data/projects.json`). Each project shows its cost and community
+time, previews its effects on the need bars, and is validated before it starts
+(free slot, allowed kind, budget, time) — refusals return a clear reason. Budget
+and community time chips sit in the header, slots fill in order, and removing a
+project frees the slot without a refund.
+
+Click any blob to open its side panel: name, kind and description (from the kinds
+catalog in `src/data/neighborhoods.json`), residents, engagement, slots, the six
+need bars and a placeholder satisfaction (the plan's weighted formula — reasons
+and smoothing arrive in Milestone 4). Nearby neighbors and bridges are listed,
+every kind is validated against the simulation's kind union, and all visible
+strings go through one `t("key")` function, ready for translation.
 
 Controls: **drag** to pan · **scroll / pinch** to zoom · **hover** to inspect ·
 **click** to select · **Esc** to close the panel.
@@ -36,7 +43,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (rng, blob geometry, hit-testing, camera, scenario + kinds data, satisfaction)
+yarn test      # Vitest unit tests (rng, blob geometry, hit-testing, camera, scenario + kinds data, satisfaction, projects, commands)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```

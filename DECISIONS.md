@@ -41,3 +41,23 @@ set up now with one smoke test; `yarn test` replaces specs as Milestone 1 lands.
 **Licence: MIT** with "Common Ground contributors" as the copyright holder, per the
 open-source section of the plan. Asset licences will be tracked separately in
 `LICENSES.md` when assets arrive.
+
+## 10 Nov 2026 — Milestone 3 decisions
+
+**Projects and commands.** The three projects (community garden, rooftop solar,
+retrofit program) live in `src/data/projects.json` as content.
+`applyCommand(state, command)` in `src/game/state.ts` is the single validation
+gate — in a pinned order (unknown ids → capacity → eligibility → budget/time) — and
+returns `{ ok, reason }` so every refusal is testable and translatable. The picker
+in the panel disables a project by asking `applyCommand` itself, so the UI can
+never disagree with the rules.
+
+**No refunds on removal.** Removing a project frees the slot but does not refund
+budget or community time: the materials are already spent. If the balance ever
+wants refunds it's a one-function change.
+
+**Rooftop solar is blocked on farmland and woodland** (no roofs / the plan's
+no-solar-on-farmland rule); a loader and test rule keep every kind with at least
+two project options. The picker preview shows each project's *advertised* effect
+on the need bars as the "expected change" until Milestone 4's simulation actually
+moves them.
