@@ -86,3 +86,23 @@ lives in `t()`, so translations stay simple.
 0.25 per resident and community-time regeneration `1 + round(avg engagement · 0.05)`
 — both in `constants.ts` with reasons. Knowledge is stored and shown but has no
 source yet (that arrives in Milestone 6).
+
+## 10 Nov 2026 — Milestone 5 decisions
+
+**Storage is IndexedDB only.** No server, no cloud — a ~50-line wrapper
+(`src/persistence/db.ts`, `common-ground` DB) over native IndexedDB. Three
+manual slots plus a separate `auto` slot, so an automatic save never clobbers a
+manual one. The autosave runs every 60 seconds AND flushes on `pagehide`/hidden,
+so closing the tab never loses more than a heartbeat.
+
+**Saves are versioned and validated before they are ever opened**
+(`saveFile.ts`): `migrateSave` runs the migration table in order, and
+`validateGameState` (live in `src/game`, shared with the invariant tests)
+refuses out-of-range or non-finite state with the offending path. A broken save
+returns problems instead of throwing, so the UI can say "that save could not be
+loaded" and the town keeps ticking — the Milestone 5 exit test.
+
+**Loading a save is a bootstrap, not a command.** `store.replaceState(state)` is
+the single entry used by the boot loader and .json import; gameplay still only
+reaches the state through `dispatch`. Manual-slot writes are transactional
+(`put`), so a failed write leaves the last known good autosave untouched.
