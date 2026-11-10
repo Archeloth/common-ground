@@ -1,0 +1,42 @@
+{
+  "projects": [
+    {
+      "id": "community_garden",
+      "name": "Community garden",
+      "explain": "A shared allotment where residents grow food together — and the street greens up around it.",
+      "cost": 400,
+      "time": 2,
+      "engagement": 5,
+      "effects": [
+        { "need": "food", "change": 0.12 },
+        { "need": "green", "change": 0.08 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+    },
+    {
+      "id": "rooftop_solar",
+      "name": "Rooftop solar",
+      "explain": "Solar panels on roofs and car ports — roughly a quarter of the neighbourhood's energy demand generated locally.",
+      "cost": 900,
+      "time": 1,
+      "engagement": 0,
+      "effects": [
+        { "need": "energy", "change": 0.25 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+    },
+    {
+      "id": "retrofit_program",
+      "name": "Retrofit program",
+      "explain": "Insulation, heat pumps and draught-proofing — cosier homes that use roughly a fifth less energy.",
+      "cost": 600,
+      "time": 1,
+      "engagement": 0,
+      "effects": [
+        { "need": "housing", "change": 0.15 },
+        { "need": "energy", "change": 0.2 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+    }
+  ]
+}
