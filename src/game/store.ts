@@ -22,6 +22,9 @@ export interface GameStore {
   getSnapshot(): GameState // stable reference between changes (useSyncExternalStore)
   subscribe(listener: () => void): () => void
   dispatch(command: Command): CommandResult
+  // Swap the whole state (used by the save-loader bootstrap only, never by
+  // gameplay — playing goes through dispatch). Notifies subscribers.
+  replaceState(state: GameState): void
   start(): void
   stop(): void
   // Advance the simulation clock by the elapsed milliseconds since the last
@@ -68,6 +71,11 @@ export function createGameStore(initial?: GameState): GameStore {
     return result
   }
 
+  function replaceState(state: GameState): void {
+    current = state
+    notify()
+  }
+
   function subscribe(listener: () => void): () => void {
     listeners.add(listener)
     return () => {
@@ -112,6 +120,7 @@ export function createGameStore(initial?: GameState): GameStore {
     getSnapshot: () => current,
     subscribe,
     dispatch,
+    replaceState,
     start,
     stop,
     step,

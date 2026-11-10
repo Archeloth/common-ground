@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { loadScenario } from './scenario'
 import { createGameStore } from './store'
+import { initialState } from './state'
 import { BUDGET_PER_RESIDENT_PER_MONTH, TICKS_PER_MONTH } from './constants'
 
 const scenario = loadScenario()
@@ -105,5 +106,21 @@ describe('game store', () => {
     expect(store.getSnapshot()).toBe(first)
     store.dispatch({ type: 'setSpeed', speed: 2 })
     expect(store.getSnapshot()).not.toBe(first)
+  })
+
+  it('replaceState swaps the whole state and notifies (used by the save loader)', () => {
+    const store = createGameStore()
+    const listener = vi.fn()
+    store.subscribe(listener)
+    store.replaceState({ ...initialState(loadScenario()), day: 42 })
+    expect(store.getState().day).toBe(42)
+    expect(listener).toHaveBeenCalledTimes(1)
+    // The swap does not disturb the loop clock (1 in-game second still ticks).
+    store.step(0)
+    store.step(250)
+    store.step(500)
+    store.step(750)
+    store.step(1000)
+    expect(store.getState().day).toBe(43)
   })
 })
