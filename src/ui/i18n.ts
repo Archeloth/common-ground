@@ -5,7 +5,7 @@
 
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
-  'app.status': 'Willowbrook · Milestone 3',
+  'app.status': 'Willowbrook · Milestone 4',
   'app.help': 'Drag to pan · scroll to zoom · click a neighborhood',
   'chip.subtitle': '{kind} · {residents} residents',
   'panel.close': 'Close panel',
@@ -24,7 +24,13 @@ const MESSAGES: Record<string, string> = {
   'need.housing': 'Housing comfort',
   'resources.budget': 'Budget',
   'resources.time': 'Community time',
+  'resources.knowledge': 'Knowledge',
   'resource.month': 'mo',
+  'topbar.month': 'Month {month}',
+  'topbar.day': 'Day {day}',
+  'topbar.speedLabel': 'Simulation speed',
+  'topbar.pause': 'Pause',
+  'reason.invalid_speed': 'That is not a valid speed.',
   'reason.dismiss': 'Dismiss',
   'panel.projects': 'Projects',
   'panel.noProjects': 'No projects running in this neighbourhood yet.',
@@ -45,6 +51,9 @@ const MESSAGES: Record<string, string> = {
   'reason.insufficient_time': 'Not enough community time remaining.',
   'reason.invalid_slot': 'That slot is invalid.',
   'reason.empty_slot': 'There is no project running in that slot.',
+  'panel.reasons': 'What is holding satisfaction back',
+  'panel.reasonsEmpty': 'No significant shortfalls right now.',
+  'reason.gap': '{need} coverage is {pct}%',
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {

@@ -1,7 +1,7 @@
 import type { Command, GameState, NeighborhoodDef } from '../game/types'
 import { kindById, loadKinds } from '../game/kinds'
 import { loadScenario, neighborhoodById } from '../game/scenario'
-import { neighborhoodSatisfaction } from '../game/satisfaction'
+import { satisfactionOf } from '../game/satisfaction'
 import ProjectSlots from './ProjectSlots'
 import { t } from './i18n'
 import './NeighborhoodPanel.css'
@@ -44,6 +44,11 @@ export default function NeighborhoodPanel({
   onClose,
 }: NeighborhoodPanelProps) {
   const kind = kindById(kinds, neighborhood.kind)
+  // Needs, satisfaction and reasons are dynamic simulation values (Milestone 4);
+  // the static scenario values are only a fallback for a stale or missing entry.
+  const sim = state.neighborhoods[neighborhood.id]
+  const needs = sim?.needs ?? neighborhood.needs
+  const satisfaction = sim?.satisfaction ?? satisfactionOf(neighborhood.needs)
   const neighbors = neighborhood.neighbors.map((id) => neighborhoodById(scenario, id))
   const bridgePartners = scenario.bridges
     .filter(([from, to]) => from === neighborhood.id || to === neighborhood.id)
@@ -78,7 +83,7 @@ export default function NeighborhoodPanel({
         </div>
         <div className="fact">
           <dt>{t('panel.satisfaction')}</dt>
-          <dd>{neighborhoodSatisfaction(neighborhood)}/100</dd>
+          <dd>{Math.round(satisfaction)}/100</dd>
         </div>
       </dl>
 
@@ -86,9 +91,27 @@ export default function NeighborhoodPanel({
         <h3>{t('panel.needs')}</h3>
         <div className="needs-grid">
           {NEED_ORDER.map((need) => (
-            <NeedBar key={need} label={t(`need.${need}`)} value={neighborhood.needs[need]} />
+            <NeedBar key={need} label={t(`need.${need}`)} value={needs[need]} />
           ))}
         </div>
+      </section>
+
+      <section className="panel-section">
+        <h3>{t('panel.reasons')}</h3>
+        {sim && sim.reasons.length > 0 ? (
+          <ol className="panel-reasons">
+            {sim.reasons.map((entry) => (
+              <li key={entry.need}>
+                {t('reason.gap', {
+                  need: t(`need.${entry.need}`),
+                  pct: Math.round(entry.coverage * 100),
+                })}
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="panel-reasons-empty">{t('panel.reasonsEmpty')}</p>
+        )}
       </section>
 
       <ProjectSlots neighborhood={neighborhood} state={state} onStart={onStart} onRemove={onRemove} />

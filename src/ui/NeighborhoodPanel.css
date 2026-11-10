@@ -137,3 +137,20 @@
   font-size: 0.68rem;
   color: #2565ae;
 }
+
+.panel-reasons {
+  margin: 0.3rem 0 0;
+  padding: 0 0 0 1.1rem;
+  color: #3f4c38;
+  font-size: 0.84rem;
+}
+
+.panel-reasons li {
+  margin: 0.2rem 0;
+}
+
+.panel-reasons-empty {
+  margin: 0.3rem 0 0;
+  font-size: 0.82rem;
+  color: #6a7564;
+}

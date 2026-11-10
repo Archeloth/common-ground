@@ -1,0 +1,33 @@
+.topbar-date {
+  color: #4a5c44;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.speed-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.speed-button {
+  min-width: 2.2rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(31, 43, 28, 0.18);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  color: #2d3929;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.speed-button:hover {
+  background: #eef2e6;
+}
+
+.speed-button.active {
+  background: #3f523a;
+  border-color: #3f523a;
+  color: #f2f6e7;
+}

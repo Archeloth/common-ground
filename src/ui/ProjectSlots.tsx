@@ -53,7 +53,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
             <button
               type="button"
               className="slot-remove"
-              onClick={() => onRemove({ type: 'remove_project', neighborhood: neighborhood.id, slot })}
+              onClick={() => onRemove({ type: 'removeProject', neighborhood: neighborhood.id, slot })}
             >
               {t('project.remove')}
             </button>
@@ -66,7 +66,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
           <p className="project-picker-title">{t('panel.freeSlots', { count: freeCount })}</p>
           {projects.map((project) => {
             const result = applyCommand(state, {
-              type: 'start_project',
+              type: 'startProject',
               neighborhood: neighborhood.id,
               project: project.id,
             })
@@ -93,7 +93,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                   disabled={!ready}
                   onClick={() =>
                     onStart({
-                      type: 'start_project',
+                      type: 'startProject',
                       neighborhood: neighborhood.id,
                       project: project.id,
                     })

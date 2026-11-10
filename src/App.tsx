@@ -1,52 +1,41 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import TopBar from './ui/TopBar'
 import TownMap from './ui/TownMap'
 import NeighborhoodPanel from './ui/NeighborhoodPanel'
 import { loadScenario, neighborhoodById } from './game/scenario'
-import { applyCommand, initialState } from './game/state'
-import type { Command, GameState, Reason } from './game/types'
+import { createGameStore } from './game/store'
+import { useGame } from './ui/useGame'
+import type { Command, Reason } from './game/types'
 import { t } from './ui/i18n'
 import './App.css'
 
 const scenario = loadScenario()
+const store = createGameStore()
 
-// App owns the simulation state and the selected neighborhood; TownMap is a
-// controlled canvas (selection lifted — Milestone 2), the panel mutates the
-// world through applyCommand only (Milestone 3). No store yet: the fixed-
-// timestep loop arrives in Milestone 4.
+// App owns the selected neighborhood; the simulation state lives in the store
+// (src/game/store.ts, a fixed-timestep loop owning a plain GameState). TownMap
+// is a controlled canvas; the panel mutates the world through store.dispatch,
+// which is the only way commands reach the state (Milestone 3/4).
 function App() {
+  const state = useGame(store)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [state, setState] = useState<GameState>(() => initialState(scenario))
   const [reason, setReason] = useState<Reason | null>(null)
   const onSelectionChange = useCallback((id: string | null) => setSelectedId(id), [])
   const selected = selectedId ? neighborhoodById(scenario, selectedId) : null
 
-  const dispatch = useCallback(
-    (command: Command) => {
-      const result = applyCommand(state, command)
-      if (result.ok) {
-        setState(result.state)
-        setReason(null)
-      } else {
-        setReason(result.reason)
-      }
-    },
-    [state],
-  )
+  useEffect(() => {
+    store.start()
+    return () => store.stop()
+  }, [])
+
+  const dispatch = useCallback((command: Command) => {
+    const result = store.dispatch(command)
+    setReason(result.ok ? null : result.reason)
+  }, [])
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>{t('app.title')}</h1>
-        <span className="app-status">{t('app.status')}</span>
-        <div className="resource-chips">
-          <span className="resource-chip">
-            {t('resources.budget')}: {state.budget.toLocaleString('en-GB')}
-          </span>
-          <span className="resource-chip">
-            {t('resources.time')}: {state.time} {t('resource.month')}
-          </span>
-        </div>
-      </header>
+      <TopBar state={state} onSpeed={(speed) => dispatch({ type: 'setSpeed', speed })} />
       <div className="stage">
         <TownMap selectedId={selectedId} onSelectionChange={onSelectionChange} />
         {selected && (
