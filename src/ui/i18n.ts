@@ -5,7 +5,7 @@
 
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
-  'app.status': 'Willowbrook · Milestone 2',
+  'app.status': 'Willowbrook · Milestone 3',
   'app.help': 'Drag to pan · scroll to zoom · click a neighborhood',
   'chip.subtitle': '{kind} · {residents} residents',
   'panel.close': 'Close panel',
@@ -22,6 +22,29 @@ const MESSAGES: Record<string, string> = {
   'need.green': 'Green space',
   'need.waste': 'Waste',
   'need.housing': 'Housing comfort',
+  'resources.budget': 'Budget',
+  'resources.time': 'Community time',
+  'resource.month': 'mo',
+  'reason.dismiss': 'Dismiss',
+  'panel.projects': 'Projects',
+  'panel.noProjects': 'No projects running in this neighbourhood yet.',
+  'panel.freeSlots': '{count} slot(s) free',
+  'panel.allSlotsFull': 'All project slots are filled.',
+  'project.start': 'Start',
+  'project.remove': 'Remove',
+  'project.cost': '{value} budget',
+  'project.months': '{value} mo',
+  'project.needBudget': 'Needs {value} more budget',
+  'project.needTime': 'Needs {value} more months',
+  'reason.unknown_neighborhood': 'That neighbourhood does not exist.',
+  'reason.unknown_project': 'That project does not exist.',
+  'reason.project_already_active': 'This project is already running in this neighbourhood.',
+  'reason.no_free_slot': 'There is no free project slot in this neighbourhood.',
+  'reason.not_allowed_in_kind': 'This project cannot be built in this kind of neighbourhood.',
+  'reason.insufficient_budget': 'Not enough budget remaining.',
+  'reason.insufficient_time': 'Not enough community time remaining.',
+  'reason.invalid_slot': 'That slot is invalid.',
+  'reason.empty_slot': 'There is no project running in that slot.',
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {

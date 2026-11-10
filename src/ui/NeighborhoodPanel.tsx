@@ -1,7 +1,8 @@
-import type { NeighborhoodDef } from '../game/types'
+import type { Command, GameState, NeighborhoodDef } from '../game/types'
 import { kindById, loadKinds } from '../game/kinds'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { neighborhoodSatisfaction } from '../game/satisfaction'
+import ProjectSlots from './ProjectSlots'
 import { t } from './i18n'
 import './NeighborhoodPanel.css'
 
@@ -26,13 +27,22 @@ function NeedBar({ label, value }: { label: string; value: number }) {
 
 interface NeighborhoodPanelProps {
   neighborhood: NeighborhoodDef
+  state: GameState
+  onStart: (command: Command) => void
+  onRemove: (command: Command) => void
   onClose: () => void
 }
 
 // Side panel for a selected neighborhood: kind, residents, slots, engagement,
 // the six need bars and a placeholder satisfaction (Milestone 2 exit test:
 // click any blob and read sensible, different values).
-export default function NeighborhoodPanel({ neighborhood, onClose }: NeighborhoodPanelProps) {
+export default function NeighborhoodPanel({
+  neighborhood,
+  state,
+  onStart,
+  onRemove,
+  onClose,
+}: NeighborhoodPanelProps) {
   const kind = kindById(kinds, neighborhood.kind)
   const neighbors = neighborhood.neighbors.map((id) => neighborhoodById(scenario, id))
   const bridgePartners = scenario.bridges
@@ -80,6 +90,8 @@ export default function NeighborhoodPanel({ neighborhood, onClose }: Neighborhoo
           ))}
         </div>
       </section>
+
+      <ProjectSlots neighborhood={neighborhood} state={state} onStart={onStart} onRemove={onRemove} />
 
       {neighbors.length > 0 && (
         <section className="panel-section">

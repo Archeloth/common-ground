@@ -24,6 +24,22 @@
   font-size: 0.9rem;
 }
 
+.resource-chips {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.resource-chip {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: #3f523a;
+  color: #f2f6e7;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .stage {
   position: relative;
   display: flex;
@@ -39,5 +55,33 @@
   font-size: 0.8rem;
   color: #4a5c44;
   background: rgba(255, 255, 255, 0.5);
+}
+
+.reason-banner {
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 80%;
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.7rem;
+  background: #7a2e12;
+  color: #fff;
+  font-size: 0.84rem;
+  box-shadow: 0 3px 12px rgba(74, 24, 10, 0.35);
+}
+
+.reason-banner button {
+  padding: 0.2rem;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
 }
 

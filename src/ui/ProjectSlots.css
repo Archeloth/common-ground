@@ -1,0 +1,132 @@
+.project-empty {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: #6a7564;
+}
+
+.slot-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slot-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.6rem;
+  background: #eef2e6;
+}
+
+.slot-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.slot-remove {
+  padding: 0.35rem 0.7rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #e3ddd3;
+  color: #5a4a34;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.slot-remove:hover {
+  background: #d8cfbf;
+}
+
+.project-picker {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.project-picker-title {
+  margin: 0;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #53604c;
+}
+
+.project-option {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #dfe7d4;
+  border-radius: 0.7rem;
+  background: #fafcf4;
+}
+
+.project-option.disabled {
+  opacity: 0.72;
+}
+
+.project-name {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.project-meta {
+  display: block;
+  font-size: 0.76rem;
+  color: #6a7564;
+}
+
+.project-effects {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.78rem;
+  color: #2d6a3f;
+}
+
+.project-explain {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.76rem;
+  color: #5b6654;
+}
+
+.project-disabled-reason {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.74rem;
+  color: #a2451a;
+}
+
+.project-start {
+  min-height: 2.5rem;
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: #5b9050;
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.project-start:hover:not(:disabled) {
+  background: #4d7f43;
+}
+
+.project-start:disabled {
+  background: #c7cfbb;
+  color: #6a7564;
+  cursor: not-allowed;
+}
+
+.project-full {
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  color: #6a7564;
+}
