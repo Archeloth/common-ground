@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { loadKinds } from './kinds'
 import { loadScenario } from './scenario'
-import { neighborhoodSatisfaction, satisfactionOf, SATISFACTION_WEIGHTS } from './satisfaction'
+import { satisfactionOf, shortfalls, SATISFACTION_WEIGHTS } from './satisfaction'
 import type { Needs } from './types'
 
 const empty: Needs = { energy: 0, food: 0, mobility: 0, green: 0, waste: 0, housing: 0 }
@@ -34,15 +33,36 @@ describe('satisfaction placeholder formula', () => {
     }
   })
 
-  it('yields sensible, different placeholder values for Willowbrook', () => {
+  it('yields sensible, different satisfaction values for Willowbrook', () => {
     const scenario = loadScenario()
-    expect(() => loadKinds()).not.toThrow()
-    const values = scenario.neighborhoods.map((n) => neighborhoodSatisfaction(n))
+    const values = scenario.neighborhoods.map((n) => satisfactionOf(n.needs))
     for (const v of values) {
       expect(v).toBeGreaterThanOrEqual(0)
       expect(v).toBeLessThanOrEqual(100)
     }
-    // The exit test for this milestone: click any blob and read different values.
+    // Milestone 2 exit test: click any blob and read different values.
     expect(new Set(values).size).toBeGreaterThan(1)
+  })
+
+  it('shortfalls lists the largest gaps first, capped by count', () => {
+    const needs: Needs = {
+      energy: 0.9,
+      food: 0.4,
+      mobility: 0.7,
+      green: 0.6,
+      waste: 0.9,
+      housing: 0.3,
+    }
+    expect(shortfalls(needs, 3).map((r) => r.need)).toEqual(['housing', 'food', 'green'])
+    expect(shortfalls(needs, 3)[0].coverage).toBe(0.3)
+  })
+
+  it('shortfalls is empty when every need is fully covered', () => {
+    expect(shortfalls(full, 3)).toEqual([])
+  })
+
+  it('shortfalls is deterministic for equal gaps', () => {
+    const allEqual: Needs = { energy: 0.5, food: 0.5, mobility: 0.5, green: 0.5, waste: 0.5, housing: 0.5 }
+    expect(shortfalls(allEqual, 3).map((r) => r.need)).toEqual(['energy', 'food', 'mobility'])
   })
 })

@@ -84,10 +84,15 @@ export interface ProjectDef {
   allowedKinds: NeighborhoodKind[] // which kinds may host this project
 }
 
-// Player commands against the simulation state.
+// Player commands against the simulation state. Types follow the plan's core
+// command pattern (startProject/removeProject/setSpeed) so replays, undo and
+// tutorial scripting stay simple.
+export type Speed = 0 | 1 | 2 | 4
+
 export type Command =
-  | { type: 'start_project'; neighborhood: string; project: string }
-  | { type: 'remove_project'; neighborhood: string; slot: number }
+  | { type: 'startProject'; neighborhood: string; project: string }
+  | { type: 'removeProject'; neighborhood: string; slot: number }
+  | { type: 'setSpeed'; speed: Speed }
 
 // Machine-readable refusal codes; the UI maps each to t("reason.<code>").
 export type Reason =
@@ -100,15 +105,37 @@ export type Reason =
   | 'insufficient_time'
   | 'invalid_slot'
   | 'empty_slot'
+  | 'invalid_speed'
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; reason: Reason }
+
+// One entry in the "top shortfalls" reasons list: the need and its current
+// coverage, so the UI can explain the satisfaction level in plain words.
+export interface ReasonEntry {
+  need: NeedId
+  coverage: number // 0 to 1
+}
+
+// The dynamic simulation part of a neighborhood (Milestone 4). Needs are no
+// longer static content: coverage drifts toward the target set by the base
+// needs plus active project effects every tick.
+export interface NeighborhoodSimState {
+  needs: Needs
+  satisfaction: number // smoothed, displayed value, 0 to 100
+  reasons: ReasonEntry[] // the three largest shortfalls, biggest gap first
+}
 
 // The entire mutable simulation state, as plain JSON-friendly data (coding
 // standard 6): a save file can be a JSON.stringify snapshot of this object.
 export interface GameState {
   budget: number
-  time: number // community time in months
+  time: number // community time (volunteer effort)
+  knowledge: number // earned from schools/libraries (sources arrive in M6)
+  day: number // one tick = one in-game day
+  speed: Speed
   // neighborhoodId -> project id per slot (null = empty slot)
   projects: Record<string, Array<string | null>>
+  // neighborhoodId -> dynamic per-neighborhood simulation values
+  neighborhoods: Record<string, NeighborhoodSimState>
 }
 

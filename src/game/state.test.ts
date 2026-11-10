@@ -6,11 +6,11 @@ import type { Command, GameState } from './types'
 const scenario = loadScenario()
 
 function gardenStart(neighborhood = 'old_town'): Command {
-  return { type: 'start_project', neighborhood, project: 'community_garden' }
+  return { type: 'startProject', neighborhood, project: 'community_garden' }
 }
 
 function solarStart(neighborhood = 'old_town'): Command {
-  return { type: 'start_project', neighborhood, project: 'rooftop_solar' }
+  return { type: 'startProject', neighborhood, project: 'rooftop_solar' }
 }
 
 describe('initialState', () => {
@@ -18,14 +18,22 @@ describe('initialState', () => {
     const s = initialState(scenario)
     expect(s.budget).toBe(scenario.start.budget)
     expect(s.time).toBe(scenario.start.time)
+    expect(s.knowledge).toBe(0)
+    expect(s.day).toBe(1)
+    expect(s.speed).toBe(1)
     for (const n of scenario.neighborhoods) {
       expect(s.projects[n.id]).toHaveLength(n.slots)
       expect(s.projects[n.id].every((slot) => slot === null)).toBe(true)
+      expect(s.neighborhoods[n.id].needs).toEqual(n.needs)
+      expect(s.neighborhoods[n.id].satisfaction).toBeGreaterThanOrEqual(0)
+      expect(s.neighborhoods[n.id].satisfaction).toBeLessThanOrEqual(100)
+      expect(s.neighborhoods[n.id].reasons.length).toBeGreaterThan(0)
+      expect(s.neighborhoods[n.id].reasons.length).toBeLessThanOrEqual(3)
     }
   })
 })
 
-describe('start_project', () => {
+describe('startProject', () => {
   it('charges cost and community time and fills the first free slot', () => {
     const before = initialState(scenario)
     const result = applyCommand(before, gardenStart())
@@ -57,7 +65,7 @@ describe('start_project', () => {
 
   it('refuses an unknown neighborhood', () => {
     const result = applyCommand(initialState(scenario), {
-      type: 'start_project',
+      type: 'startProject',
       neighborhood: 'nowhere',
       project: 'community_garden',
     })
@@ -66,7 +74,7 @@ describe('start_project', () => {
 
   it('refuses an unknown project', () => {
     const result = applyCommand(initialState(scenario), {
-      type: 'start_project',
+      type: 'startProject',
       neighborhood: 'old_town',
       project: 'wind_turbine',
     })
@@ -82,10 +90,10 @@ describe('start_project', () => {
   })
 
   it('refuses when there is no free slot', () => {
+    const base = initialState(scenario)
     const full: GameState = {
-      budget: 15000,
-      time: 6,
-      projects: { old_town: ['a', 'b', 'c', 'd'] },
+      ...base,
+      projects: { ...base.projects, old_town: ['a', 'b', 'c', 'd'] },
     }
     expect(applyCommand(full, gardenStart())).toEqual({ ok: false, reason: 'no_free_slot' })
   })
@@ -106,14 +114,14 @@ describe('start_project', () => {
   })
 })
 
-describe('remove_project', () => {
+describe('removeProject', () => {
   it('frees the slot without refunding budget or time', () => {
     const s = initialState(scenario)
     const started = applyCommand(s, gardenStart())
     expect(started.ok).toBe(true)
     if (!started.ok) return
     const removed = applyCommand(started.state, {
-      type: 'remove_project',
+      type: 'removeProject',
       neighborhood: 'old_town',
       slot: 0,
     })
@@ -127,7 +135,7 @@ describe('remove_project', () => {
   it('refuses an invalid slot index', () => {
     for (const slot of [-1, 99]) {
       const result = applyCommand(initialState(scenario), {
-        type: 'remove_project',
+        type: 'removeProject',
         neighborhood: 'old_town',
         slot,
       })
@@ -137,7 +145,7 @@ describe('remove_project', () => {
 
   it('refuses to remove from an empty slot', () => {
     const result = applyCommand(initialState(scenario), {
-      type: 'remove_project',
+      type: 'removeProject',
       neighborhood: 'old_town',
       slot: 2,
     })
@@ -146,11 +154,39 @@ describe('remove_project', () => {
 
   it('refuses an unknown neighborhood', () => {
     const result = applyCommand(initialState(scenario), {
-      type: 'remove_project',
+      type: 'removeProject',
       neighborhood: 'nowhere',
       slot: 0,
     })
     expect(result).toEqual({ ok: false, reason: 'unknown_neighborhood' })
+  })
+})
+
+describe('setSpeed', () => {
+  it('sets the simulation speed', () => {
+    const s = initialState(scenario)
+    const result = applyCommand(s, { type: 'setSpeed', speed: 4 })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.state.speed).toBe(4)
+      expect(result.state.day).toBe(1) // unchanged
+    }
+  })
+
+  it('refuses a speed outside the allowed set', () => {
+    // The union type only allows 0/1/2/4, so cast to simulate bad input.
+    const result = applyCommand(initialState(scenario), {
+      type: 'setSpeed',
+      speed: 3 as 0 | 1 | 2 | 4,
+    })
+    expect(result).toEqual({ ok: false, reason: 'invalid_speed' })
+  })
+
+  it('leaves the input untouched', () => {
+    const s = initialState(scenario)
+    const snapshot = structuredClone(s)
+    applyCommand(s, { type: 'setSpeed', speed: 0 })
+    expect(s).toEqual(snapshot)
   })
 })
 
