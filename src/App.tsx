@@ -1,31 +1,110 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import TopBar from './ui/TopBar'
 import TownMap from './ui/TownMap'
 import NeighborhoodPanel from './ui/NeighborhoodPanel'
+import SaveMenu from './ui/SaveMenu'
 import { loadScenario, neighborhoodById } from './game/scenario'
 import { createGameStore } from './game/store'
+import { initialState } from './game/state'
 import { useGame } from './ui/useGame'
 import type { Command, Reason } from './game/types'
+import { openSaveDb } from './persistence/db'
+import type { SaveDb } from './persistence/db'
+import { createSave, parseAndLoad } from './persistence/saveFile'
+import { loadSlot, readSlotMeta, saveSlot, SLOT_KEYS } from './persistence/slots'
+import type { SlotMeta } from './persistence/slots'
+import { downloadSaveFile, readSaveFile } from './persistence/fileTransfer'
 import { t } from './ui/i18n'
 import './App.css'
 
 const scenario = loadScenario()
 const store = createGameStore()
 
+const AUTOSAVE_MS = 60_000 // plan: "autosave about once a minute"
+
 // App owns the selected neighborhood; the simulation state lives in the store
-// (src/game/store.ts, a fixed-timestep loop owning a plain GameState). TownMap
-// is a controlled canvas; the panel mutates the world through store.dispatch,
-// which is the only way commands reach the state (Milestone 3/4).
+// (src/game/store.ts). Saves are the plan's persistence story: IndexedDB slots
+// (autosave + three manual) and .json export/import; a broken save shows a
+// friendly message and never loses the town (Milestone 5).
 function App() {
   const state = useGame(store)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [reason, setReason] = useState<Reason | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+  const [meta, setMeta] = useState<Record<string, SlotMeta | null>>({
+    auto: null,
+    s1: null,
+    s2: null,
+    s3: null,
+  })
+  const dbRef = useRef<SaveDb | null>(null)
+  const lastAutoJsonRef = useRef<string | null>(null)
   const onSelectionChange = useCallback((id: string | null) => setSelectedId(id), [])
   const selected = selectedId ? neighborhoodById(scenario, selectedId) : null
+
+  const refreshMeta = useCallback(async () => {
+    const database = dbRef.current
+    if (!database) return
+    const next: Record<string, SlotMeta | null> = { auto: null, s1: null, s2: null, s3: null }
+    for (const key of SLOT_KEYS) next[key] = await readSlotMeta(database, key)
+    setMeta(next)
+  }, [])
 
   useEffect(() => {
     store.start()
     return () => store.stop()
+  }, [])
+
+  // Boot: open the save database, restore the last known good autosave (or keep
+  // a fresh town if none exists), then list the slots for the menu.
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      const database = await openSaveDb()
+      if (cancelled) {
+        database.close()
+        return
+      }
+      dbRef.current = database
+      const autosave = await loadSlot(database, 'auto')
+      if (autosave.save) {
+        store.replaceState(autosave.save.state)
+      } else if (autosave.problems.length > 0) {
+        setNotice(t('saves.loadFailed'))
+      }
+      await refreshMeta()
+    })().catch(() => setNotice(t('saves.loadFailed')))
+    return () => {
+      cancelled = true
+      dbRef.current?.close()
+    }
+  }, [refreshMeta])
+
+  // Autosave roughly once a minute, plus a flush whenever the tab is hidden or
+  // closed — that flush makes "close the tab, reopen it and continue exactly
+  // where you were" hold even before the first minute elapses.
+  useEffect(() => {
+    const flush = () => {
+      const database = dbRef.current
+      if (!database) return
+      const json = JSON.stringify(store.getState())
+      if (json === lastAutoJsonRef.current) return
+      lastAutoJsonRef.current = json
+      void saveSlot(database, 'auto', createSave(store.getState())).catch(() => {
+        lastAutoJsonRef.current = null // allow a retry next time
+      })
+    }
+    const onVisibilityChange = () => {
+      if (document.hidden) flush()
+    }
+    const interval = window.setInterval(flush, AUTOSAVE_MS)
+    window.addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('pagehide', flush)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
   }, [])
 
   const dispatch = useCallback((command: Command) => {
@@ -33,10 +112,74 @@ function App() {
     setReason(result.ok ? null : result.reason)
   }, [])
 
+  const handleSave = useCallback(
+    async (key: string) => {
+      const database = dbRef.current
+      if (!database) return
+      await saveSlot(database, key, createSave(store.getState()))
+      setNotice(t('saves.savedOk'))
+      await refreshMeta()
+    },
+    [refreshMeta],
+  )
+
+  const handleLoad = useCallback(
+    async (key: string) => {
+      const database = dbRef.current
+      if (!database) return
+      const result = await loadSlot(database, key)
+      if (result.save) {
+        store.replaceState(result.save.state)
+        setNotice(t('saves.loadOk'))
+      } else if (result.problems.length > 0) {
+        setNotice(`${t('saves.loadFailed')} — ${result.problems[0]}`)
+      }
+      await refreshMeta()
+    },
+    [refreshMeta],
+  )
+
+  const handleExport = useCallback(() => {
+    downloadSaveFile(createSave(store.getState()))
+    setNotice(t('saves.exportOk'))
+  }, [])
+
+  const handleImport = useCallback(
+    async (file: File) => {
+      try {
+        const text = await readSaveFile(file)
+        const result = parseAndLoad(text)
+        if (result.ok) {
+          store.replaceState(result.save.state)
+          setNotice(t('saves.loadOk'))
+        } else {
+          setNotice(`${t('saves.loadFailed')} — ${result.problems[0] ?? ''}`)
+        }
+        await refreshMeta()
+      } catch {
+        setNotice(t('saves.loadFailed'))
+      }
+    },
+    [refreshMeta],
+  )
+
+  const handleNewGame = useCallback(() => {
+    store.replaceState(initialState(scenario))
+    setNotice(t('saves.newGameOk'))
+  }, [])
+
   return (
     <div className="app">
       <TopBar state={state} onSpeed={(speed) => dispatch({ type: 'setSpeed', speed })} />
       <div className="stage">
+        <SaveMenu
+          meta={meta}
+          onSave={handleSave}
+          onLoad={handleLoad}
+          onExport={handleExport}
+          onImport={handleImport}
+          onNewGame={handleNewGame}
+        />
         <TownMap selectedId={selectedId} onSelectionChange={onSelectionChange} />
         {selected && (
           <NeighborhoodPanel
@@ -47,10 +190,17 @@ function App() {
             onClose={() => setSelectedId(null)}
           />
         )}
-        {reason && (
+        {(notice || reason) && (
           <div className="reason-banner" role="alert">
-            <span>{t(`reason.${reason}`)}</span>
-            <button type="button" onClick={() => setReason(null)} aria-label={t('reason.dismiss')}>
+            <span>{notice ?? (reason ? t(`reason.${reason}`) : '')}</span>
+            <button
+              type="button"
+              onClick={() => {
+                setNotice(null)
+                setReason(null)
+              }}
+              aria-label={t('reason.dismiss')}
+            >
               ×
             </button>
           </div>

@@ -5,7 +5,7 @@
 
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
-  'app.status': 'Willowbrook · Milestone 4',
+  'app.status': 'Willowbrook · Milestone 5',
   'app.help': 'Drag to pan · scroll to zoom · click a neighborhood',
   'chip.subtitle': '{kind} · {residents} residents',
   'panel.close': 'Close panel',
@@ -54,6 +54,22 @@ const MESSAGES: Record<string, string> = {
   'panel.reasons': 'What is holding satisfaction back',
   'panel.reasonsEmpty': 'No significant shortfalls right now.',
   'reason.gap': '{need} coverage is {pct}%',
+  'saves.title': 'Save',
+  'saves.autosave': 'Autosave',
+  'saves.slot': 'Slot {n}',
+  'saves.empty': 'Empty',
+  'saves.save': 'Save',
+  'saves.load': 'Load',
+  'saves.lastSavedMeta': 'Day {day} · {time}',
+  'saves.export': 'Export .json',
+  'saves.import': 'Import .json',
+  'saves.newGame': 'New game',
+  'saves.newGameConfirm': 'Start a new town? Your current progress will be replaced.',
+  'saves.savedOk': 'Game saved.',
+  'saves.loadOk': 'Save loaded.',
+  'saves.exportOk': 'Save exported as a file.',
+  'saves.newGameOk': 'A fresh town is ready.',
+  'saves.loadFailed': 'That save could not be loaded.',
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {
