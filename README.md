@@ -9,20 +9,25 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 3 — projects and slots.** Every neighborhood has project slots you can
-fill from three projects (community garden, rooftop solar, retrofit program — the
-catalog in `src/data/projects.json`). Each project shows its cost and community
-time, previews its effects on the need bars, and is validated before it starts
-(free slot, allowed kind, budget, time) — refusals return a clear reason. Budget
-and community time chips sit in the header, slots fill in order, and removing a
-project frees the slot without a refund.
+**Milestone 4 — time, needs and satisfaction.** The simulation now runs the
+plan's fixed-timestep loop: one tick is one in-game day, 30 ticks make a month,
+and the top bar shows Budget, Community time, Knowledge, the in-game date and
+speed controls (pause · 1× · 2× · 4×; hidden tabs pause automatically). Every
+month the town earns budget from local taxes (~0.25 per resident) and community
+time from the average engagement.
 
-Click any blob to open its side panel: name, kind and description (from the kinds
-catalog in `src/data/neighborhoods.json`), residents, engagement, slots, the six
-need bars and a placeholder satisfaction (the plan's weighted formula — reasons
-and smoothing arrive in Milestone 4). Nearby neighbors and bridges are listed,
-every kind is validated against the simulation's kind union, and all visible
-strings go through one `t("key")` function, ready for translation.
+Needs are now live simulation values: coverage drifts toward the
+base-plus-project-effects target, the panel shows the smoothed satisfaction and
+the **top three shortfalls in plain language**, and starting or removing a
+project visibly moves the need bars and changes the reasons list — the Milestone
+4 exit test.
+
+Click any blob to open its side panel: name, kind and description (from the
+kinds catalog in `src/data/neighborhoods.json`), residents, engagement, slots,
+six live need bars, satisfaction, reasons, and the project picker (`projects.json`:
+community garden, rooftop solar, retrofit program — validated before starting,
+WITH a clear refusal reason). Nearby neighbors and bridges are listed, and all
+visible strings go through one `t("key")` function, ready for translation.
 
 Controls: **drag** to pan · **scroll / pinch** to zoom · **hover** to inspect ·
 **click** to select · **Esc** to close the panel.
@@ -43,7 +48,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (rng, blob geometry, hit-testing, camera, scenario + kinds data, satisfaction, projects, commands)
+yarn test      # Vitest unit tests (rng, blobs, geometry, camera, scenario + kinds + projects data, commands, tick, store, satisfactions & reasons, determinism, invariants)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```

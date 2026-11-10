@@ -61,3 +61,28 @@ no-solar-on-farmland rule); a loader and test rule keep every kind with at least
 two project options. The picker preview shows each project's *advertised* effect
 on the need bars as the "expected change" until Milestone 4's simulation actually
 moves them.
+
+## 10 Nov 2026 — Milestone 4 decisions
+
+**The store is framework-free.** `src/game/store.ts` owns the GameState and runs
+the plan's fixed-timestep loop (`acc += dt * speed`; `while acc >= TICK_MS: tick`),
+with a 250 ms delta clamp for hidden tabs and an automatic pause on
+`visibilitychange`. React subscribes via `useSyncExternalStore` in
+`src/ui/useGame.ts`, so `src/game` still imports nothing from the UI (the boundary
+rule) and the store remains testable in Node through `step(now)`.
+
+**Commands follow the plan's core pattern.** `startProject` / `removeProject` /
+`setSpeed` (camelCase) replace the Milestone 3 snake_case literals; content ids
+stay snake_case. Same validation order and reasons.
+
+**Needs moved from content into state.** Coverage drifts toward
+base + project effects at 2% per tick (`NEED_DRIFT_PER_TICK`), so a project's
+effects arrive over 2–3 in-game months and can be watched — and explained — as
+they happen. Satisfaction is the plan's weighted formula, smoothed 5%/tick;
+reasons are *data* (`{ need, coverage }`, top three shortfalls) and the wording
+lives in `t()`, so translations stay simple.
+
+**Settlement is monthly, not per-tick.** On every 30th elapsed day: budget income
+0.25 per resident and community-time regeneration `1 + round(avg engagement · 0.05)`
+— both in `constants.ts` with reasons. Knowledge is stored and shown but has no
+source yet (that arrives in Milestone 6).
