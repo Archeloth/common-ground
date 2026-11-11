@@ -9,23 +9,29 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 5 — save and load.** The game saves in the browser only: three manual
-slots plus an autosave (about once a minute, and always a flush when the tab is
-hidden or closed), with export/import as a `.json` file as the no-server safety
-net. The **Save** menu (top-left) shows each slot's in-game day and save time.
-Saves are versioned and validated before use; a broken save never crashes the
-town — it shows a friendly message and the game keeps running.
+**Milestone 6 — research and goals.** The town has a research tree
+(`src/data/technologies.json`): eight technologies across three chains (Energy
+audits → Building retrofits → Heat pumps; Community gardens → Composting →
+Local food hubs; Safe streets → Public transport). The **Research** menu shows
+education cards — what it does, its benefit, its honest limit, and a confidence
+tag (established / emerging / context) — and research costs **Knowledge**
+(10 to start from the scenario, then earned by completing milestones).
 
-Click any blob to open its side panel: name, kind and description (from the kinds
-catalog in `src/data/neighborhoods.json`), residents, engagement, slots, six live
-need bars, smoothed satisfaction, the top-three shortfalls in plain language, and
-the project picker (`projects.json`: community garden, rooftop solar, retrofit
-program — validated before starting, refusals explain why). The top bar shows
-Budget, Community time, Knowledge, the date and speed (pause · 1× · 2× · 4×), and
-all visible strings go through one `t("key")` function, ready for translation.
+The five chapter milestones (`src/data/milestones.json`) are data with
+state-checkable conditions; `tick()` completes them the moment they are met, a
+banner tells you, and each one pays a Knowledge reward. Save files are v2 (a
+v1 save auto-migrates, seeding research from the scenario).
+
+Saves are versioned and validated before use (three slots + autosave, plus
+`.json` export/import); a broken save never crashes the town. Click any blob
+for its panel: live need bars, smoothed satisfaction, top-three shortfalls in
+plain language, and the project picker. The top bar shows Budget, Community
+time, Knowledge, the date and speed (pause · 1× · 2× · 4×); all visible strings
+go through one `t("key")` function.
 
 Controls: **drag** to pan · **scroll / pinch** to zoom · **hover** to inspect ·
-**click** to select · **Esc** to close the panel.
+**click** to select · **Esc** to close the panel. Save (**💾 Save**) and
+**Research** menus sit at the top-left.
 
 ## Stack and decisions
 
@@ -43,7 +49,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (rng, blobs, geometry, camera, content data, commands, tick, store, saves: round-trip/migration/corrupt, state validation, determinism, invariants)
+yarn test      # Vitest unit tests (rng, blobs, geometry, camera, content data, commands, tick, store, milestones, research, saves, state validation, determinism, invariants)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```

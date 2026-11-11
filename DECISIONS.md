@@ -106,3 +106,33 @@ loaded" and the town keeps ticking — the Milestone 5 exit test.
 the single entry used by the boot loader and .json import; gameplay still only
 reaches the state through `dispatch`. Manual-slot writes are transactional
 (`put`), so a failed write leaves the last known good autosave untouched.
+
+## 10 Nov 2026 — Milestone 6 decisions
+
+**Research is Knowledge, Knowledge comes from milestones.** The scenario starts
+with 10 Knowledge (enough for the first research) and completing a milestone
+pays more — the plan names milestones as a Knowledge source; schools/libraries
+are future content. Research commands follow the same validation-order pattern
+as projects (identity → already done → prerequisites → resources).
+
+**The research tree is the three starting chains, not all six branches.** 8
+entries: Energy audits → Building retrofits → Heat pumps, Community gardens →
+Composting → Local food hubs, Safe streets → Public transport. The plan's
+Circular/Ecology/Community branches and the deeper tiers (costs 25/40 in
+Knowledge) are conspicuously absent so the panel stays readable; they join as
+data when their projects (tool libraries, meadows, energy co-op) exist. Every
+entry is a first draft from general knowledge — `sources: []` is intentional and
+must be filled before release (plan content pipeline), tracked in NOTES.
+
+**Milestones are data; chapters 2–5's tasks are honest placeholders.** Chapter 1
+("First steps" — garden in Linden Flats, 3 retrofits, town satisfaction 60) is
+fully completable today and is the M6 exit test. Chapters 2–5 use their *goal
+metrics* (mobility 0.65, green 0.6, waste 0.7, energy 0.75 + satisfaction 70)
+plus town-wide progress totals, because their plan-specified *tasks* (bus lines,
+meadows, tool libraries, energy co-op, biodiversity, dynamic engagement) need
+Milestone 7+ content. When that lands, adding the real task conditions is a
+data-only change.
+
+**Save format v1 → v2.** The research/milestone fields need a shape bump; the
+migration seeds research from the scenario's starting techs and empty milestone
+arrays. This is the first real use of the versioned save machinery from M5.
