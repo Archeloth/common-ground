@@ -1,0 +1,100 @@
+{
+  "technologies": [
+    {
+      "id": "energy_audits",
+      "name": "Energy audits",
+      "branch": "energy",
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": ["building_retrofits"],
+      "benefit": "Reveals each neighbourhood's biggest energy losses and unlocks deeper retrofit research.",
+      "limit": "Cheap and fast, but the savings depend on the building and on people acting on the findings.",
+      "confidence": "established",
+      "sources": []
+    },
+    {
+      "id": "building_retrofits",
+      "name": "Building retrofits",
+      "branch": "energy",
+      "cost": 10,
+      "prerequisites": ["energy_audits"],
+      "unlocks": ["heat_pumps"],
+      "benefit": "Insulation and windows cut heating demand and raise comfort.",
+      "limit": "Strong in older, poorly insulated housing; deep retrofits are costly and disruptive.",
+      "confidence": "established",
+      "sources": []
+    },
+    {
+      "id": "heat_pumps",
+      "name": "Heat pumps",
+      "branch": "energy",
+      "cost": 15,
+      "prerequisites": ["building_retrofits"],
+      "unlocks": [],
+      "benefit": "Move heat rather than burn fuel, so homes get several units of heat per unit of electricity.",
+      "limit": "Efficient heat, but less so in very cold weather; needs retrofits first.",
+      "confidence": "established",
+      "sources": []
+    },
+    {
+      "id": "community_gardens",
+      "name": "Community gardens and allotments",
+      "branch": "food",
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": ["composting"],
+      "benefit": "Shared food growing: food, green space and engagement in a neighbourhood.",
+      "limit": "Meaningful social benefits, but only a small share of a town's total food.",
+      "confidence": "established",
+      "sources": []
+    },
+    {
+      "id": "composting",
+      "name": "Composting",
+      "branch": "food",
+      "cost": 10,
+      "prerequisites": ["community_gardens"],
+      "unlocks": ["local_food_hubs"],
+      "benefit": "Diverts food waste and builds soil fertility for nearby gardens.",
+      "limit": "Needs good sorting and careful management of smells and pests.",
+      "confidence": "established",
+      "sources": []
+    },
+    {
+      "id": "local_food_hubs",
+      "name": "Local food hubs and markets",
+      "branch": "food",
+      "cost": 15,
+      "prerequisites": ["composting"],
+      "unlocks": [],
+      "benefit": "Surplus food flows between neighbourhoods — the basis for food links.",
+      "limit": "Shorter chains help local growers, but local does not always mean lower emissions.",
+      "confidence": "context",
+      "sources": []
+    },
+    {
+      "id": "safe_streets",
+      "name": "Safe walking and cycling streets",
+      "branch": "mobility",
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": ["public_transport"],
+      "benefit": "Walking and cycling infrastructure: mobility up, car emissions down.",
+      "limit": "Works best as a connected network, not isolated lanes.",
+      "confidence": "established",
+      "sources": []
+    },
+    {
+      "id": "public_transport",
+      "name": "Frequent public transport",
+      "branch": "mobility",
+      "cost": 10,
+      "prerequisites": ["safe_streets"],
+      "unlocks": [],
+      "benefit": "Unlocks bus lines between neighbourhoods in a later milestone.",
+      "limit": "Frequency and reliability matter more than coverage; low-density areas are harder to serve.",
+      "confidence": "established",
+      "sources": []
+    }
+  ]
+}

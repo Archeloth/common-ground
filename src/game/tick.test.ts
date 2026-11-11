@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
+import { loadMilestones } from './milestones'
 import {
   BUDGET_PER_RESIDENT_PER_MONTH,
   COMMUNITY_TIME_BASE_PER_MONTH,
@@ -132,5 +133,45 @@ describe('tick', () => {
       const b = after.neighborhoods.hollow_wood.reasons[i].coverage
       expect(a).toBeLessThanOrEqual(b)
     }
+  })
+
+  it('does not complete any milestone in a fresh town', () => {
+    const s = runTicks(initialState(scenario), 5)
+    expect(s.milestones).toEqual([])
+    expect(s.milestoneNotices).toEqual([])
+  })
+
+  it('completes the first milestone once: notices and pays knowledge exactly once', () => {
+    const first = loadMilestones()[0]
+    let state = initialState(scenario)
+    const start = (command: Command) => {
+      const result = applyCommand(state, command)
+      if (result.ok) state = result.state
+    }
+    start({ type: 'startProject', neighborhood: 'linden_flats', project: 'community_garden' })
+    for (const id of ['old_town', 'station_quarter', 'meadow_rise']) {
+      start({ type: 'startProject', neighborhood: id, project: 'retrofit_program' })
+    }
+    // Push displayed satisfaction over the goal; tick smooths it but it stays.
+    const boosted = {
+      ...state,
+      neighborhoods: Object.fromEntries(
+        scenario.neighborhoods.map((n) => [
+          n.id,
+          { ...state.neighborhoods[n.id], satisfaction: 70 },
+        ]),
+      ),
+    }
+
+    const after = tick(boosted)
+    expect(after.milestones).toContain('first_steps')
+    expect(after.milestoneNotices).toEqual(['first_steps'])
+    expect(after.knowledge).toBe(boosted.knowledge + first.reward.knowledge)
+
+    // Idempotent: no double-completion, and the notice stays until dismissed.
+    const again = tick(after)
+    expect(again.milestones).toEqual(after.milestones)
+    expect(again.milestoneNotices).toEqual(['first_steps'])
+    expect(again.knowledge).toBe(after.knowledge)
   })
 })

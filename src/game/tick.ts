@@ -1,6 +1,7 @@
 import type { GameState, NeighborhoodSimState, Needs, ProjectEffect } from './types'
 import { loadScenario } from './scenario'
 import { loadProjects, projectById } from './projects'
+import { loadMilestones, milestoneCompleted } from './milestones'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import { clamp, moveNeedsToward, needTargets, round } from './needs'
 import {
@@ -70,5 +71,21 @@ export function tick(state: GameState): GameState {
       Math.round((avgEngagement / 100) * COMMUNITY_TIME_ENGAGEMENT_FACTOR)
   }
 
-  return { ...state, day, budget, time, neighborhoods }
+  // Milestone 6: check uncompleted chapters once per tick; newly completed ones
+  // are recorded, queued as a notice and pay out their Knowledge reward.
+  // Deterministic (pure state + static content), so the 1,000-tick test holds.
+  let knowledge = state.knowledge
+  let milestones = state.milestones
+  let milestoneNotices = state.milestoneNotices
+  const withNewSim = { ...state, day, budget, time, neighborhoods }
+  for (const def of loadMilestones()) {
+    if (milestones.includes(def.id)) continue
+    if (milestoneCompleted(withNewSim, def, scenario)) {
+      milestones = [...milestones, def.id]
+      milestoneNotices = [...milestoneNotices, def.id]
+      knowledge += def.reward.knowledge
+    }
+  }
+
+  return { ...withNewSim, knowledge, milestones, milestoneNotices }
 }

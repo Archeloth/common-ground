@@ -58,6 +58,7 @@ export interface ScenarioDef {
   start: {
     budget: number
     time: number
+    knowledge?: number // starting Knowledge (research currency; more comes from milestones)
     unlockedTech: string[]
   }
   neighborhoods: NeighborhoodDef[]
@@ -93,6 +94,8 @@ export type Command =
   | { type: 'startProject'; neighborhood: string; project: string }
   | { type: 'removeProject'; neighborhood: string; slot: number }
   | { type: 'setSpeed'; speed: Speed }
+  | { type: 'research'; tech: string }
+  | { type: 'clearMilestoneNotices' }
 
 // Machine-readable refusal codes; the UI maps each to t("reason.<code>").
 export type Reason =
@@ -106,6 +109,10 @@ export type Reason =
   | 'invalid_slot'
   | 'empty_slot'
   | 'invalid_speed'
+  | 'unknown_tech'
+  | 'already_researched'
+  | 'prerequisites_not_met'
+  | 'insufficient_knowledge'
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; reason: Reason }
 
@@ -130,12 +137,19 @@ export interface NeighborhoodSimState {
 export interface GameState {
   budget: number
   time: number // community time (volunteer effort)
-  knowledge: number // earned from schools/libraries (sources arrive in M6)
+  knowledge: number // earned from milestones now; schools/libraries arrive later
   day: number // one tick = one in-game day
   speed: Speed
   // neighborhoodId -> project id per slot (null = empty slot)
   projects: Record<string, Array<string | null>>
   // neighborhoodId -> dynamic per-neighborhood simulation values
   neighborhoods: Record<string, NeighborhoodSimState>
+  // Researched technology ids (Milestone 6), seeded from the scenario's
+  // start.unlockedTech; research costs knowledge.
+  research: string[]
+  // Completed milestone ids (Milestone 6), one per chapter.
+  milestones: string[]
+  // Milestone ids completed since the player last dismissed the banner.
+  milestoneNotices: string[]
 }
 

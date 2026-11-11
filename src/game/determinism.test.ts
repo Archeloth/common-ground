@@ -26,6 +26,7 @@ function script(): GameState {
 
   commandAt({ type: 'startProject', neighborhood: 'old_town', project: 'community_garden' }, 10)
   commandAt({ type: 'startProject', neighborhood: 'meadow_rise', project: 'rooftop_solar' }, 250)
+  commandAt({ type: 'research', tech: 'building_retrofits' }, 350)
   commandAt({ type: 'removeProject', neighborhood: 'old_town', slot: 0 }, 470)
   commandAt({ type: 'setSpeed', speed: 4 }, 600)
   advance(400) // total = 1,000 ticks exactly

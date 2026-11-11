@@ -2,6 +2,8 @@ import type { NeedId, NeighborhoodSimState } from './types'
 import { NEED_ORDER } from './needs'
 import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
+import { loadTechnologies } from './technologies'
+import { loadMilestones } from './milestones'
 
 // Runtime validation of a GameState. Used when loading saved games (a broken
 // save must show a friendly message, never crash) and by the invariant tests.
@@ -88,10 +90,35 @@ export function validateGameState(state: unknown): string[] {
     }
   }
 
+  // Milestone 6 collections: research ids, completed milestones and pending
+  // notices must all reference content that actually exists.
+  const techIds = new Set(loadTechnologies().map((t) => t.id))
+  const milestoneIds = new Set(loadMilestones().map((m) => m.id))
+  checkIdList(s.research, 'research', techIds, problems)
+  checkIdList(s.milestones, 'milestones', milestoneIds, problems)
+  checkIdList(s.milestoneNotices, 'milestoneNotices', milestoneIds, problems)
+
   // Last line of defence: not a single non-finite number anywhere.
   if (hasNonFinite(state)) problems.push('state contains a non-finite number (NaN or Infinity)')
 
   return problems
+}
+
+function checkIdList(
+  value: unknown,
+  path: string,
+  known: Set<string>,
+  problems: string[],
+): void {
+  if (!Array.isArray(value)) {
+    problems.push(`${path} must be an array of content ids`)
+    return
+  }
+  value.forEach((entry, index) => {
+    if (typeof entry !== 'string' || !known.has(entry)) {
+      problems.push(`${path}[${index}] references an unknown id "${String(entry)}"`)
+    }
+  })
 }
 
 function checkNumber(

@@ -9,14 +9,15 @@ import type {
 } from './types'
 import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
+import { loadTechnologies } from './technologies'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import { TOP_REASONS } from './constants'
 
-// Player commands (start/stop projects, set speed). All pure: applyCommand
-// never mutates its input — it returns a fresh state on success and a
-// machine-readable reason on refusal (plan: invalid actions are refused with a
-// clear reason, not silently ignored). Removal deliberately gives no refund:
-// the materials are already spent (see DECISIONS.md).
+// Player commands (start/stop projects, set speed, research, dismiss milestone
+// notices). All pure: applyCommand never mutates its input — it returns a fresh
+// state on success and a machine-readable reason on refusal (plan: invalid
+// actions are refused with a clear reason, not silently ignored). Removal
+// deliberately gives no refund: the materials are already spent (DECISIONS.md).
 
 export function initialState(scenario: ScenarioDef): GameState {
   const projects: Record<string, Array<string | null>> = {}
@@ -33,11 +34,14 @@ export function initialState(scenario: ScenarioDef): GameState {
   return {
     budget: scenario.start.budget,
     time: scenario.start.time,
-    knowledge: 0,
+    knowledge: scenario.start.knowledge ?? 0,
     day: 1,
     speed: 1,
     projects,
     neighborhoods,
+    research: [...scenario.start.unlockedTech],
+    milestones: [],
+    milestoneNotices: [],
   }
 }
 
@@ -101,9 +105,36 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     }
   }
 
-  // setSpeed (the only remaining variant) — the union guarantees `speed` here.
+  if (command.type === 'research') return applyResearch(state, command.tech)
+
+  if (command.type === 'clearMilestoneNotices') {
+    return { ok: true, state: { ...state, milestoneNotices: [] } }
+  }
+
+  // setSpeed, the only remaining variant.
   if (![0, 1, 2, 4].includes(command.speed)) return refusal('invalid_speed')
   return { ok: true, state: { ...state, speed: command.speed } }
+}
+
+// Research (Milestone 6): a technology is researchable when it exists, is not
+// already researched, all its prerequisites are done and enough Knowledge is
+// left (same question order style as projects: identity -> capacity ->
+// eligibility -> resources).
+function applyResearch(state: GameState, techId: string): CommandResult {
+  const tech = loadTechnologies().find((t) => t.id === techId)
+  if (!tech) return refusal('unknown_tech')
+  if (state.research.includes(techId)) return refusal('already_researched')
+  const missing = tech.prerequisites.filter((id) => !state.research.includes(id))
+  if (missing.length > 0) return refusal('prerequisites_not_met')
+  if (state.knowledge < tech.cost) return refusal('insufficient_knowledge')
+  return {
+    ok: true,
+    state: {
+      ...state,
+      knowledge: state.knowledge - tech.cost,
+      research: [...state.research, techId],
+    },
+  }
 }
 
 function refusal(reason: Reason): CommandResult {

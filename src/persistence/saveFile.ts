@@ -1,4 +1,5 @@
 import type { GameState } from '../game/types'
+import { loadScenario } from '../game/scenario'
 import { validateGameState } from '../game/validate'
 
 // The plan's versioned save format (section "Commands and a versioned save
@@ -7,7 +8,7 @@ import { validateGameState } from '../game/validate'
 // fails validation reports problems instead of crashing. All functions here
 // are pure, so the round-trip, migration and corrupt-save tests run in Node.
 
-export const CURRENT_SAVE_VERSION = 1
+export const CURRENT_SAVE_VERSION = 2
 
 export interface SaveFile {
   version: number
@@ -20,9 +21,24 @@ export type Migration = (save: unknown) => unknown
 export type SaveMigrations = Record<number, Migration>
 
 // Migrations run in order from the save's version up to CURRENT_SAVE_VERSION.
-// Version 1 is the first released shape, so the table is empty; the machinery
-// is exercised with a fabricated older version in saveFile.test.ts.
-export const SAVE_MIGRATIONS: SaveMigrations = {}
+export const SAVE_MIGRATIONS: SaveMigrations = {
+  // 1 -> 2 (Milestone 6): the research tree and chapter milestones joined the
+  // GameState. Seed research from the scenario's starting techs; the milestone
+  // arrays start empty.
+  1: (save) => {
+    const s = save as { state: GameState }
+    return {
+      ...s,
+      version: 2,
+      state: {
+        ...s.state,
+        research: [...loadScenario().start.unlockedTech],
+        milestones: [],
+        milestoneNotices: [],
+      },
+    }
+  },
+}
 
 export function createSave(state: GameState, now: number = Date.now()): SaveFile {
   return {

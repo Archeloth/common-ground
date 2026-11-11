@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
+import { loadTechnologies } from './technologies'
+import { loadMilestones } from './milestones'
 import { validateGameState } from './validate'
 import type { GameState } from './types'
 
@@ -61,5 +63,28 @@ describe('validateGameState', () => {
     const s = structuredClone(initialState(scenario)) as GameState
     s.time = Infinity
     expect(validateGameState(s).some((m) => m.includes('non-finite'))).toBe(true)
+  })
+
+  it('rejects unknown research ids', () => {
+    const s = structuredClone(initialState(scenario)) as GameState
+    s.research = [...s.research, 'cold_fusion']
+    expect(validateGameState(s).some((m) => m.includes('research'))).toBe(true)
+  })
+
+  it('rejects unknown milestone ids in the notices', () => {
+    const s = structuredClone(initialState(scenario)) as GameState
+    s.milestoneNotices = ['no_such_chapter']
+    expect(validateGameState(s).some((m) => m.includes('milestoneNotices'))).toBe(true)
+  })
+
+  it('accepts a state with researched techs and completed milestones', () => {
+    const s = structuredClone(initialState(scenario)) as GameState
+    s.research = [...s.research, 'building_retrofits']
+    s.milestones = ['first_steps']
+    s.milestoneNotices = ['first_steps']
+    // Loaders agree with the catalog (valid ids), so validation stays quiet.
+    expect(validateGameState(s)).toEqual([])
+    expect(loadTechnologies().length).toBe(8)
+    expect(loadMilestones().length).toBe(5)
   })
 })

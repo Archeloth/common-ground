@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
+import { loadTechnologies } from './technologies'
+import { loadMilestones } from './milestones'
 import type { Command, GameState } from './types'
 
 const scenario = loadScenario()
@@ -17,6 +19,7 @@ function runChaoticScript(): GameState {
   start({ type: 'startProject', neighborhood: 'old_town', project: 'community_garden' })
   start({ type: 'startProject', neighborhood: 'mill_yard', project: 'rooftop_solar' })
   start({ type: 'startProject', neighborhood: 'northfield_farms', project: 'retrofit_program' })
+  start({ type: 'research', tech: 'building_retrofits' })
 
   for (let i = 0; i < 1000; i++) {
     state = tick(state)
@@ -69,6 +72,14 @@ describe('state invariants (plan M4 exit #5)', () => {
 
     for (const n of scenario.neighborhoods) {
       expect(state.projects[n.id], n.id).toHaveLength(n.slots)
+    }
+
+    const techIds = new Set(loadTechnologies().map((t) => t.id))
+    const milestoneIds = new Set(loadMilestones().map((m) => m.id))
+    for (const id of state.research) expect(techIds.has(id), `research.${id}`).toBe(true)
+    for (const id of state.milestones) expect(milestoneIds.has(id), `milestone ${id}`).toBe(true)
+    for (const id of state.milestoneNotices) {
+      expect(milestoneIds.has(id), `notice ${id}`).toBe(true)
     }
   })
 })

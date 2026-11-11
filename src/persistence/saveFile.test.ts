@@ -76,19 +76,42 @@ describe('versioned save files', () => {
 
   it('migrates older versions through the table in order', () => {
     const migrations = {
-      0: (s: unknown) => ({ ...(s as object), version: 1, patched: true }),
+      0: (s: unknown) => ({ ...(s as object), version: 1, fromZero: true }),
+      1: (s: unknown) => ({ ...(s as object), version: 2, fromOne: true }),
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(1)
-    expect((migrated as unknown as { patched: boolean }).patched).toBe(true)
+    expect(migrated.version).toBe(2)
+    expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
+    expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
   })
 
   it('rejects a version older than the migration table', () => {
     expect(() => migrateSave({ version: 0 } as never)).toThrow(/no migration/)
   })
 
-  it('the shipped table is empty because version 1 is the first shape', () => {
-    expect(CURRENT_SAVE_VERSION).toBe(1)
-    expect(SAVE_MIGRATIONS).toEqual({})
+  it('the shipped migration table covers the Milestone 5 shape', () => {
+    expect(CURRENT_SAVE_VERSION).toBe(2)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1])
+  })
+
+  it('migrates a version-1 save to version 2, seeding research from the scenario', () => {
+    const original = playedState()
+    const v1State = { ...original } as unknown as { [key: string]: unknown }
+    delete v1State.research
+    delete v1State.milestones
+    delete v1State.milestoneNotices
+    const v1 = { version: 1, savedAt: '2026-01-01T00:00:00.000Z', seed: 1, state: v1State }
+
+    const result = parseAndLoad(JSON.stringify(v1))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
+      expect(result.save.state.research).toEqual(loadScenario().start.unlockedTech)
+      expect(result.save.state.milestones).toEqual([])
+      expect(result.save.state.milestoneNotices).toEqual([])
+      // Everything else survives the migration untouched.
+      expect(result.save.state.projects).toEqual(original.projects)
+      expect(result.save.state.budget).toBe(original.budget)
+    }
   })
 })

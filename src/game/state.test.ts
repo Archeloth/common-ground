@@ -18,7 +18,10 @@ describe('initialState', () => {
     const s = initialState(scenario)
     expect(s.budget).toBe(scenario.start.budget)
     expect(s.time).toBe(scenario.start.time)
-    expect(s.knowledge).toBe(0)
+    expect(s.knowledge).toBe(scenario.start.knowledge ?? 0)
+    expect(s.research).toEqual(scenario.start.unlockedTech)
+    expect(s.milestones).toEqual([])
+    expect(s.milestoneNotices).toEqual([])
     expect(s.day).toBe(1)
     expect(s.speed).toBe(1)
     for (const n of scenario.neighborhoods) {
@@ -159,6 +162,57 @@ describe('removeProject', () => {
       slot: 0,
     })
     expect(result).toEqual({ ok: false, reason: 'unknown_neighborhood' })
+  })
+})
+
+describe('research', () => {
+  it('researches a technology, spending knowledge', () => {
+    const s = initialState(scenario)
+    const result = applyCommand(s, { type: 'research', tech: 'building_retrofits' })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.state.research).toContain('building_retrofits')
+      expect(result.state.knowledge).toBe((scenario.start.knowledge ?? 0) - 10)
+    }
+  })
+
+  it('refuses an unknown technology', () => {
+    const result = applyCommand(initialState(scenario), { type: 'research', tech: 'cold_fusion' })
+    expect(result).toEqual({ ok: false, reason: 'unknown_tech' })
+  })
+
+  it('refuses an already-researched technology', () => {
+    const result = applyCommand(initialState(scenario), { type: 'research', tech: 'energy_audits' })
+    expect(result).toEqual({ ok: false, reason: 'already_researched' })
+  })
+
+  it('refuses when prerequisites are missing', () => {
+    // heat_pumps needs building_retrofits, which needs energy_audits.
+    const result = applyCommand(initialState(scenario), { type: 'research', tech: 'heat_pumps' })
+    expect(result).toEqual({ ok: false, reason: 'prerequisites_not_met' })
+  })
+
+  it('refuses when knowledge is insufficient', () => {
+    const poor: GameState = { ...initialState(scenario), knowledge: 5 }
+    const result = applyCommand(poor, { type: 'research', tech: 'building_retrofits' })
+    expect(result).toEqual({ ok: false, reason: 'insufficient_knowledge' })
+  })
+
+  it('leaves the input untouched on success and refusal', () => {
+    const s = initialState(scenario)
+    const snapshot = structuredClone(s)
+    applyCommand(s, { type: 'research', tech: 'building_retrofits' })
+    applyCommand(s, { type: 'research', tech: 'heat_pumps' })
+    expect(s).toEqual(snapshot)
+  })
+})
+
+describe('clearMilestoneNotices', () => {
+  it('empties the notice queue', () => {
+    const s: GameState = { ...initialState(scenario), milestoneNotices: ['first_steps'] }
+    const result = applyCommand(s, { type: 'clearMilestoneNotices' })
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.state.milestoneNotices).toEqual([])
   })
 })
 
