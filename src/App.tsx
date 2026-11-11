@@ -3,10 +3,12 @@ import TopBar from './ui/TopBar'
 import TownMap from './ui/TownMap'
 import NeighborhoodPanel from './ui/NeighborhoodPanel'
 import SaveMenu from './ui/SaveMenu'
+import ResearchMenu from './ui/ResearchMenu'
 import { loadScenario, neighborhoodById } from './game/scenario'
 import { createGameStore } from './game/store'
 import { initialState } from './game/state'
 import { useGame } from './ui/useGame'
+import { loadMilestones, milestoneById } from './game/milestones'
 import type { Command, Reason } from './game/types'
 import { openSaveDb } from './persistence/db'
 import type { SaveDb } from './persistence/db'
@@ -19,6 +21,7 @@ import './App.css'
 
 const scenario = loadScenario()
 const store = createGameStore()
+const milestones = loadMilestones()
 
 const AUTOSAVE_MS = 60_000 // plan: "autosave about once a minute"
 
@@ -168,6 +171,14 @@ function App() {
     setNotice(t('saves.newGameOk'))
   }, [])
 
+  const onResearch = useCallback((tech: string) => {
+    dispatch({ type: 'research', tech })
+  }, [dispatch])
+
+  const onGotIt = useCallback(() => {
+    dispatch({ type: 'clearMilestoneNotices' })
+  }, [dispatch])
+
   return (
     <div className="app">
       <TopBar state={state} onSpeed={(speed) => dispatch({ type: 'setSpeed', speed })} />
@@ -180,6 +191,7 @@ function App() {
           onImport={handleImport}
           onNewGame={handleNewGame}
         />
+        <ResearchMenu state={state} onResearch={onResearch} />
         <TownMap selectedId={selectedId} onSelectionChange={onSelectionChange} />
         {selected && (
           <NeighborhoodPanel
@@ -202,6 +214,24 @@ function App() {
               aria-label={t('reason.dismiss')}
             >
               ×
+            </button>
+          </div>
+        )}
+        {state.milestoneNotices.length > 0 && (
+          <div className="milestone-banner" role="alert">
+            <strong>{t('milestones.completedTitle')}</strong>
+            <ul>
+              {state.milestoneNotices.map((id) => (
+                <li key={id}>
+                  {t('milestones.completed', {
+                    name: milestoneById(milestones, id).name,
+                    goal: milestoneById(milestones, id).goal,
+                  })}
+                </li>
+              ))}
+            </ul>
+            <button type="button" onClick={onGotIt}>
+              {t('milestones.gotIt')}
             </button>
           </div>
         )}

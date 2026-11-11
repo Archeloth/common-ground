@@ -85,3 +85,41 @@
   cursor: pointer;
 }
 
+.milestone-banner {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 85%;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  background: #2d6a3f;
+  color: #fff;
+  font-size: 0.86rem;
+  box-shadow: 0 3px 12px rgba(20, 50, 28, 0.4);
+}
+
+.milestone-banner ul {
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+}
+
+.milestone-banner button {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.milestone-banner button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+

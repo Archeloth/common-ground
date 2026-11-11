@@ -5,7 +5,7 @@
 
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
-  'app.status': 'Willowbrook · Milestone 5',
+  'app.status': 'Willowbrook · Milestone 6',
   'app.help': 'Drag to pan · scroll to zoom · click a neighborhood',
   'chip.subtitle': '{kind} · {residents} residents',
   'panel.close': 'Close panel',
@@ -70,6 +70,29 @@ const MESSAGES: Record<string, string> = {
   'saves.exportOk': 'Save exported as a file.',
   'saves.newGameOk': 'A fresh town is ready.',
   'saves.loadFailed': 'That save could not be loaded.',
+  'research.title': 'Research',
+  'research.panelTitle': 'Research tree',
+  'research.goalsTitle': 'Milestones',
+  'research.researched': 'Researched',
+  'research.learn': 'Research',
+  'research.cost': '{value} knowledge',
+  'research.branch.energy': 'Energy',
+  'research.branch.food': 'Food',
+  'research.branch.mobility': 'Mobility',
+  'research.branch.circular': 'Circular',
+  'research.branch.ecology': 'Ecology',
+  'research.branch.community': 'Community',
+  'research.confidence.established': 'Established',
+  'research.confidence.emerging': 'Emerging',
+  'research.confidence.context': 'Context-dependent',
+  'milestones.completedTitle': 'Milestone completed',
+  'milestones.completed': '{name} — {goal}',
+  'milestones.gotIt': 'Got it',
+  'milestones.done': 'Complete',
+  'reason.unknown_tech': 'That technology does not exist.',
+  'reason.already_researched': 'This has already been researched.',
+  'reason.prerequisites_not_met': 'Its prerequisites have not been researched yet.',
+  'reason.insufficient_knowledge': 'Not enough Knowledge yet.',
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {
