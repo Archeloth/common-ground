@@ -1,7 +1,11 @@
+import { useState } from 'react'
 import type { Command, GameState, NeighborhoodDef } from '../game/types'
 import { kindById, loadKinds } from '../game/kinds'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { satisfactionOf } from '../game/satisfaction'
+import { applyCommand } from '../game/state'
+import { messageForNeighborhood } from '../game/messages'
+import type { MessageDef } from '../game/messages'
 import ProjectSlots from './ProjectSlots'
 import { t } from './i18n'
 import './NeighborhoodPanel.css'
@@ -30,7 +34,15 @@ interface NeighborhoodPanelProps {
   state: GameState
   onStart: (command: Command) => void
   onRemove: (command: Command) => void
+  onTownMeeting: (neighborhoodId: string) => void
+  onStartBusLine: (from: string, to: string) => void
   onClose: () => void
+}
+
+function rewardText(def: MessageDef): string {
+  if (def.reward.time !== undefined) return t('panel.rewardTime', { value: def.reward.time })
+  if (def.reward.budget !== undefined) return t('panel.rewardBudget', { value: def.reward.budget })
+  return t('panel.rewardKnowledge', { value: def.reward.knowledge ?? 0 })
 }
 
 // Side panel for a selected neighborhood: kind, residents, slots, engagement,
@@ -41,6 +53,8 @@ export default function NeighborhoodPanel({
   state,
   onStart,
   onRemove,
+  onTownMeeting,
+  onStartBusLine,
   onClose,
 }: NeighborhoodPanelProps) {
   const kind = kindById(kinds, neighborhood.kind)
@@ -49,10 +63,26 @@ export default function NeighborhoodPanel({
   const sim = state.neighborhoods[neighborhood.id]
   const needs = sim?.needs ?? neighborhood.needs
   const satisfaction = sim?.satisfaction ?? satisfactionOf(neighborhood.needs)
+  const engagement = state.engagement[neighborhood.id] ?? neighborhood.engagement
   const neighbors = neighborhood.neighbors.map((id) => neighborhoodById(scenario, id))
   const bridgePartners = scenario.bridges
     .filter(([from, to]) => from === neighborhood.id || to === neighborhood.id)
     .map(([from, to]) => (from === neighborhood.id ? to : from))
+
+  // Milestone 7: organizer controls — town meeting, resident request, bus links.
+  const meeting = applyCommand(state, { type: 'townMeeting', neighborhood: neighborhood.id })
+  const message = messageForNeighborhood(neighborhood.id)
+  const messageDone = state.messages[neighborhood.id] === 'done'
+  const linesHere = state.busLines.filter(([a, b]) => a === neighborhood.id || b === neighborhood.id)
+  const linked = new Set(linesHere.flat())
+  const candidates = neighbors.filter((n) => !linked.has(n.id))
+  const [chosenBusTarget, setChosenBusTarget] = useState('')
+  const busTarget = chosenBusTarget && candidates.some((n) => n.id === chosenBusTarget)
+    ? chosenBusTarget
+    : (candidates[0]?.id ?? '')
+  const busMeeting = busTarget
+    ? applyCommand(state, { type: 'startBusLine', from: neighborhood.id, to: busTarget })
+    : null
 
   return (
     <aside className="neighborhood-panel" aria-label={neighborhood.name}>
@@ -75,7 +105,7 @@ export default function NeighborhoodPanel({
         </div>
         <div className="fact">
           <dt>{t('panel.engagement')}</dt>
-          <dd>{neighborhood.engagement}/100</dd>
+          <dd>{Math.round(engagement)}/100</dd>
         </div>
         <div className="fact">
           <dt>{t('panel.slots')}</dt>
@@ -86,6 +116,22 @@ export default function NeighborhoodPanel({
           <dd>{Math.round(satisfaction)}/100</dd>
         </div>
       </dl>
+
+      <div className="panel-actions">
+        <button
+          type="button"
+          className="town-meeting"
+          disabled={!meeting.ok}
+          onClick={() => onTownMeeting(neighborhood.id)}
+        >
+          {t('panel.townMeeting')}
+        </button>
+        <p className="panel-action-hint">
+          {meeting.ok
+            ? t('panel.townMeetingHint', { engagement: 10, time: 1 })
+            : t(`reason.${meeting.reason}`)}
+        </p>
+      </div>
 
       <section className="panel-section">
         <h3>{t('panel.needs')}</h3>
@@ -115,6 +161,60 @@ export default function NeighborhoodPanel({
       </section>
 
       <ProjectSlots neighborhood={neighborhood} state={state} onStart={onStart} onRemove={onRemove} />
+
+      <section className="panel-section">
+        <h3>{t('panel.message')}</h3>
+        <p className="panel-message">{message.text}</p>
+        <p className={`panel-message-reward${messageDone ? ' done' : ''}`}>
+          {messageDone ? t('panel.messageDone') : rewardText(message)}
+        </p>
+      </section>
+
+      <section className="panel-section">
+        <h3>{t('panel.busLines')}</h3>
+        {linesHere.length > 0 && (
+          <ul className="panel-neighbors">
+            {linesHere.map(([a, b]) => {
+              const other = a === neighborhood.id ? b : a
+              const n = neighborhoodById(scenario, other)
+              return (
+                <li key={other}>
+                  {n.name}
+                  <span className="bridge-tag">🚌</span>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+        {candidates.length > 0 ? (
+          <div className="bus-start">
+            <select
+              value={busTarget}
+              onChange={(event) => setChosenBusTarget(event.target.value)}
+              aria-label={t('panel.busLineStart')}
+            >
+              {candidates.map((n) => (
+                <option key={n.id} value={n.id}>
+                  {n.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className="save-action"
+              disabled={!busMeeting?.ok}
+              onClick={() => onStartBusLine(neighborhood.id, busTarget)}
+            >
+              {t('panel.busLineStart')}
+            </button>
+            {busMeeting && !busMeeting.ok && (
+              <p className="tech-blocked">{t(`reason.${busMeeting.reason}`)}</p>
+            )}
+          </div>
+        ) : (
+          <p className="panel-reasons-empty">{t('panel.busNone')}</p>
+        )}
+      </section>
 
       {neighbors.length > 0 && (
         <section className="panel-section">

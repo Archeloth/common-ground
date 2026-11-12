@@ -179,6 +179,14 @@ function App() {
     dispatch({ type: 'clearMilestoneNotices' })
   }, [dispatch])
 
+  const handleTownMeeting = useCallback((neighborhoodId: string) => {
+    dispatch({ type: 'townMeeting', neighborhood: neighborhoodId })
+  }, [dispatch])
+
+  const handleStartBusLine = useCallback((from: string, to: string) => {
+    dispatch({ type: 'startBusLine', from, to })
+  }, [dispatch])
+
   return (
     <div className="app">
       <TopBar state={state} onSpeed={(speed) => dispatch({ type: 'setSpeed', speed })} />
@@ -192,13 +200,15 @@ function App() {
           onNewGame={handleNewGame}
         />
         <ResearchMenu state={state} onResearch={onResearch} />
-        <TownMap selectedId={selectedId} onSelectionChange={onSelectionChange} />
+        <TownMap selectedId={selectedId} onSelectionChange={onSelectionChange} busLines={state.busLines} />
         {selected && (
           <NeighborhoodPanel
             neighborhood={selected}
             state={state}
             onStart={dispatch}
             onRemove={dispatch}
+            onTownMeeting={handleTownMeeting}
+            onStartBusLine={handleStartBusLine}
             onClose={() => setSelectedId(null)}
           />
         )}

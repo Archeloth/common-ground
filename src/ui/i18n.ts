@@ -5,7 +5,7 @@
 
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
-  'app.status': 'Willowbrook · Milestone 6',
+  'app.status': 'Willowbrook · Milestone 7',
   'app.help': 'Drag to pan · scroll to zoom · click a neighborhood',
   'chip.subtitle': '{kind} · {residents} residents',
   'panel.close': 'Close panel',
@@ -93,6 +93,18 @@ const MESSAGES: Record<string, string> = {
   'reason.already_researched': 'This has already been researched.',
   'reason.prerequisites_not_met': 'Its prerequisites have not been researched yet.',
   'reason.insufficient_knowledge': 'Not enough Knowledge yet.',
+  'panel.townMeeting': 'Town meeting',
+  'panel.townMeetingHint': '+{engagement} engagement · {time} Community time',
+  'panel.message': 'Resident request',
+  'panel.messageDone': 'Request completed — reward paid.',
+  'panel.rewardTime': '+{value} Community time',
+  'panel.rewardBudget': '+{value} Budget',
+  'panel.rewardKnowledge': '+{value} Knowledge',
+  'panel.busLines': 'Bus links',
+  'panel.busLineStart': 'Start bus line',
+  'panel.busNone': 'Every neighbour is already linked.',
+  'reason.bus_line_exists': 'A bus line already links these two.',
+  'reason.not_adjacent': 'The bus line must link two adjacent neighbourhoods.',
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {

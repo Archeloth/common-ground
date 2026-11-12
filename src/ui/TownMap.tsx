@@ -6,7 +6,7 @@ import type { Point } from '../game/geometry'
 import { pointInPolygon } from '../game/geometry'
 import type { Camera } from './render/camera'
 import { cameraThatFits, panBy, screenToWorld, worldToScreen, zoomAt } from './render/camera'
-import { buildPath2D, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
+import { buildPath2D, drawBusLine, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
 import { COLORS, KIND_COLORS, shade } from './render/colors'
 import { t } from './i18n'
 import './TownMap.css'
@@ -26,12 +26,13 @@ const kinds = loadKinds()
 interface TownMapProps {
   selectedId: string | null
   onSelectionChange: (id: string | null) => void
+  busLines: Array<[string, string]>
 }
 
 // Canvas view of the town. The camera and interaction state live in refs so
 // panning and zooming never re-render React; the rAF loop redraws only when a
 // dirty flag is set (performance playbook: a paused town costs almost nothing).
-export default function TownMap({ selectedId, onSelectionChange }: TownMapProps) {
+export default function TownMap({ selectedId, onSelectionChange, busLines }: TownMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const cameraRef = useRef<Camera>({ x: 0, y: 0, zoom: 1 })
@@ -42,6 +43,7 @@ export default function TownMap({ selectedId, onSelectionChange }: TownMapProps)
   const dragRef = useRef<{ startX: number; startY: number; cam: Camera; moved: boolean } | null>(null)
   const pointersRef = useRef(new Map<number, Point>())
   const pinchRef = useRef<{ dist: number; x: number; y: number } | null>(null)
+  const busLinesRef = useRef<Array<[string, string]>>([])
 
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
@@ -91,6 +93,11 @@ export default function TownMap({ selectedId, onSelectionChange }: TownMapProps)
 
     drawRiver(ctx, cam, bounds.minX, bounds.minX + bounds.width, RIVER_Y, RIVER_HALF_DEPTH)
 
+    // Milestone 7: dashed bus links between the blob centres.
+    for (const [a, b] of busLinesRef.current) {
+      drawBusLine(ctx, cam, neighborhoodById(scenario, a).shape, neighborhoodById(scenario, b).shape)
+    }
+
     for (const n of scenario.neighborhoods) {
       const path = buildPath2D(pointsFor(n.id).map((p) => worldToScreen(cam, p.x, p.y)))
       const top = KIND_COLORS[n.kind]
@@ -135,6 +142,12 @@ export default function TownMap({ selectedId, onSelectionChange }: TownMapProps)
     selectedIdRef.current = selectedId
     dirtyRef.current = true
   }, [selectedId])
+
+  // Bus lines are sim state; mirror them into the draw loop and redraw.
+  useEffect(() => {
+    busLinesRef.current = busLines
+    dirtyRef.current = true
+  }, [busLines])
 
   // Esc closes the panel (the plan's controls: Esc to cancel/escape).
   useEffect(() => {

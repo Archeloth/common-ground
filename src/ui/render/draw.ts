@@ -65,3 +65,25 @@ export function drawRiver(
   ctx.lineCap = 'round'
   ctx.stroke()
 }
+
+// A dashed line between two neighbourhood blob centres (Milestone 7 bus links).
+export function drawBusLine(
+  ctx: CanvasRenderingContext2D,
+  cam: Camera,
+  from: Point,
+  to: Point,
+  color = COLORS.bus,
+): void {
+  const a = worldToScreen(cam, from.x, from.y)
+  const b = worldToScreen(cam, to.x, to.y)
+  ctx.save()
+  ctx.beginPath()
+  ctx.moveTo(a.x, a.y)
+  ctx.lineTo(b.x, b.y)
+  ctx.strokeStyle = color
+  ctx.lineWidth = Math.max(3, 5 * cam.zoom)
+  ctx.lineCap = 'round'
+  ctx.setLineDash([6, 6])
+  ctx.stroke()
+  ctx.restore()
+}

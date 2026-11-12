@@ -154,3 +154,76 @@
   font-size: 0.82rem;
   color: #6a7564;
 }
+
+.panel-actions {
+  margin: 0 0 0.9rem;
+}
+
+.town-meeting {
+  min-height: 2.2rem;
+  padding: 0.35rem 0.9rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: #4d7f43;
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.town-meeting:hover:not(:disabled) {
+  background: #3f6b36;
+}
+
+.town-meeting:disabled {
+  background: #c7cfbb;
+  color: #6a7564;
+  cursor: not-allowed;
+}
+
+.panel-action-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.76rem;
+  color: #6a7564;
+}
+
+.panel-message {
+  margin: 0.2rem 0;
+  font-size: 0.84rem;
+  color: #3f4c38;
+  font-style: italic;
+}
+
+.panel-message-reward {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2d6a3f;
+}
+
+.panel-message-reward.done {
+  color: #6a7564;
+  font-weight: 400;
+}
+
+.bus-start {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.bus-start select {
+  min-height: 2rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid rgba(31, 43, 28, 0.18);
+  border-radius: 0.5rem;
+  background: #fafcf4;
+  color: #2d3929;
+  font-size: 0.8rem;
+}
+
+.bus-start .tech-blocked {
+  grid-column: 1 / -1;
+}
