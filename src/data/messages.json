@@ -1,0 +1,116 @@
+{
+  "messages": [
+    {
+      "id": "old_town_message",
+      "neighborhood": "old_town",
+      "text": "The older terraces here are draughty — a retrofit programme would cut our heating bills and we'd trust the people who run it.",
+      "request": { "type": "projectIn", "project": "retrofit_program" },
+      "reward": { "knowledge": 5 }
+    },
+    {
+      "id": "station_quarter_message",
+      "neighborhood": "station_quarter",
+      "text": "The flats above the station leak heat every winter. Please start a retrofit here.",
+      "request": { "type": "projectIn", "project": "retrofit_program" },
+      "reward": { "time": 3 }
+    },
+    {
+      "id": "linden_flats_message",
+      "neighborhood": "linden_flats",
+      "text": "Our 1970s blocks have the biggest heating bills in town. A retrofit would mean the world to us.",
+      "request": { "type": "projectIn", "project": "retrofit_program" },
+      "reward": { "knowledge": 6 }
+    },
+    {
+      "id": "maple_heights_message",
+      "neighborhood": "maple_heights",
+      "text": "Every roof on our street faces south. Rooftop solar feels like the obvious next step.",
+      "request": { "type": "projectIn", "project": "rooftop_solar" },
+      "reward": { "time": 3 }
+    },
+    {
+      "id": "birch_park_estate_message",
+      "neighborhood": "birch_park_estate",
+      "text": "We have lawns that only get mowed. Turn one into a community garden and we'll help dig.",
+      "request": { "type": "projectIn", "project": "community_garden" },
+      "reward": { "time": 2 }
+    },
+    {
+      "id": "meadow_rise_message",
+      "neighborhood": "meadow_rise",
+      "text": "The new homes have big clean roofs. A solar scheme would make the estate proud.",
+      "request": { "type": "projectIn", "project": "rooftop_solar" },
+      "reward": { "budget": 600 }
+    },
+    {
+      "id": "school_green_message",
+      "neighborhood": "school_green",
+      "text": "The school would love a garden the children can tend — we'll share what we learn.",
+      "request": { "type": "projectIn", "project": "community_garden" },
+      "reward": { "knowledge": 5 }
+    },
+    {
+      "id": "orchard_lane_message",
+      "neighborhood": "orchard_lane",
+      "text": "Between the old apple trees there is perfect soil. A shared garden belongs here.",
+      "request": { "type": "projectIn", "project": "community_garden" },
+      "reward": { "time": 3 }
+    },
+    {
+      "id": "clay_hill_message",
+      "neighborhood": "clay_hill",
+      "text": "Our old houses are cold in the wind. Please bring the retrofit programme to Clay Hill.",
+      "request": { "type": "projectIn", "project": "retrofit_program" },
+      "reward": { "time": 2 }
+    },
+    {
+      "id": "riverside_message",
+      "neighborhood": "riverside",
+      "text": "There's a neglected plot by the weir. A community garden would bring the riverside to life.",
+      "request": { "type": "projectIn", "project": "community_garden" },
+      "reward": { "budget": 500 }
+    },
+    {
+      "id": "weir_bend_message",
+      "neighborhood": "weir_bend",
+      "text": "Our homes flood and leak heat. Insulation would make Weir Bend easier to live in.",
+      "request": { "type": "projectIn", "project": "retrofit_program" },
+      "reward": { "knowledge": 4 }
+    },
+    {
+      "id": "mill_yard_message",
+      "neighborhood": "mill_yard",
+      "text": "The old mill roof is huge and flat. Solar panels up there would power half the yard.",
+      "request": { "type": "projectIn", "project": "rooftop_solar" },
+      "reward": { "time": 3 }
+    },
+    {
+      "id": "southgate_retail_message",
+      "neighborhood": "southgate_retail",
+      "text": "These car parks could be shaded by solar canopies. It would make shopping under them pleasant.",
+      "request": { "type": "projectIn", "project": "rooftop_solar" },
+      "reward": { "budget": 600 }
+    },
+    {
+      "id": "northfield_farms_message",
+      "neighborhood": "northfield_farms",
+      "text": "We grow more than we eat. A community garden would let neighbours share our surplus properly.",
+      "request": { "type": "projectIn", "project": "community_garden" },
+      "reward": { "time": 2 }
+    },
+    {
+      "id": "allotment_row_message",
+      "neighborhood": "allotment_row",
+      "text": "We are the keenest gardeners in town. Fund a community garden here and watch it thrive.",
+      "request": { "type": "projectIn", "project": "community_garden" },
+      "reward": { "knowledge": 6 }
+    },
+    {
+      "id": "hollow_wood_message",
+      "neighborhood": "hollow_wood",
+      "text": "The reserve would welcome a small community garden at its edge — berries for walkers, wildlife for all.",
+      "request": { "type": "projectIn", "project": "community_garden" },
+      "reward": { "budget": 600 }
+    }
+  ]
+}

@@ -20,6 +20,9 @@ function runChaoticScript(): GameState {
   start({ type: 'startProject', neighborhood: 'mill_yard', project: 'rooftop_solar' })
   start({ type: 'startProject', neighborhood: 'northfield_farms', project: 'retrofit_program' })
   start({ type: 'research', tech: 'building_retrofits' })
+  start({ type: 'research', tech: 'public_transport' })
+  start({ type: 'townMeeting', neighborhood: 'linden_flats' })
+  start({ type: 'startBusLine', from: 'old_town', to: 'riverside' })
 
   for (let i = 0; i < 1000; i++) {
     state = tick(state)
@@ -80,6 +83,22 @@ describe('state invariants (plan M4 exit #5)', () => {
     for (const id of state.milestones) expect(milestoneIds.has(id), `milestone ${id}`).toBe(true)
     for (const id of state.milestoneNotices) {
       expect(milestoneIds.has(id), `notice ${id}`).toBe(true)
+    }
+
+    // Milestone 7 invariants.
+    for (const [id, value] of Object.entries(state.engagement)) {
+      expect(Number.isFinite(value), `engagement.${id}`).toBe(true)
+      expect(value, `engagement.${id}`).toBeGreaterThanOrEqual(0)
+      expect(value, `engagement.${id}`).toBeLessThanOrEqual(100)
+    }
+    for (const [a, b] of state.busLines) {
+      const fromDef = scenario.neighborhoods.find((n) => n.id === a)
+      const toDef = scenario.neighborhoods.find((n) => n.id === b)
+      expect(fromDef?.neighbors.includes(b), `bus ${a}->${b}`).toBe(true)
+      expect(toDef?.neighbors.includes(a), `bus ${b}->${a}`).toBe(true)
+    }
+    for (const n of scenario.neighborhoods) {
+      expect(['open', 'done'], `messages.${n.id}`).toContain(state.messages[n.id])
     }
   })
 })

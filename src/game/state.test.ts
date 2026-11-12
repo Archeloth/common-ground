@@ -216,7 +216,122 @@ describe('clearMilestoneNotices', () => {
   })
 })
 
-describe('setSpeed', () => {
+describe('engagement time discount', () => {
+  it('halves the community-time cost at engagement 100', () => {
+    const s = initialState(scenario)
+    const hot = { ...s, engagement: { ...s.engagement, old_town: 100 } }
+    const result = applyCommand(hot, {
+      type: 'startProject',
+      neighborhood: 'old_town',
+      project: 'community_garden',
+    })
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.state.time).toBe(hot.time - 1) // 2 -> 1
+  })
+
+  it('subtracts the discounted cost, not the list cost', () => {
+    const s = initialState(scenario)
+    const engaged = { ...s, engagement: { ...s.engagement, old_town: 50 } }
+    const result = applyCommand(engaged, {
+      type: 'startProject',
+      neighborhood: 'old_town',
+      project: 'retrofit_program',
+    })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      // 1 * (1 - 50/200) = 0.75 -> rounds to 1; unchanged at this engagement.
+      expect(result.state.time).toBe(engaged.time - 1)
+    }
+  })
+})
+
+describe('townMeeting', () => {
+  it('raises engagement by 10 and costs one community time', () => {
+    const s = initialState(scenario)
+    const result = applyCommand(s, { type: 'townMeeting', neighborhood: 'old_town' })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.state.engagement.old_town).toBe(s.engagement.old_town + 10)
+      expect(result.state.time).toBe(s.time - 1)
+    }
+  })
+
+  it('clamps engagement at 100', () => {
+    const s = { ...initialState(scenario), engagement: { ...initialState(scenario).engagement, old_town: 95 } }
+    const result = applyCommand(s, { type: 'townMeeting', neighborhood: 'old_town' })
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.state.engagement.old_town).toBe(100)
+  })
+
+  it('refuses an unknown neighborhood', () => {
+    const result = applyCommand(initialState(scenario), { type: 'townMeeting', neighborhood: 'nowhere' })
+    expect(result).toEqual({ ok: false, reason: 'unknown_neighborhood' })
+  })
+
+  it('refuses when community time is exhausted', () => {
+    const busy = { ...initialState(scenario), time: 0 }
+    const result = applyCommand(busy, { type: 'townMeeting', neighborhood: 'old_town' })
+    expect(result).toEqual({ ok: false, reason: 'insufficient_time' })
+  })
+
+  it('leaves the input untouched', () => {
+    const s = initialState(scenario)
+    const snapshot = structuredClone(s)
+    applyCommand(s, { type: 'townMeeting', neighborhood: 'old_town' })
+    expect(s).toEqual(snapshot)
+  })
+})
+
+describe('startBusLine', () => {
+  const researched = (): GameState => {
+    const result = applyCommand(initialState(scenario), { type: 'research', tech: 'public_transport' })
+    return result.ok ? result.state : initialState(scenario)
+  }
+
+  it('links two adjacent neighborhoods and costs 1,000 budget', () => {
+    const s = researched()
+    const result = applyCommand(s, { type: 'startBusLine', from: 'old_town', to: 'riverside' })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.state.busLines).toEqual([['old_town', 'riverside']])
+      expect(result.state.budget).toBe(s.budget - 1000)
+    }
+  })
+
+  it('needs the public transport research', () => {
+    const result = applyCommand(initialState(scenario), {
+      type: 'startBusLine',
+      from: 'old_town',
+      to: 'riverside',
+    })
+    expect(result).toEqual({ ok: false, reason: 'prerequisites_not_met' })
+  })
+
+  it('refuses a non-adjacent pair', () => {
+    const result = applyCommand(researched(), { type: 'startBusLine', from: 'old_town', to: 'hollow_wood' })
+    expect(result).toEqual({ ok: false, reason: 'not_adjacent' })
+  })
+
+  it('refuses a duplicate line regardless of order', () => {
+    const first = applyCommand(researched(), { type: 'startBusLine', from: 'old_town', to: 'riverside' })
+    expect(first.ok).toBe(true)
+    if (!first.ok) return
+    const second = applyCommand(first.state, { type: 'startBusLine', from: 'riverside', to: 'old_town' })
+    expect(second).toEqual({ ok: false, reason: 'bus_line_exists' })
+  })
+
+  it('refuses an unknown end', () => {
+    const result = applyCommand(researched(), { type: 'startBusLine', from: 'old_town', to: 'nowhere' })
+    expect(result).toEqual({ ok: false, reason: 'unknown_neighborhood' })
+  })
+
+  it('refuses when the budget is too low', () => {
+    const poor = { ...researched(), budget: 500 }
+    const result = applyCommand(poor, { type: 'startBusLine', from: 'old_town', to: 'riverside' })
+    expect(result).toEqual({ ok: false, reason: 'insufficient_budget' })
+  })
+})
+  describe('setSpeed', () => {
   it('sets the simulation speed', () => {
     const s = initialState(scenario)
     const result = applyCommand(s, { type: 'setSpeed', speed: 4 })

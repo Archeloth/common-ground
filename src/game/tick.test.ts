@@ -153,6 +153,7 @@ describe('tick', () => {
       start({ type: 'startProject', neighborhood: id, project: 'retrofit_program' })
     }
     // Push displayed satisfaction over the goal; tick smooths it but it stays.
+    // Messages are all marked done so they don't muddy the milestone rewards.
     const boosted = {
       ...state,
       neighborhoods: Object.fromEntries(
@@ -161,6 +162,7 @@ describe('tick', () => {
           { ...state.neighborhoods[n.id], satisfaction: 70 },
         ]),
       ),
+      messages: Object.fromEntries(scenario.neighborhoods.map((n) => [n.id, 'done'])) as GameState['messages'],
     }
 
     const after = tick(boosted)
@@ -173,5 +175,73 @@ describe('tick', () => {
     expect(again.milestones).toEqual(after.milestones)
     expect(again.milestoneNotices).toEqual(['first_steps'])
     expect(again.knowledge).toBe(after.knowledge)
+  })
+
+  it('shares food surplus to adjacent neighborhoods at 70% efficiency', () => {
+    let state = initialState(scenario)
+    const result = applyCommand(state, {
+      type: 'startProject',
+      neighborhood: 'northfield_farms', // food 0.95 + garden 0.12 -> surplus 0.07
+      project: 'community_garden',
+    })
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    state = result.state
+
+    const grown = runTicks(state, 60)
+    const weirBend = grown.neighborhoods.weir_bend.needs.food
+    expect(weirBend).toBeGreaterThan(0.72) // lifted by imported surplus
+    expect(weirBend).toBeLessThanOrEqual(0.75)
+    // The sharer keeps its own full food coverage (only surplus flows out).
+    expect(grown.neighborhoods.northfield_farms.needs.food).toBeGreaterThanOrEqual(0.95)
+  })
+
+  it('a bus line adds mobility coverage to both linked neighborhoods', () => {
+    let state = initialState(scenario)
+    const research = applyCommand(state, { type: 'research', tech: 'public_transport' })
+    if (!research.ok) throw new Error('research failed')
+    state = research.state
+    const line = applyCommand(state, { type: 'startBusLine', from: 'old_town', to: 'riverside' })
+    if (!line.ok) throw new Error(`bus line failed: ${line.reason}`)
+    state = line.state
+
+    const grown = runTicks(state, 60)
+    expect(grown.neighborhoods.old_town.needs.mobility).toBeGreaterThan(0.45 + 0.1)
+    expect(grown.neighborhoods.riverside.needs.mobility).toBeGreaterThan(0.55 + 0.1)
+  })
+
+  it('running gardens raise engagement by +5 each month, capped at 100', () => {
+    const started = applyCommand(initialState(scenario), {
+      type: 'startProject',
+      neighborhood: 'old_town',
+      project: 'community_garden',
+    })
+    expect(started.ok).toBe(true)
+    if (!started.ok) return
+    const afterMonth = runTicks(started.state, 30)
+    expect(afterMonth.engagement.old_town).toBe(50 + 5)
+
+    const hot = { ...started.state, engagement: { ...started.state.engagement, old_town: 99 } }
+    expect(runTicks(hot, 30).engagement.old_town).toBe(100)
+  })
+
+  it('fulfils a resident message once and pays its reward exactly once', () => {
+    let state = initialState(scenario)
+    const started = applyCommand(state, {
+      type: 'startProject',
+      neighborhood: 'old_town',
+      project: 'retrofit_program',
+    })
+    if (!started.ok) return
+    state = started.state
+    expect(state.messages.old_town).toBe('open')
+
+    const after = tick(state)
+    expect(after.messages.old_town).toBe('done')
+    expect(after.knowledge).toBe(state.knowledge + 5) // old_town message reward
+
+    const again = tick(after)
+    expect(again.knowledge).toBe(after.knowledge) // no double payments
+    expect(again.messages.old_town).toBe('done')
   })
 })

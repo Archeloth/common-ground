@@ -98,6 +98,48 @@ export function validateGameState(state: unknown): string[] {
   checkIdList(s.milestones, 'milestones', milestoneIds, problems)
   checkIdList(s.milestoneNotices, 'milestoneNotices', milestoneIds, problems)
 
+  // Milestone 7 collections: dynamic engagement, bus links and messages.
+  if (s.engagement === null || typeof s.engagement !== 'object') {
+    problems.push('engagement must be an object')
+  } else {
+    const engagement = s.engagement as Record<string, unknown>
+    for (const n of scenario.neighborhoods) {
+      checkNumber(engagement[n.id], `engagement.${n.id}`, 0, 100, problems)
+    }
+  }
+
+  if (!Array.isArray(s.busLines)) {
+    problems.push('busLines must be an array of neighborhood pairs')
+  } else {
+    s.busLines.forEach((entry, index) => {
+      if (!Array.isArray(entry) || entry.length !== 2 || typeof entry[0] !== 'string' || typeof entry[1] !== 'string') {
+        problems.push(`busLines[${index}] must be a pair of neighborhood ids`)
+        return
+      }
+      const [a, b] = entry
+      const fromDef = scenario.neighborhoods.find((n) => n.id === a)
+      const toDef = scenario.neighborhoods.find((n) => n.id === b)
+      if (!fromDef || !toDef) {
+        problems.push(`busLines[${index}] references an unknown neighborhood`)
+        return
+      }
+      if (fromDef === toDef || !fromDef.neighbors.includes(b) || !toDef.neighbors.includes(a)) {
+        problems.push(`busLines[${index}] must link two adjacent neighborhoods`)
+      }
+    })
+  }
+
+  if (s.messages === null || typeof s.messages !== 'object') {
+    problems.push('messages must be an object')
+  } else {
+    const messages = s.messages as Record<string, unknown>
+    for (const n of scenario.neighborhoods) {
+      if (messages[n.id] !== 'open' && messages[n.id] !== 'done') {
+        problems.push(`messages.${n.id} must be "open" or "done"`)
+      }
+    }
+  }
+
   // Last line of defence: not a single non-finite number anywhere.
   if (hasNonFinite(state)) problems.push('state contains a non-finite number (NaN or Infinity)')
 

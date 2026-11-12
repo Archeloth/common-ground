@@ -8,7 +8,7 @@ import { validateGameState } from '../game/validate'
 // fails validation reports problems instead of crashing. All functions here
 // are pure, so the round-trip, migration and corrupt-save tests run in Node.
 
-export const CURRENT_SAVE_VERSION = 2
+export const CURRENT_SAVE_VERSION = 3
 
 export interface SaveFile {
   version: number
@@ -36,6 +36,24 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
         milestones: [],
         milestoneNotices: [],
       },
+    }
+  },
+  // 2 -> 3 (Milestone 7): dynamic engagement, bus lines and resident messages.
+  // Engagement and messages seed from the scenario's neighborhoods; bus lines
+  // did not exist before, so the town starts with none.
+  2: (save) => {
+    const s = save as { state: GameState }
+    const scenario = loadScenario()
+    const engagement: Record<string, number> = {}
+    const messages: Record<string, 'open' | 'done'> = {}
+    for (const n of scenario.neighborhoods) {
+      engagement[n.id] = n.engagement
+      messages[n.id] = 'open'
+    }
+    return {
+      ...s,
+      version: 3,
+      state: { ...s.state, engagement, busLines: [], messages },
     }
   },
 }

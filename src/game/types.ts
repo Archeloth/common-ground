@@ -96,6 +96,8 @@ export type Command =
   | { type: 'setSpeed'; speed: Speed }
   | { type: 'research'; tech: string }
   | { type: 'clearMilestoneNotices' }
+  | { type: 'townMeeting'; neighborhood: string }
+  | { type: 'startBusLine'; from: string; to: string }
 
 // Machine-readable refusal codes; the UI maps each to t("reason.<code>").
 export type Reason =
@@ -113,6 +115,8 @@ export type Reason =
   | 'already_researched'
   | 'prerequisites_not_met'
   | 'insufficient_knowledge'
+  | 'bus_line_exists'
+  | 'not_adjacent'
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; reason: Reason }
 
@@ -151,5 +155,17 @@ export interface GameState {
   milestones: string[]
   // Milestone ids completed since the player last dismissed the banner.
   milestoneNotices: string[]
+  // Dynamic engagement per neighborhood (Milestone 7): rises with town
+  // meetings and running projects, keeps the monthly Community-time regen
+  // alive and discounts project Community-time costs.
+  engagement: Record<string, number>
+  // Bus links between adjacent neighborhoods (Milestone 7): each pair adds
+  // BUS_MOBILITY_BONUS to both endpoints' mobility target.
+  busLines: Array<[string, string]>
+  // Resident message status per neighborhood (Milestone 7): 'open' until the
+  // request is fulfilled, then 'done' (the reward is paid once).
+  messages: Record<string, MessageStatus>
 }
+
+export type MessageStatus = 'open' | 'done'
 

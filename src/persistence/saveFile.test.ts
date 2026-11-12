@@ -78,20 +78,22 @@ describe('versioned save files', () => {
     const migrations = {
       0: (s: unknown) => ({ ...(s as object), version: 1, fromZero: true }),
       1: (s: unknown) => ({ ...(s as object), version: 2, fromOne: true }),
+      2: (s: unknown) => ({ ...(s as object), version: 3, fromTwo: true }),
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(2)
+    expect(migrated.version).toBe(3)
     expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
     expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
+    expect((migrated as unknown as { fromTwo: boolean }).fromTwo).toBe(true)
   })
 
   it('rejects a version older than the migration table', () => {
     expect(() => migrateSave({ version: 0 } as never)).toThrow(/no migration/)
   })
 
-  it('the shipped migration table covers the Milestone 5 shape', () => {
-    expect(CURRENT_SAVE_VERSION).toBe(2)
-    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1])
+  it('the shipped migration table covers the earlier shapes (1 and 2)', () => {
+    expect(CURRENT_SAVE_VERSION).toBe(3)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2])
   })
 
   it('migrates a version-1 save to version 2, seeding research from the scenario', () => {
@@ -109,9 +111,30 @@ describe('versioned save files', () => {
       expect(result.save.state.research).toEqual(loadScenario().start.unlockedTech)
       expect(result.save.state.milestones).toEqual([])
       expect(result.save.state.milestoneNotices).toEqual([])
+      // Milestone 7 fields arrive too (v2 -> v3 side of the chain).
+      expect(result.save.state.engagement.old_town).toBeGreaterThanOrEqual(0)
+      expect(result.save.state.busLines).toEqual([])
+      expect(result.save.state.messages.old_town).toBe('open')
       // Everything else survives the migration untouched.
       expect(result.save.state.projects).toEqual(original.projects)
       expect(result.save.state.budget).toBe(original.budget)
+    }
+  })
+
+  it('migrates a version-2 save to version 3, seeding engagement, bus lines and messages', () => {
+    const v2 = createSave(playedState()) as unknown as { version: number; state: { [key: string]: unknown } }
+    v2.version = 2 // fabricate the pre-M7 shape
+    delete v2.state.engagement
+    delete v2.state.busLines
+    delete v2.state.messages
+
+    const result = parseAndLoad(JSON.stringify(v2))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
+      expect(result.save.state.busLines).toEqual([])
+      expect(result.save.state.messages.old_town).toBe('open')
+      expect(result.save.state.engagement.linden_flats).toBeGreaterThanOrEqual(0)
     }
   })
 })

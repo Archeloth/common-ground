@@ -11,7 +11,14 @@ import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
 import { satisfactionOf, shortfalls } from './satisfaction'
-import { TOP_REASONS } from './constants'
+import {
+  BUS_LINE_COST,
+  ENGAGEMENT_MAX,
+  PROJECT_TIME_ENGAGEMENT_DIVISOR,
+  TOP_REASONS,
+  TOWN_MEETING_ENGAGEMENT,
+  TOWN_MEETING_TIME,
+} from './constants'
 
 // Player commands (start/stop projects, set speed, research, dismiss milestone
 // notices). All pure: applyCommand never mutates its input — it returns a fresh
@@ -22,6 +29,8 @@ import { TOP_REASONS } from './constants'
 export function initialState(scenario: ScenarioDef): GameState {
   const projects: Record<string, Array<string | null>> = {}
   const neighborhoods: Record<string, NeighborhoodSimState> = {}
+  const engagement: Record<string, number> = {}
+  const messages: Record<string, 'open' | 'done'> = {}
   for (const n of scenario.neighborhoods) {
     projects[n.id] = Array.from({ length: n.slots }, () => null)
     const needs = { ...n.needs }
@@ -30,6 +39,8 @@ export function initialState(scenario: ScenarioDef): GameState {
       satisfaction: satisfactionOf(needs),
       reasons: shortfalls(needs, TOP_REASONS),
     }
+    engagement[n.id] = n.engagement
+    messages[n.id] = 'open'
   }
   return {
     budget: scenario.start.budget,
@@ -42,6 +53,9 @@ export function initialState(scenario: ScenarioDef): GameState {
     research: [...scenario.start.unlockedTech],
     milestones: [],
     milestoneNotices: [],
+    engagement,
+    busLines: [],
+    messages,
   }
 }
 
@@ -52,6 +66,18 @@ function slotsOf(state: GameState, neighborhood: NeighborhoodDef): Array<string 
   return slots && slots.length === neighborhood.slots
     ? slots
     : Array.from({ length: neighborhood.slots }, () => null)
+}
+
+// The dynamic engagement of a neighborhood (falls back to the scenario's
+// starting value for a stale save).
+function engagementOf(state: GameState, neighborhood: NeighborhoodDef): number {
+  return state.engagement[neighborhood.id] ?? neighborhood.engagement
+}
+
+// Community-time discount from engagement (plan: "high engagement ... complete
+// grassroots projects faster"). 100 engagement halves the listed time cost.
+export function projectTimeCost(projectTime: number, engagement: number): number {
+  return Math.max(1, Math.round(projectTime * (1 - engagement / PROJECT_TIME_ENGAGEMENT_DIVISOR)))
 }
 
 // Question order matters for predictability (and is pinned by the tests):
@@ -72,7 +98,8 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     if (freeIndex === -1) return refusal('no_free_slot')
     if (!project.allowedKinds.includes(neighborhood.kind)) return refusal('not_allowed_in_kind')
     if (state.budget < project.cost) return refusal('insufficient_budget')
-    if (state.time < project.time) return refusal('insufficient_time')
+    const timeCost = projectTimeCost(project.time, engagementOf(state, neighborhood))
+    if (state.time < timeCost) return refusal('insufficient_time')
 
     const newSlots = slots.slice()
     newSlots[freeIndex] = command.project
@@ -81,7 +108,7 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
       state: {
         ...state,
         budget: state.budget - project.cost,
-        time: state.time - project.time,
+        time: state.time - timeCost,
         projects: { ...state.projects, [neighborhood.id]: newSlots },
       },
     }
@@ -105,6 +132,10 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     }
   }
 
+  if (command.type === 'townMeeting') return applyTownMeeting(state, command.neighborhood)
+
+  if (command.type === 'startBusLine') return applyStartBusLine(state, command.from, command.to)
+
   if (command.type === 'research') return applyResearch(state, command.tech)
 
   if (command.type === 'clearMilestoneNotices') {
@@ -114,6 +145,52 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
   // setSpeed, the only remaining variant.
   if (![0, 1, 2, 4].includes(command.speed)) return refusal('invalid_speed')
   return { ok: true, state: { ...state, speed: command.speed } }
+}
+
+// The organizer's lever (plan): costs 1 Community time, +10 engagement.
+function applyTownMeeting(state: GameState, neighborhoodId: string): CommandResult {
+  const scenario = loadScenario()
+  const neighborhood = scenario.neighborhoods.find((n) => n.id === neighborhoodId)
+  if (!neighborhood) return refusal('unknown_neighborhood')
+  if (state.time < TOWN_MEETING_TIME) return refusal('insufficient_time')
+  const current = engagementOf(state, neighborhood)
+  return {
+    ok: true,
+    state: {
+      ...state,
+      time: state.time - TOWN_MEETING_TIME,
+      engagement: {
+        ...state.engagement,
+        [neighborhoodId]: Math.min(ENGAGEMENT_MAX, current + TOWN_MEETING_ENGAGEMENT),
+      },
+    },
+  }
+}
+
+// A bus line links two adjacent neighborhoods: budget cost, no Community time,
+// and needs the public transport research (plan's starter-project table).
+function applyStartBusLine(state: GameState, from: string, to: string): CommandResult {
+  const scenario = loadScenario()
+  const fromDef = scenario.neighborhoods.find((n) => n.id === from)
+  const toDef = scenario.neighborhoods.find((n) => n.id === to)
+  if (!fromDef || !toDef) return refusal('unknown_neighborhood')
+  if (!fromDef.neighbors.includes(to) || !toDef.neighbors.includes(from)) {
+    return refusal('not_adjacent')
+  }
+  const pair: [string, string] = [from, to].sort() as [string, string]
+  if (state.busLines.some(([a, b]) => a === pair[0] && b === pair[1])) {
+    return refusal('bus_line_exists')
+  }
+  if (!state.research.includes('public_transport')) return refusal('prerequisites_not_met')
+  if (state.budget < BUS_LINE_COST) return refusal('insufficient_budget')
+  return {
+    ok: true,
+    state: {
+      ...state,
+      budget: state.budget - BUS_LINE_COST,
+      busLines: [...state.busLines, pair],
+    },
+  }
 }
 
 // Research (Milestone 6): a technology is researchable when it exists, is not

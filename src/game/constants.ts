@@ -28,3 +28,24 @@ export const SATISFACTION_SMOOTH_PER_TICK = 0.05
 
 // How many shortfalls the panel's reasons list stores (plan: "the three largest").
 export const TOP_REASONS = 3
+
+// --- Milestone 7: organizer mechanics ---------------------------------------
+
+// Town meeting: costs one Community time and raises one neighborhood's
+// engagement by 10 (plan: "raises one neighborhood's engagement by 10").
+export const TOWN_MEETING_TIME = 1
+export const TOWN_MEETING_ENGAGEMENT = 10
+export const ENGAGEMENT_MAX = 100
+
+// Projects finish faster in engaged neighborhoods: Community-time cost is
+// multiplied by (1 - engagement / divisor). 200 => engagement 100 halves the
+// cost; the plan: "high engagement ... complete grassroots projects faster".
+export const PROJECT_TIME_ENGAGEMENT_DIVISOR = 200
+
+// Food surplus flows to adjacent neighborhoods at 70% efficiency (transport
+// losses), per the plan's "Links between neighborhoods" section.
+export const FOOD_SHARE_EFFICIENCY = 0.7
+// Bus lines: budget cost, mobility bonus to both linked neighborhoods
+// (plan's starter-project table: "1,000 | 0 | Mobility +0.20 in both links").
+export const BUS_LINE_COST = 1000
+export const BUS_MOBILITY_BONUS = 0.2
