@@ -136,3 +136,36 @@ data-only change.
 **Save format v1 → v2.** The research/milestone fields need a shape bump; the
 migration seeds research from the scenario's starting techs and empty milestone
 arrays. This is the first real use of the versioned save machinery from M5.
+
+## 10 Nov 2026 — Milestone 7 decisions
+
+**Engagement is a per-neighborhood dynamic resource.** It rises through town
+meetings (+10, costs 1 Community time) and running projects (garden +5/month),
+and it feeds the monthly Community-time regeneration and a small Community-time
+discount on project costs (`1 − engagement/200`). It never decays on its own:
+removing the garden just stops the growth. The plan's "completes projects
+faster" line is implemented as the discount; "cheaper in money" was not added
+to keep the economy legible.
+
+**Bus lines are a link command, not a slot project.** The plan lists them as a
+project, but they belong to *pairs of neighbourhoods*, not a slot: `startBusLine`
+requires the `public_transport` research, costs 1,000 budget and zero Community
+time, and adds +0.20 mobility to both endpoints. They live in their own
+`GameState.busLines` list and draw as dashed lines on the canvas.
+
+**Food sharing is surplus-only and split evenly.** Each tick, a neighbourhood
+with an unclamped food supply above 1 shares the surplus at 70% efficiency
+(transport losses) among its direct neighbours, raising their food target. The
+sharer never loses coverage — only surplus flows out. This keeps the plan's
+intent (farms lift their grid) with a small, deterministic rule.
+
+**Resident messages are one per neighbourhood.** `messages.json` holds a short
+request per scenario neighbourhood (start a specific project) with a small
+one-time reward in Budget, Community time or Knowledge. `tick()` pays it once
+when the request condition is met; the panel shows the text, reward and status.
+
+**The exit test is two scripted bots.** `playthroughs.test.ts` runs a food-first
+and a retrofit-first strategy that both complete the "First steps" milestone —
+same goal, different build order, which is the plan's exit test in a
+deterministic, CI-friendly form. Save format bumped to v3 with a migration from
+v2 (seeds engagement/messages, empty bus list).

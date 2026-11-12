@@ -9,29 +9,30 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 6 — research and goals.** The town has a research tree
-(`src/data/technologies.json`): eight technologies across three chains (Energy
-audits → Building retrofits → Heat pumps; Community gardens → Composting →
-Local food hubs; Safe streets → Public transport). The **Research** menu shows
-education cards — what it does, its benefit, its honest limit, and a confidence
-tag (established / emerging / context) — and research costs **Knowledge**
-(10 to start from the scenario, then earned by completing milestones).
+**Milestone 7 — organizer mechanics and links.** Engagement is now a real,
+per-neighborhood resource: **town meetings** (in each blob's panel) cost 1
+Community time and raise engagement by 10, running projects (gardens +5/month)
+nudge it up, and high engagement regenerates more Community time and **discounts
+project Community time**. Bus links (`public_transport` research, 1,000 budget)
+connect adjacent neighbourhoods, add +0.20 mobility to both, and render as
+dashed lines on the map. Food surplus flows from food-rich neighbourhoods to
+their neighbours at 70% efficiency, and every neighbourhood has one **resident
+request** with a small reward (start the project they ask for).
 
-The five chapter milestones (`src/data/milestones.json`) are data with
-state-checkable conditions; `tick()` completes them the moment they are met, a
-banner tells you, and each one pays a Knowledge reward. Save files are v2 (a
-v1 save auto-migrates, seeding research from the scenario).
+The five chapter milestones, research tree (education cards with confidence
+tags), three-slot autosave system, live need bars and plain-language reasons
+all keep working. Saves are versioned (v3) and validated before use; a broken
+save never crashes the town. The top bar shows Budget, Community time,
+Knowledge, the date and speed (pause · 1× · 2× · 4×); every visible string goes
+through one `t("key")` function.
 
-Saves are versioned and validated before use (three slots + autosave, plus
-`.json` export/import); a broken save never crashes the town. Click any blob
-for its panel: live need bars, smoothed satisfaction, top-three shortfalls in
-plain language, and the project picker. The top bar shows Budget, Community
-time, Knowledge, the date and speed (pause · 1× · 2× · 4×); all visible strings
-go through one `t("key")` function.
+The Milestone 7 exit test is automated: two scripted bot playthroughs (food-first
+and retrofit-first) both complete the "First steps" milestone by different
+routes.
 
 Controls: **drag** to pan · **scroll / pinch** to zoom · **hover** to inspect ·
-**click** to select · **Esc** to close the panel. Save (**💾 Save**) and
-**Research** menus sit at the top-left.
+**click** to select · **Esc** to close. **Save** and **Research** menus sit at
+the top-left.
 
 ## Stack and decisions
 
@@ -49,7 +50,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (rng, blobs, geometry, camera, content data, commands, tick, store, milestones, research, saves, state validation, determinism, invariants)
+yarn test      # Vitest unit tests (rng, blobs, geometry, camera, content data, commands, tick, store, milestones, research, messages, saves, state validation, two-route playthroughs, determinism, invariants)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```
