@@ -113,3 +113,27 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+
+/* Town-wide needs: hover or focus a row to see each district on the map. */
+.town-hint {
+  margin: -0.2rem 0 0.4rem;
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+
+.need-hover {
+  margin: 0 -0.4rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.5rem;
+  cursor: default;
+  outline: none;
+}
+
+.need-hover:hover,
+.need-hover:focus-visible {
+  background: var(--surface-soft);
+}
+
+.need-hover:focus-visible {
+  box-shadow: 0 0 0 2px var(--primary);
+}

@@ -1,16 +1,16 @@
-import type { NeighborhoodDef, ScenarioDef } from '../../../game/types'
+import type { NeedId, NeighborhoodDef, ScenarioDef } from '../../../game/types'
 import type { Point } from '../../../game/geometry'
 import { bridgeBetween, neighborhoodById } from '../../../game/scenario'
 import { blobPoints } from '../../../game/blob'
 import type { Camera } from '../camera'
 import { worldToScreen } from '../camera'
-import { COLORS } from '../colors'
+import { COLORS, NEED_COLORS } from '../colors'
 import { buildPath2D, drawBadge, drawBridge, drawBusLine, drawPulseRing, drawRiver } from '../draw'
 import { CHIMNEY_TOP } from '../sprites/buildings'
 import { drawBuildRing, drawDecoration, turbineHub } from '../sprites/decorations'
 import type { VisualId } from '../sprites/decorations'
 import { SPRITE_SCALE } from '../sprites/kit'
-import { bees, bird, bus, butterfly, floatingLabel, popScale, ripple, smoke, sparkles, turbineBlades } from '../sprites/life'
+import { bees, bird, bus, butterfly, floatingLabel, popScale, ripple, smoke, sparkles, turbineBlades, valuePill } from '../sprites/life'
 import type { DistrictCache, DistrictLook } from './district'
 import { renderDistrict } from './district'
 import { layoutFor } from './layout'
@@ -45,6 +45,7 @@ export interface FrameInput {
   cssHeight: number
   dpr: number
   now: number // ms (performance.now)
+  busTime: number // seconds of running game time: buses stop while paused
   reducedMotion: boolean
   looks: Map<string, DistrictLook>
   lifts: Map<string, number> // smoothed hover lift per district, in px
@@ -54,6 +55,7 @@ export interface FrameInput {
   expiredIds: string[]
   pops: Pop[]
   floaters: Floater[]
+  highlightNeed: NeedId | null // hovering a town-wide need in the Town overview
 }
 
 const caches = new Map<string, DistrictCache>()
@@ -162,10 +164,11 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
     const total = route.slice(1).reduce((sum, pt, i) => sum + Math.hypot(pt.x - route[i].x, pt.y - route[i].y), 0)
     const speed = 16 // world units per second
     const seed = (a.length * 31 + b.length * 17) % 10
-    const u = ((t * speed) / Math.max(1, total) + seed / 10) % 2
+    const bt = f.reducedMotion ? 3 : f.busTime
+    const u = ((bt * speed) / Math.max(1, total) + seed / 10) % 2
     const pos = alongRoute(route, u)
     const screen = worldToScreen(cam, pos.x, pos.y)
-    bus(ctx, screen.x, screen.y - 3 * s, s, pos.dir, t)
+    bus(ctx, screen.x, screen.y - 3 * s, s, pos.dir, bt)
   }
 
   for (const id of f.expiredIds) {
@@ -175,6 +178,26 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
   for (const id of f.pulseIds) {
     const n = neighborhoodById(scenario, id)
     drawPulseRing(ctx, cam, n.shape, n.shape.radius, f.reducedMotion ? 250 : f.now)
+  }
+
+  // Hovering a town-wide need: a soft veil, every district outlined in the
+  // need's colour, and a pill with that district's own value.
+  if (f.highlightNeed) {
+    const need = f.highlightNeed
+    ctx.fillStyle = 'rgba(251, 252, 247, 0.35)'
+    ctx.fillRect(0, 0, f.cssWidth, f.cssHeight)
+    for (const n of scenario.neighborhoods) {
+      const look = f.looks.get(n.id)
+      if (!look) continue
+      const lift = f.lifts.get(n.id) ?? 0
+      const path = buildPath2D(outlineOf(n).map((p) => worldToScreen(cam, p.x, p.y - lift / cam.zoom)))
+      ctx.strokeStyle = NEED_COLORS[need]
+      ctx.lineWidth = 2.5
+      ctx.lineJoin = 'round'
+      ctx.stroke(path)
+      const centre = worldToScreen(cam, n.shape.x, n.shape.y - n.shape.radius * 0.1)
+      valuePill(ctx, centre.x, centre.y - lift, look.needs[need], NEED_COLORS[need])
+    }
   }
 
   // Floating "+12% Food" labels over the districts that just gained a project.

@@ -28,7 +28,8 @@ sixteen little districts grow greener, livelier and happier.
   line and a confidence tag. Volunteer-run projects last a few years and need
   renewing; infrastructure is permanent.
 - **Real choices**: everything you build has monthly upkeep, taxes rise and fall
-  with how happy the town is, volunteers drift away if they sit idle, and
+  with how happy the town is, volunteers drift away if they sit idle,
+  engagement slowly fades unless you keep residents involved, and
   deeper research costs more, so money, volunteers and Knowledge all matter.
 - **Five chapters** with an always-visible goal tracker, a gentle tutorial, a
   "What next?" helper and an in-game **Lexicon** that explains every mechanic.

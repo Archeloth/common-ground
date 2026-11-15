@@ -52,6 +52,15 @@ export const UNDO_WINDOW_MS = 8000
 export const HISTORY_MAX_POINTS = 240
 export const ENGAGEMENT_MAX = 100
 
+// Engagement fades every month unless something keeps people involved
+// (playtest: "engagement should slowly decline, and the player has to
+// counteract that"). It eases towards a resting level: each month it loses a
+// share of the distance above ENGAGEMENT_REST (at least 1), so a very engaged
+// district needs more looking after than a middling one. A garden (+5 a
+// month) or a meeting every two months (+10) outpaces the fade.
+export const ENGAGEMENT_REST = 30
+export const ENGAGEMENT_FADE_RATE = 0.08
+
 // Projects finish faster in engaged neighborhoods: Community-time cost is
 // multiplied by (1 - engagement / divisor). 200 => engagement 100 halves the
 // cost; the plan: "high engagement ... complete grassroots projects faster".

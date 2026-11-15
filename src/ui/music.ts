@@ -9,7 +9,7 @@ import { setAmbienceWind } from './ambience'
 // starts from the first click (uiSounds.ts). Volume follows Master x Music,
 // fades smoothly, and drops while the game is paused.
 
-const TRACK = 'audio/music/peaceful-village.mp3'
+const TRACK = 'audio/music/peaceful-village-compressed.mp3'
 const BASE_LEVEL = 0.55 // music sits under the interface and game sounds
 const PAUSED_FACTOR = 0.55
 const FADE_STEP_MS = 50

@@ -13,6 +13,8 @@ import { satisfactionOf, shortfalls } from './satisfaction'
 import { clamp, clamp01, moveNeedsToward, needTargets, round } from './needs'
 import {
   BUS_MOBILITY_BONUS,
+  ENGAGEMENT_FADE_RATE,
+  ENGAGEMENT_REST,
   ENGAGEMENT_MAX,
   FOOD_SHARE_EFFICIENCY,
   HISTORY_MAX_POINTS,
@@ -33,7 +35,8 @@ import {
 //   top-three shortfalls are stored as reasons;
 // - on every 30th day the monthly settlement runs: Budget income from local
 //   taxes, Community-time regeneration from the dynamic average engagement,
-//   and engagement growth from running projects (garden +5/month);
+//   engagement fading towards a resting level, growth from running
+//   projects (garden +5/month);
 // - open resident messages are fulfilled (reward paid once) when met;
 //   milestones complete the moment their conditions are met.
 
@@ -44,6 +47,15 @@ function activeEffects(state: GameState, neighborhoodId: string): ProjectEffect[
   const effects: ProjectEffect[] = []
   for (const id of activeProjectIds(state, neighborhoodId)) effects.push(...projectById(projects, id).effects)
   return effects
+}
+
+// One month of fading: a share of the distance above the resting level (at
+// least 1 point), never below it. A district already at or under the resting
+// level keeps what it has.
+export function fadeEngagement(current: number): number {
+  if (current <= ENGAGEMENT_REST) return current
+  const loss = Math.max(1, Math.round((current - ENGAGEMENT_REST) * ENGAGEMENT_FADE_RATE))
+  return Math.max(ENGAGEMENT_REST, current - loss)
 }
 
 // Sum of the engagement deltas of the projects running in a neighborhood
@@ -136,11 +148,13 @@ export function tick(state: GameState): GameState {
     time += income.time
     knowledge += income.knowledge
 
-    // Running projects raise engagement each month they run (garden +5).
+    // Engagement fades a little each month (never below the floor), and
+    // running projects raise it each month they run (garden +5).
     const nextEngagement: Record<string, number> = { ...engagement }
     for (const n of scenario.neighborhoods) {
       const current = nextEngagement[n.id] ?? n.engagement
-      nextEngagement[n.id] = Math.min(ENGAGEMENT_MAX, current + engagementBonusOf(state, n.id))
+      const faded = fadeEngagement(current)
+      nextEngagement[n.id] = Math.min(ENGAGEMENT_MAX, faded + engagementBonusOf(state, n.id))
     }
     engagement = nextEngagement
   }

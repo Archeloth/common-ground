@@ -21,6 +21,7 @@ const UNDOABLE = new Set<Command['type']>([
   'startProject',
   'removeProject',
   'renewProject',
+  'renewAll',
   'research',
   'startBusLine',
   'townMeeting',

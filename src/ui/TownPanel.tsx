@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { GameState, NeedId } from '../game/types'
 import { loadScenario } from '../game/scenario'
 import { loadMilestones, townNeedAverage, townSatisfaction } from '../game/milestones'
@@ -19,6 +20,8 @@ const totalResidents = scenario.neighborhoods.reduce((sum, n) => sum + n.residen
 interface TownPanelProps {
   state: GameState
   onSelect: (neighborhoodId: string) => void
+  // Hovering (or focusing) a town-wide need shows every district's value on the map.
+  onHighlightNeed?: (need: NeedId | null) => void
 }
 
 function weakestNeed(state: GameState, id: string): { need: NeedId; value: number } {
@@ -35,7 +38,9 @@ function weakestNeed(state: GameState, id: string): { need: NeedId; value: numbe
 // stats visible somewhere"): headline numbers, town-wide need averages and
 // every neighbourhood ranked by satisfaction (worst first, click to open).
 // Chapter goals live in the always-visible GoalTracker (Milestone 8.6).
-export default function TownPanel({ state, onSelect }: TownPanelProps) {
+export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPanelProps) {
+  // Never leave the map highlighted when the drawer closes.
+  useEffect(() => () => onHighlightNeed?.(null), [onHighlightNeed])
   const satisfaction = townSatisfaction(state, scenario)
   const tier = satisfactionTier(satisfaction)
   const lapsed = allExpired(state, scenario).length
@@ -100,9 +105,19 @@ export default function TownPanel({ state, onSelect }: TownPanelProps) {
 
       <section className="town-section">
         <h4>{t('town.needs')}</h4>
-        <div className="needs-grid">
+        <p className="town-hint">{t('town.needHover')}</p>
+        <div className="needs-grid" onMouseLeave={() => onHighlightNeed?.(null)}>
           {NEED_ORDER.map((need) => (
-            <NeedBar key={need} need={need} label={t(`need.${need}`)} value={townNeedAverage(state, scenario, need)} />
+            <div
+              key={need}
+              className="need-hover"
+              tabIndex={0}
+              onMouseEnter={() => onHighlightNeed?.(need)}
+              onFocus={() => onHighlightNeed?.(need)}
+              onBlur={() => onHighlightNeed?.(null)}
+            >
+              <NeedBar need={need} label={t(`need.${need}`)} value={townNeedAverage(state, scenario, need)} />
+            </div>
           ))}
         </div>
       </section>

@@ -16,7 +16,7 @@ import type { VisualId } from './render/sprites/decorations'
 import { t } from './i18n'
 import type { ExpiryBubble } from './expiryBubbles'
 import HoverChip from './HoverChip'
-import type { GameState } from '../game/types'
+import type { GameState, NeedId } from '../game/types'
 import './TownMap.css'
 
 // Pointer travel below this counts as a click, above it as a drag-pan.
@@ -48,6 +48,7 @@ interface TownMapProps {
   state: GameState
   reducedMotion: boolean // a still town: no living layer, no fly-to
   focus: FocusRequest | null
+  highlightNeed?: NeedId | null // the Town overview's hovered need
 }
 
 function easeInOutCubic(x: number): number {
@@ -70,6 +71,7 @@ export default function TownMap({
   state,
   reducedMotion,
   focus,
+  highlightNeed = null,
 }: TownMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -92,6 +94,10 @@ export default function TownMap({
   const previousProjectsRef = useRef<GameState | null>(null)
   const flightRef = useRef<{ from: Camera; to: Camera; start: number } | null>(null)
   const statsRef = useRef({ frames: 0, ms: 0, last: 0, fps: 0, avgMs: 0 })
+  // Buses run on game time: their clock only moves while the game runs.
+  const runningRef = useRef(state.speed !== 0)
+  const busClockRef = useRef({ time: 0, last: 0 })
+  const highlightRef = useRef<NeedId | null>(highlightNeed)
   // Expiry bubbles are DOM nodes pinned to world positions; the draw loop
   // moves them with the camera so they follow pans and zooms without React.
   const bubbleElsRef = useRef(new Map<string, HTMLDivElement>())
@@ -192,6 +198,7 @@ export default function TownMap({
     for (const n of scenario.neighborhoods) looks.set(n.id, districtLook(state, n))
     looksRef.current = looks
     busLinesRef.current = state.busLines
+    runningRef.current = state.speed !== 0
 
     // A project pops in when it is finished (construction time), not when it
     // is started: that is the moment it starts to help.
@@ -239,6 +246,11 @@ export default function TownMap({
     reducedMotionRef.current = reducedMotion
     dirtyRef.current = true
   }, [reducedMotion])
+
+  useEffect(() => {
+    highlightRef.current = highlightNeed
+    dirtyRef.current = true
+  }, [highlightNeed])
 
   useEffect(() => {
     pulseIdsRef.current = pulseIds
@@ -294,6 +306,9 @@ export default function TownMap({
       if (!canvas || !ctx) return
       const now = performance.now()
       const reduced = reducedMotionRef.current
+      const clock = busClockRef.current
+      if (clock.last !== 0 && runningRef.current) clock.time += Math.min(0.1, (now - clock.last) / 1000)
+      clock.last = now
 
       // Camera flight.
       const flight = flightRef.current
@@ -339,6 +354,7 @@ export default function TownMap({
         cssHeight,
         dpr,
         now,
+        busTime: clock.time,
         reducedMotion: reduced,
         looks: looksRef.current,
         lifts: liftsRef.current,
@@ -348,12 +364,14 @@ export default function TownMap({
         expiredIds: expiredIdsRef.current,
         pops: popsRef.current,
         floaters: floatersRef.current,
+        highlightNeed: highlightRef.current,
       })
       placeBubbles(cssWidth)
 
       if (DEBUG) {
         // Dev only (?debug): let automated checks read the camera.
         ;(window as unknown as { __cam?: Camera }).__cam = cameraRef.current
+        ;(window as unknown as { __busTime?: number }).__busTime = clock.time
         const stats = statsRef.current
         stats.frames++
         stats.ms += performance.now() - start

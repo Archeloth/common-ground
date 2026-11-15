@@ -131,6 +131,8 @@ export type Command =
   | { type: 'startBusLine'; from: string; to: string }
   | { type: 'tutorialNext' }
   | { type: 'renewProject'; neighborhood: string; slot: number }
+  // Renew every lapsed project the volunteers can cover (playtest).
+  | { type: 'renewAll' }
   | { type: 'dismissExpiryNotice'; notice: string }
 
 // Machine-readable refusal codes; the UI maps each to t("reason.<code>").
@@ -154,6 +156,7 @@ export type Reason =
   | 'tech_not_researched'
   | 'project_permanent'
   | 'renew_too_early'
+  | 'nothing_to_renew'
   | 'meeting_cooldown'
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; reason: Reason }

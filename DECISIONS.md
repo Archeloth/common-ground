@@ -445,3 +445,34 @@ balance changes; weather events are on the roadmap.
 
 **Saves went from v5 to v8 in three steps** (meeting cooldown, construction,
 history), one migration each, so every step is tested on its own.
+
+## 15 Nov 2026 - Playtest round 5: renew all, fading engagement, map highlights
+
+**Engagement fades, gently.** It now eases back towards a resting level of 30
+each month: it loses 8% of the distance above 30 (at least 1 point), so a
+district at 90 loses about 5 a month and one at 40 loses 1. A garden (+5 a
+month) or a meeting every two months (+10) outpaces it. A flat -3 a month was
+tried first and measured with the balance bot: engagement collapsed to the
+floor, volunteer income dried up and only three of five chapters were ever
+completed. With the proportional fade, chapters still all complete (the last
+moves from year 4.0 to 4.7), engagement still reaches about 90 when it is looked
+after, and money is never stuck. No save change: it is a rule, not new state.
+
+**Renew all is one command** (`renewAll`), so it is pure, tested, and a single
+Undo takes it all back. It renews lapsed projects in town order while the
+volunteers last and is refused only if none could be renewed. The bar appears
+when two or more popups are open, and says up front how many it can cover
+("Renew 12 of 17 - 12 volunteers"). "Hide the popups" dismisses them all.
+
+**Buses run on game time.** Their position follows a clock that advances only
+while the game is running, so pausing stops them. The other small life (birds,
+bees, smoke) keeps moving while paused; the town should not feel frozen.
+
+**Hovering a town-wide need shows every district's own value** on the map: a
+soft veil, each district outlined in the need's colour and a pill with its
+value and a small bar. The text is ink and the colour fills only the bar (same
+rule as the chips). It also works with keyboard focus, and it clears when the
+drawer closes.
+
+**Music**: the 96 kbps re-encode (2.2 MB) replaces the 7.4 MB original in
+`public/`; the original stays in `audio-src/`.

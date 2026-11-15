@@ -177,6 +177,39 @@ export function floatingLabel(ctx: Ctx, x: number, y: number, text: string, colo
   ctx.restore()
 }
 
+// A district's own value of a need ("72%" over a small bar), shown while
+// the player hovers that need in the Town overview. Text is ink; the colour
+// only fills the bar.
+export function valuePill(ctx: Ctx, x: number, y: number, value: number, colour: string): void {
+  const text = `${Math.round(value * 100)}%`
+  ctx.save()
+  ctx.font = '700 12px ui-rounded, "SF Pro Rounded", Nunito, system-ui, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  const w = Math.max(44, ctx.measureText(text).width + 18)
+  const h = 26
+  ctx.shadowColor = 'rgba(31, 43, 28, 0.22)'
+  ctx.shadowBlur = 6
+  ctx.shadowOffsetY = 1
+  ctx.fillStyle = '#ffffff'
+  ctx.beginPath()
+  ctx.roundRect(x - w / 2, y - h / 2, w, h, 8)
+  ctx.fill()
+  ctx.shadowColor = 'transparent'
+  ctx.fillStyle = '#26321f'
+  ctx.fillText(text, x, y - 3)
+  const barW = w - 14
+  ctx.fillStyle = '#e1e0d9'
+  ctx.beginPath()
+  ctx.roundRect(x - barW / 2, y + 6, barW, 3.5, 2)
+  ctx.fill()
+  ctx.fillStyle = colour
+  ctx.beginPath()
+  ctx.roundRect(x - barW / 2, y + 6, Math.max(3.5, barW * Math.min(1, Math.max(0, value))), 3.5, 2)
+  ctx.fill()
+  ctx.restore()
+}
+
 // Ease-out-back: overshoots a little, then settles (the "pop" of a new project).
 export function popScale(progress: number): number {
   const c1 = 1.70158

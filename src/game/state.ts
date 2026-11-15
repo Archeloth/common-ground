@@ -11,7 +11,7 @@ import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
 import { TUTORIAL_DONE } from './tutorial'
-import { expiryNoticeKey, isRenewable, projectEndsAt } from './expiry'
+import { expiryNoticeKey, isRenewable, projectEndsAt, allExpired } from './expiry'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import {
   BUS_LINE_COST,
@@ -172,6 +172,8 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
 
   if (command.type === 'renewProject') return applyRenewProject(state, command.neighborhood, command.slot)
 
+  if (command.type === 'renewAll') return applyRenewAll(state)
+
   if (command.type === 'dismissExpiryNotice') {
     return { ok: true, state: { ...state, expiryNotices: state.expiryNotices.filter((n) => n !== command.notice) } }
   }
@@ -241,6 +243,26 @@ function applyRenewProject(state: GameState, neighborhoodId: string, slot: numbe
       expiryNotices: state.expiryNotices.filter((notice) => notice !== key),
     },
   }
+}
+
+// Renew every lapsed project, in town order, while the volunteers last
+// (playtest: clicking through each popup got tedious). One command, so one
+// undo takes all of it back. Refused only when nothing could be renewed.
+function applyRenewAll(state: GameState): CommandResult {
+  const lapsed = allExpired(state, loadScenario())
+  if (lapsed.length === 0) return refusal('nothing_to_renew')
+  let next = state
+  let renewed = 0
+  let firstRefusal: CommandResult | null = null
+  for (const entry of lapsed) {
+    const result = applyRenewProject(next, entry.neighborhood, entry.slot)
+    if (result.ok) {
+      next = result.state
+      renewed++
+    } else firstRefusal ??= result
+  }
+  if (renewed === 0) return firstRefusal ?? refusal('nothing_to_renew')
+  return { ok: true, state: next }
 }
 
 // Days until a district can hold its next town meeting (0 = now).

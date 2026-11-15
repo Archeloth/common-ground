@@ -15,7 +15,7 @@ Audio (`src/ui/ambience.ts`). Neither uses any image or audio file.
 
 | File | Title | Author | Licence | Changes |
 | --- | --- | --- | --- | --- |
-| `public/audio/music/peaceful-village.mp3` | Peaceful Village | **TO FILL IN: author and source link** | **CC BY** (version TO FILL IN, e.g. 3.0 or 4.0) | None (renamed only). |
+| `public/audio/music/peaceful-village-compressed.mp3` | Peaceful Village | **TO FILL IN: author and source link** | **CC BY** (version TO FILL IN, e.g. 3.0 or 4.0) | Re-encoded to 96 kbps and renamed. |
 
 CC BY requires credit: the game shows it in **Main menu -> Credits**.
 

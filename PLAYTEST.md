@@ -94,3 +94,7 @@ session script as round 1; turn the sound on.
 - Did anyone notice the seasons? Did the snowy start (a new game opens in
   January) read as cosy or as gloomy?
 - Did the 60-day meeting cooldown ever feel like a wall?
+- Did testers notice engagement fading? Did looking after it feel like a
+  gentle chore or like busywork?
+- Did anyone use Renew all? Did "Renew 12 of 17" make sense?
+- Did anyone find the need highlight (hover a town-wide need in the Town overview)?

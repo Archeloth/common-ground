@@ -129,3 +129,36 @@ describe('project lifetimes (Milestone 8.5)', () => {
     expect(s.projectReady.school_green[0]).toBeNull()
   })
 })
+
+describe('renew all (playtest)', () => {
+  // Gardens in two districts, both lapsed.
+  function twoLapsed(): GameState {
+    let s = withProjects()
+    s = ok(applyCommand(s, { type: 'startProject', neighborhood: 'old_town', project: 'community_garden' }))
+    return { ...s, day: GARDEN_ENDS + 10, time: 50, expiryNotices: ['school_green:0', 'old_town:0'] }
+  }
+
+  it('renews every lapsed project and clears the notices', () => {
+    const renewed = ok(applyCommand(twoLapsed(), { type: 'renewAll' }))
+    expect(isExpired(renewed, 'school_green', 0)).toBe(false)
+    expect(isExpired(renewed, 'old_town', 0)).toBe(false)
+    expect(renewed.expiryNotices).toEqual([])
+  })
+
+  it('renews as many as the volunteers allow', () => {
+    const s = twoLapsed()
+    const one = ok(applyCommand(s, { type: 'renewProject', neighborhood: 'old_town', slot: 0 }))
+    const costOfFirst = s.time - one.time
+    const partial = ok(applyCommand({ ...s, time: costOfFirst }, { type: 'renewAll' }))
+    const stillLapsed = ['school_green', 'old_town'].filter((id) => isExpired(partial, id, 0))
+    expect(stillLapsed).toHaveLength(1)
+  })
+
+  it('is refused when nothing has lapsed, or no volunteers are left', () => {
+    expect(applyCommand(withProjects(), { type: 'renewAll' })).toEqual({ ok: false, reason: 'nothing_to_renew' })
+    expect(applyCommand({ ...twoLapsed(), time: 0 }, { type: 'renewAll' })).toEqual({
+      ok: false,
+      reason: 'insufficient_time',
+    })
+  })
+})

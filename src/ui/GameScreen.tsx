@@ -27,7 +27,8 @@ import { refreshAmbience, startAmbience, stopAmbience } from './ambience'
 import { seasonOfDay } from '../game/calendar'
 import { refreshMusic } from './music'
 import type { GameStore } from '../game/store'
-import type { Command, GameState, Reason, Speed } from '../game/types'
+import type { Command, GameState, NeedId, Reason, Speed } from '../game/types'
+import { applyCommand } from '../game/state'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { loadMilestones, milestoneById } from '../game/milestones'
 import { TUTORIAL_STEPS } from '../game/tutorial'
@@ -43,6 +44,7 @@ const COMMAND_SOUNDS: Partial<Record<Command['type'], SoundId>> = {
   startProject: 'build',
   removeProject: 'remove',
   renewProject: 'renew',
+  renewAll: 'renew',
   startBusLine: 'renew',
   research: 'research',
   townMeeting: 'meeting',
@@ -109,6 +111,16 @@ export default function GameScreen({
     [state],
   )
   const bubbles = useMemo(() => expiryBubbles(state, scenario), [state])
+  // Renew all (playtest): with two or more popups, one bar renews every lapsed
+  // project the volunteers can cover, or hides the popups.
+  const renewAll = useMemo(() => {
+    if (bubbles.length < 2) return null
+    const lapsed = allExpired(state, scenario).length
+    const result = applyCommand(state, { type: 'renewAll' })
+    if (!result.ok) return { lapsed, count: 0, cost: 0 }
+    return { lapsed, count: lapsed - allExpired(result.state, scenario).length, cost: state.time - result.state.time }
+  }, [bubbles, state])
+  const [highlightNeed, setHighlightNeed] = useState<NeedId | null>(null)
 
   // Undo (Milestone 9 polish): a soft toast offers to take back the last action
   // for a few seconds; Z or Ctrl+Z does the same.
@@ -281,6 +293,7 @@ export default function GameScreen({
           reducedMotion={settings.reducedMotion}
           onShow={showDistrict}
           focus={focus}
+          highlightNeed={drawer === 'town' ? highlightNeed : null}
         />
         <GoalTracker state={state} />
         <Toolbar
@@ -292,6 +305,7 @@ export default function GameScreen({
             town: (
               <TownPanel
                 state={state}
+                onHighlightNeed={setHighlightNeed}
                 onSelect={(id) => {
                   // On phones the drawer and the bottom sheet would overlap.
                   if (window.matchMedia('(max-width: 700px)').matches) setDrawer(null)
@@ -324,6 +338,34 @@ export default function GameScreen({
         )}
         <TutorialCard state={state} onNext={() => dispatch({ type: 'tutorialNext' })} />
         <GuideButton state={state} onShow={showDistrict} />
+        {renewAll && (
+          <div className="renew-all" role="region" aria-label={t('renewAll.text', { count: renewAll.lapsed })}>
+            <span>
+              <span aria-hidden="true">{'⌛'} </span>
+              {t('renewAll.text', { count: renewAll.lapsed })}
+            </span>
+            <button
+              type="button"
+              className="renew-all-button"
+              data-sound="none"
+              disabled={renewAll.count === 0}
+              onClick={() => dispatch({ type: 'renewAll' })}
+            >
+              {renewAll.count === 0
+                ? t('renewAll.none')
+                : renewAll.count === renewAll.lapsed
+                  ? t('renewAll.all', { cost: renewAll.cost })
+                  : t('renewAll.some', { count: renewAll.count, total: renewAll.lapsed, cost: renewAll.cost })}
+            </button>
+            <button
+              type="button"
+              className="renew-all-hide"
+              onClick={() => bubbles.forEach((bubble) => dispatch({ type: 'dismissExpiryNotice', notice: bubble.key }))}
+            >
+              {t('renewAll.dismiss')}
+            </button>
+          </div>
+        )}
         {undoOffer && (
           <div className="undo-toast" role="status" key={undoOffer.id}>
             <span>{undoOffer.text}</span>

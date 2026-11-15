@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { finishConstruction } from './testHelpers'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
-import { tick } from './tick'
+import { fadeEngagement, tick } from './tick'
 import { monthlyIncome } from './economy'
 import { loadMilestones } from './milestones'
 import {
@@ -211,7 +211,7 @@ describe('tick', () => {
     expect(grown.neighborhoods.riverside.needs.mobility).toBeGreaterThan(0.55 + 0.1)
   })
 
-  it('running gardens raise engagement by +5 each month, capped at 100', () => {
+  it('running gardens raise engagement by +5 a month (less the monthly fade), capped at 100', () => {
     const started = applyCommand(initialState(scenario), {
       type: 'startProject',
       neighborhood: 'old_town',
@@ -220,10 +220,12 @@ describe('tick', () => {
     expect(started.ok).toBe(true)
     if (!started.ok) return
     const afterMonth = runTicks(started.state, 30)
-    expect(afterMonth.engagement.old_town).toBe(50 + 5)
+    expect(afterMonth.engagement.old_town).toBe(fadeEngagement(50) + 5)
 
     const hot = { ...started.state, engagement: { ...started.state.engagement, old_town: 99 } }
-    expect(runTicks(hot, 30).engagement.old_town).toBe(100)
+    expect(runTicks(hot, 30).engagement.old_town).toBe(Math.min(100, fadeEngagement(99) + 5))
+    const full = { ...started.state, engagement: { ...started.state.engagement, old_town: 100 } }
+    expect(runTicks(full, 30).engagement.old_town).toBeLessThanOrEqual(100)
   })
 
   it('fulfils a resident message once and pays its reward exactly once', () => {
@@ -277,5 +279,28 @@ describe('tutorial auto-advance (Milestone 8)', function () {
     const full = { ...s, history: Array.from({ length: 240 }, (_, i) => ({ ...s.history[0], day: i + 1 })) }
     const next = runTicks({ ...full, day: TICKS_PER_MONTH * 300 }, 1)
     expect(next.history).toHaveLength(240)
+  })
+})
+
+describe('engagement fades (playtest)', () => {
+  it('fades towards the resting level without projects, never below it', () => {
+    const base = { ...initialState(scenario), engagement: { ...initialState(scenario).engagement, old_town: 50, harbour_row: 16 } }
+    const id = scenario.neighborhoods.find((n) => n.id === 'harbour_row') ? 'harbour_row' : scenario.neighborhoods[1].id
+    const start = { ...base, engagement: { ...base.engagement, [id]: 16 } }
+    const after = runTicks(start, TICKS_PER_MONTH)
+    expect(after.engagement.old_town).toBe(fadeEngagement(50))
+    expect(fadeEngagement(50)).toBeLessThan(50)
+    expect(fadeEngagement(90) - 90).toBeLessThan(fadeEngagement(50) - 50) // high engagement fades faster
+    expect(after.engagement[id]).toBe(16) // under the resting level: kept
+    expect(fadeEngagement(31)).toBe(30) // never fades below it
+  })
+
+  it('a running garden outpaces the fade', () => {
+    let s: GameState = { ...initialState(scenario), engagement: { ...initialState(scenario).engagement, old_town: 50 } }
+    const r = applyCommand(s, startGarden('old_town'))
+    if (!r.ok) throw new Error(r.reason)
+    s = finishConstruction(r.state)
+    const after = runTicks(s, TICKS_PER_MONTH * 2)
+    expect(after.engagement.old_town).toBeGreaterThan(50)
   })
 })

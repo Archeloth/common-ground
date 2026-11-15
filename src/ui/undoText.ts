@@ -16,6 +16,8 @@ export function undoText(command: Command, projectAtSlot?: string | null): strin
       return t('undo.removed', { project: projectAtSlot ? project(projectAtSlot) : t('undo.aProject'), neighborhood: place(command.neighborhood) })
     case 'renewProject':
       return t('undo.renewed', { neighborhood: place(command.neighborhood) })
+    case 'renewAll':
+      return t('undo.renewedAll')
     case 'research':
       return t('undo.researched', { tech: technologyById(loadTechnologies(), command.tech).name })
     case 'startBusLine':
