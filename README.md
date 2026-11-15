@@ -27,6 +27,9 @@ sixteen little districts grow greener, livelier and happier.
 - **15 projects and 16 real-world technologies**, each with an honest "limits"
   line and a confidence tag. Volunteer-run projects last a few years and need
   renewing; infrastructure is permanent.
+- **Real choices**: everything you build has monthly upkeep, taxes rise and fall
+  with how happy the town is, volunteers drift away if they sit idle, and
+  deeper research costs more, so money, volunteers and Knowledge all matter.
 - **Five chapters** with an always-visible goal tracker, a gentle tutorial, a
   "What next?" helper and an in-game **Lexicon** that explains every mechanic.
 - **Sound**: soft interface sounds, and generated wind and birdsong that get
@@ -46,7 +49,8 @@ tab, and press **Play** (or **Space**) to let time pass.
 Controls: **drag** to pan - **scroll / pinch** to zoom - **hover** for a
 neighbourhood's stats (tap on touch screens) - **click** to open it - **Esc**
 closes the topmost panel - **Space** pauses and resumes - **1 / 2 / 3** pick
-normal, fast and fastest. **Menu** returns to the main menu (your town is saved
+normal, fast and fastest. Menus stay open while you pan; close them with their
+button, the **×** or **Esc**. **Menu** returns to the main menu (your town is saved
 first).
 
 ## Current status

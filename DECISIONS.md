@@ -329,3 +329,52 @@ is the one class component (React requires it for error boundaries). The menu
 also says "Opening your saves..." while IndexedDB starts up: on a slow disk it
 can take a couple of seconds, and two greyed-out buttons with no explanation
 looked broken.
+
+## 15 Nov 2026 - Balance pass (scarcity) and two UI fixes
+
+**Why.** Playtesting found that nothing was ever scarce. A goal-following bot
+ended ten years with 320,000 Budget and 474 Knowledge; every slot was full by
+year 2 and every technology researched by year 3. There were no running costs,
+volunteers banked without limit, and milestones alone paid for most of the
+research tree.
+
+**Four levers, all in `constants.ts` and the content JSON:**
+- *Upkeep*: 5% of a project's price per month, 60 per bus line; lapsed
+  projects cost nothing. Money floors at 0 and nothing is ever removed or
+  confiscated, to keep the plan's non-punitive tone; a stretched town just
+  has nothing left over.
+- *Taxes follow satisfaction*: 0.13 + 0.14 x satisfaction per resident (about
+  2,500/month at 60). Good play pays; a neglected town earns less. The start
+  budget is 10,000.
+- *A volunteer cap*: 6 + two months of new volunteers. Idle volunteers drift
+  away, and raising engagement raises both the income and the cap.
+- *Deeper research costs more*, milestone rewards are trimmed, and workshop
+  Knowledge grows with the square root of the series running ("the same keen
+  people come to every workshop", as the tech card's limit already said).
+
+**Measured, not guessed.** A goal-following bot and a simple "build
+everything" bot ran before and after each change. Result: money stays tight
+for about four years without ever leaving the player stuck (zero months under
+300), all five chapters complete by year 2.8, the tree finishes in year 4, and
+banked money at year 10 dropped from 320,000 to 65,000. Once every slot is
+full, money piles up again slowly. That is the sandbox phase; there is nothing
+left to buy, so no rule could make it scarce there. `balance.test.ts` guards
+the shape (never negative, never over the cap, no hoarding, not the whole tree
+in two years) without pinning exact numbers.
+
+**What next? walks the research chain.** It points at the first technology
+you can actually research ("Urban trees first"), and when Knowledge is out of
+reach it suggests Community learning or a workshop series instead of silence.
+
+**Drawers stay open.** Closing on any outside click made it impossible to pan
+with the Town overview open. Drawers now close with their button, an x or
+Esc. Choosing a district from the Town ranking keeps the drawer open on
+desktop (on phones it closes, because the drawer and the bottom sheet would
+overlap).
+
+**The panel "flicker" was the map showing through.** Screencast recordings of
+district-to-district clicks showed no remount and a one-frame content switch.
+But the panel was 94% opaque over a map that animates every frame, so the
+moving birds, bus, rings and selection outline showed through. The panel,
+drawers and goal tracker are now opaque, and need bars are keyed per district
+so they no longer ease from the previous district's values.

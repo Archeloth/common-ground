@@ -74,3 +74,10 @@ session script as round 1; turn the sound on.
 - Phone check: play ten minutes on the oldest phone available. Does panning
   stay smooth? Is the text readable? Can every button be tapped comfortably?
 - Open the game with `?debug` on that phone and note the fps while time runs.
+
+## After the balance pass
+
+- Does money pressure feel fair, not stressful? Did anyone hit 0 and feel stuck?
+- Did testers notice upkeep (the per-month figure, the red chip) before it surprised them?
+- Did anyone hit the volunteer cap? Did "keep them busy" make sense?
+- Did testers find workshops when research felt slow (the What next? hint)?
