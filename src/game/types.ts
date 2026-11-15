@@ -209,6 +209,9 @@ export interface GameState {
   // The day of each district's last town meeting (absent = never). One
   // meeting per district every TOWN_MEETING_COOLDOWN_DAYS.
   lastMeeting: { [id: string]: number }
+  // One point per month for the Town overview's history chart (oldest first,
+  // capped at HISTORY_MAX_POINTS).
+  history: HistoryPoint[]
   // Bus links between adjacent neighborhoods (Milestone 7): each pair adds
   // BUS_MOBILITY_BONUS to both endpoints' mobility target. Only bridge pairs
   // are adjacent across the river, so lines cross only at the fixed bridges.
@@ -223,3 +226,12 @@ export interface GameState {
 }
 
 export type MessageStatus = 'open' | 'done'
+
+// A month in the town's story: day, town satisfaction (0-100), budget, and the
+// town-average coverage of each need (0-1), rounded to keep saves small.
+export interface HistoryPoint {
+  day: number
+  satisfaction: number
+  budget: number
+  needs: Needs
+}

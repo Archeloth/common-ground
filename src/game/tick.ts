@@ -1,4 +1,4 @@
-import type { GameState, NeighborhoodSimState, Needs, ProjectEffect } from './types'
+import type { GameState, HistoryPoint, NeighborhoodSimState, Needs, ProjectEffect } from './types'
 import type { NeighborhoodDef } from './types'
 import { loadScenario } from './scenario'
 import { loadProjects, projectById } from './projects'
@@ -7,12 +7,15 @@ import { messageCatalog, messageFulfilled, applyMessageReward } from './messages
 import { advanceTutorial } from './tutorial'
 import { activeProjectIds, expiryNoticeKey } from './expiry'
 import { monthlyIncome, monthlyUpkeep, volunteerCap } from './economy'
+import { townNeedAverage, townSatisfaction } from './milestones'
+import { NEED_ORDER } from './needs'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import { clamp, clamp01, moveNeedsToward, needTargets, round } from './needs'
 import {
   BUS_MOBILITY_BONUS,
   ENGAGEMENT_MAX,
   FOOD_SHARE_EFFICIENCY,
+  HISTORY_MAX_POINTS,
   NEED_DRIFT_PER_TICK,
   SATISFACTION_SMOOTH_PER_TICK,
   TICKS_PER_MONTH,
@@ -194,8 +197,19 @@ export function tick(state: GameState): GameState {
     }
   }
 
+  // Town history: one point at each monthly settlement (Milestone 9 polish).
+  let history = state.history ?? []
+  if (day > 1 && (day - 1) % TICKS_PER_MONTH === 0) {
+    const now = { ...withNewSim, knowledge }
+    const needs = {} as HistoryPoint['needs']
+    for (const need of NEED_ORDER) needs[need] = round(townNeedAverage(now, scenario, need), 3)
+    history = [...history, { day, satisfaction: round(townSatisfaction(now, scenario), 1), budget, needs }].slice(
+      -HISTORY_MAX_POINTS,
+    )
+  }
+
   return advanceTutorial(
-    { ...withNewSim, knowledge, engagement, messages, milestones, milestoneNotices },
+    { ...withNewSim, knowledge, engagement, messages, milestones, milestoneNotices, history },
     scenario,
   )
 }

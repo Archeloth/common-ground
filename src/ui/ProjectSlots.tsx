@@ -17,7 +17,11 @@ function EffectChips({ project }: { project: ProjectDef }) {
   return (
     <span className="effect-chips">
       {project.effects.map((effect) => (
-        <span key={effect.need} className="effect-chip" style={{ color: NEED_COLORS[effect.need] }}>
+        <span
+          key={effect.need}
+          className="effect-chip"
+          style={{ background: `color-mix(in srgb, ${NEED_COLORS[effect.need]} 14%, white)` }}
+        >
           <NeedIcon need={effect.need} size={12} />+{Math.round(effect.change * 100)}% {t(`need.${effect.need}`)}
         </span>
       ))}

@@ -266,4 +266,16 @@ describe('tutorial auto-advance (Milestone 8)', function () {
     state = tick(garden.state)
     expect(state.tutorialStep).toBe(2) // garden done, watch step active
   })
+
+  it('records one history point per month, capped', () => {
+    let s = initialState(scenario)
+    s = runTicks(s, TICKS_PER_MONTH * 3)
+    expect(s.history).toHaveLength(3)
+    expect(s.history[0].day).toBe(TICKS_PER_MONTH + 1)
+    expect(s.history[0].satisfaction).toBeGreaterThan(0)
+    expect(Object.keys(s.history[0].needs)).toHaveLength(6)
+    const full = { ...s, history: Array.from({ length: 240 }, (_, i) => ({ ...s.history[0], day: i + 1 })) }
+    const next = runTicks({ ...full, day: TICKS_PER_MONTH * 300 }, 1)
+    expect(next.history).toHaveLength(240)
+  })
 })

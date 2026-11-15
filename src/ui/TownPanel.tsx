@@ -6,6 +6,7 @@ import { allExpired, countActive } from '../game/expiry'
 import { NEED_ORDER } from '../game/needs'
 import { monthlyIncome, monthlyUpkeep } from '../game/economy'
 import NeedBar from './NeedBar'
+import TownHistory from './TownHistory'
 import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import './TownPanel.css'
@@ -91,6 +92,11 @@ export default function TownPanel({ state, onSelect }: TownPanelProps) {
           </dd>
         </div>
       </dl>
+
+      <section className="town-section">
+        <h4>{t('history.title')}</h4>
+        <TownHistory history={state.history ?? []} />
+      </section>
 
       <section className="town-section">
         <h4>{t('town.needs')}</h4>

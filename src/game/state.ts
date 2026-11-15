@@ -66,6 +66,7 @@ export function initialState(scenario: ScenarioDef): GameState {
     expiryNotices: [],
     engagement,
     lastMeeting: {},
+    history: [],
     busLines: [],
     messages,
     tutorialStep: 0,

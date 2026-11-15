@@ -21,13 +21,21 @@ export const COLORS = {
 // One colour per need (Milestone 9): need bars, effect chips and the
 // floating "+12% Food" labels all use it, so a need is recognisable at a
 // glance. Always shown next to the need's name or icon, never alone.
+//
+// Validated with the dataviz skill's palette checker on the panel surface
+// (#fbfcf7): lightness band, chroma floor, colour-blind separation and the
+// normal-vision floor all pass for neighbours in this order. Energy and
+// housing sit below 3:1 contrast, so every use carries a visible label or
+// icon (and the history chart has a table view). Violet and blue are too close
+// for some colour-blind players when compared directly, so the history chart
+// draws needs as separate small charts, never six lines on one plot.
 export const NEED_COLORS: Record<NeedId, string> = {
-  energy: '#d98c1f',
-  food: '#d9663f',
-  mobility: '#3f7fc4',
-  green: '#3f9a4a',
-  waste: '#2f9a8f',
-  housing: '#c25a87',
+  energy: '#eda100',
+  food: '#e34948',
+  mobility: '#2a78d6',
+  green: '#0ca30c',
+  waste: '#6250d6',
+  housing: '#e87ba4',
 }
 
 export const KIND_COLORS: Record<NeighborhoodKind, string> = {

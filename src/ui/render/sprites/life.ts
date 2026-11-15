@@ -161,12 +161,19 @@ export function floatingLabel(ctx: Ctx, x: number, y: number, text: string, colo
   ctx.font = '700 13px ui-rounded, "SF Pro Rounded", Nunito, system-ui, sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.lineWidth = 4
-  ctx.strokeStyle = 'rgba(255,255,255,0.95)'
-  ctx.lineJoin = 'round'
-  ctx.strokeText(text, x, y - eased * 34)
+  const ty = y - eased * 34
+  const width = ctx.measureText(text).width
+  // A soft white pill, a dot in the need's colour, and the text in ink.
+  ctx.fillStyle = 'rgba(255,255,255,0.92)'
+  ctx.beginPath()
+  ctx.roundRect(x - width / 2 - 16, ty - 10, width + 26, 20, 10)
+  ctx.fill()
   ctx.fillStyle = colour
-  ctx.fillText(text, x, y - eased * 34)
+  ctx.beginPath()
+  ctx.arc(x - width / 2 - 6, ty, 4, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.fillStyle = '#26321f'
+  ctx.fillText(text, x + 4, ty)
   ctx.restore()
 }
 

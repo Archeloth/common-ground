@@ -83,9 +83,10 @@ describe('versioned save files', function () {
       4: function (s: unknown) { return { ...(s as object), version: 5, fromFour: true } },
       5: function (s: unknown) { return { ...(s as object), version: 6, fromFive: true } },
       6: function (s: unknown) { return { ...(s as object), version: 7, fromSix: true } },
+      7: function (s: unknown) { return { ...(s as object), version: 8, fromSeven: true } },
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(7)
+    expect(migrated.version).toBe(8)
     expect((migrated as unknown as { fromFour: boolean }).fromFour).toBe(true)
     expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
     expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
@@ -97,9 +98,9 @@ describe('versioned save files', function () {
     expect(function () { migrateSave({ version: 0 } as never) }).toThrow(/no migration/)
   })
 
-  it('the shipped migration table covers the earlier shapes (1 to 6)', function () {
-    expect(CURRENT_SAVE_VERSION).toBe(7)
-    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6])
+  it('the shipped migration table covers the earlier shapes (1 to 7)', function () {
+    expect(CURRENT_SAVE_VERSION).toBe(8)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6, 7])
   })
 
   it('migrates a version-1 save to version 4, seeding research, engagement, messages and the finished tutorial', function () {
@@ -171,6 +172,7 @@ describe('versioned save files', function () {
     delete v4.state.expiryNotices
     delete v4.state.lastMeeting
     delete v4.state.projectReady
+    delete v4.state.history
 
     const result = parseAndLoad(JSON.stringify(v4))
     expect(result.ok).toBe(true)
@@ -188,6 +190,7 @@ describe('versioned save files', function () {
     v5.version = 5
     delete v5.state.lastMeeting
     delete v5.state.projectReady
+    delete v5.state.history
     const result = parseAndLoad(JSON.stringify(v5))
     expect(result.ok).toBe(true)
     if (result.ok) {
@@ -200,11 +203,21 @@ describe('versioned save files', function () {
     const v6 = createSave(playedState()) as unknown as { version: number; state: { [key: string]: unknown } }
     v6.version = 6
     delete v6.state.projectReady
+    delete v6.state.history
     const result = parseAndLoad(JSON.stringify(v6))
     expect(result.ok).toBe(true)
     if (result.ok) {
       expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
       expect(result.save.state.projectReady.old_town.every((d) => d === null)).toBe(true)
     }
+  })
+
+  it('migrates a version-7 save to version 8 with an empty history', function () {
+    const v7 = createSave(playedState()) as unknown as { version: number; state: { [key: string]: unknown } }
+    v7.version = 7
+    delete v7.state.history
+    const result = parseAndLoad(JSON.stringify(v7))
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.save.state.history).toEqual([])
   })
 })

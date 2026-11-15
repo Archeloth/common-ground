@@ -11,7 +11,7 @@ import { projectEndsAt } from '../game/expiry'
 // fails validation reports problems instead of crashing. All functions here
 // are pure, so the round-trip, migration and corrupt-save tests run in Node.
 
-export const CURRENT_SAVE_VERSION = 7
+export const CURRENT_SAVE_VERSION = 8
 
 export interface SaveFile {
   version: number
@@ -101,6 +101,11 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
     const projectReady: Record<string, Array<number | null>> = {}
     for (const [id, slots] of Object.entries(s.state.projects ?? {})) projectReady[id] = (slots ?? []).map(() => null)
     return { ...s, version: 7, state: { ...s.state, projectReady } }
+  },
+  // 7 -> 8: the town history chart. An older town's story starts now.
+  7: (save) => {
+    const s = save as { state: GameState }
+    return { ...s, version: 8, state: { ...s.state, history: [] } }
   },
 }
 

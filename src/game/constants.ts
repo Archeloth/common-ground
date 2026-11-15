@@ -47,6 +47,9 @@ export const TOWN_MEETING_COOLDOWN_DAYS = 60
 // Undo (plan: "undo makes experimenting feel safe"): the last undoable
 // action can be taken back within this many real-time milliseconds.
 export const UNDO_WINDOW_MS = 8000
+
+// Town history (one point per month) is capped at 20 years so saves stay small.
+export const HISTORY_MAX_POINTS = 240
 export const ENGAGEMENT_MAX = 100
 
 // Projects finish faster in engaged neighborhoods: Community-time cost is

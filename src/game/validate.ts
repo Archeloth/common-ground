@@ -6,6 +6,7 @@ import { parseExpiryNoticeKey } from './expiry'
 import { loadTechnologies } from './technologies'
 import { loadMilestones } from './milestones'
 import { TUTORIAL_DONE } from './tutorial'
+import { HISTORY_MAX_POINTS } from './constants'
 
 // Runtime validation of a GameState. Used when loading saved games (a broken
 // save must show a friendly message, never crash) and by the invariant tests.
@@ -155,6 +156,20 @@ export function validateGameState(state: unknown): string[] {
       const n = parsed ? scenario.neighborhoods.find((x) => x.id === parsed.neighborhood) : undefined
       if (!parsed || !n || parsed.slot >= n.slots) {
         problems.push(`expiryNotices[${index}] must be a "neighborhood:slot" key`)
+      }
+    })
+  }
+
+  // Town history: an array of monthly points with finite numbers.
+  if (!Array.isArray(s.history)) {
+    problems.push('history must be an array')
+  } else if (s.history.length > HISTORY_MAX_POINTS) {
+    problems.push(`history holds at most ${HISTORY_MAX_POINTS} points`)
+  } else {
+    s.history.forEach((point, index) => {
+      const p = point as Record<string, unknown> | null
+      if (!p || typeof p !== 'object' || !Number.isInteger(p.day) || typeof p.satisfaction !== 'number' || typeof p.budget !== 'number' || !p.needs || typeof p.needs !== 'object') {
+        problems.push(`history[${index}] must be a monthly point`)
       }
     })
   }
