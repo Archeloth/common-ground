@@ -5,6 +5,7 @@ import { SLOT_KEYS } from '../persistence/slots'
 import SettingsScreen from './SettingsScreen'
 import { formatGameDate } from './dates'
 import { t } from './i18n'
+import { ISSUES_URL, SOUNDS_LICENSE_URL, SOUNDS_URL, SOURCE_URL } from './links'
 import './MainMenu.css'
 
 interface MainMenuProps {
@@ -18,7 +19,7 @@ interface MainMenuProps {
   onHowToPlay: () => void
 }
 
-type View = 'main' | 'load' | 'settings'
+type View = 'main' | 'load' | 'settings' | 'credits'
 
 function savedLine(meta: SlotMeta): string {
   const date = new Date(meta.savedAt)
@@ -142,7 +143,45 @@ export default function MainMenu({
 
         {view === 'settings' && <SettingsScreen onBack={() => setView('main')} />}
 
-        <p className="menu-about">{t('menu.about')}</p>
+        {view === 'credits' && (
+          <section className="menu-panel credits" aria-label={t('menu.credits')}>
+            <h2>{t('menu.credits')}</h2>
+            <p>{t('credits.game')}</p>
+            <p>
+              {t('credits.sounds')}{' '}
+              <a href={SOUNDS_URL} target="_blank" rel="noreferrer">
+                Interface Sounds Starter Pack
+              </a>{' '}
+              {t('credits.soundsBy', { author: t('credits.soundsAuthor') })},{' '}
+              <a href={SOUNDS_LICENSE_URL} target="_blank" rel="noreferrer">
+                CC-BY-SA 3.0
+              </a>
+              . {t('credits.soundsChanges')}
+            </p>
+            <p>{t('credits.art')}</p>
+            <p>
+              <a href={SOURCE_URL} target="_blank" rel="noreferrer">
+                {t('credits.source')}
+              </a>
+            </p>
+            <div className="menu-row">
+              <button type="button" className="menu-link" onClick={() => setView('main')}>
+                {t('menu.back')}
+              </button>
+            </div>
+          </section>
+        )}
+
+        <p className="menu-about">
+          {t('menu.about')}{' '}
+          <button type="button" className="menu-link inline" onClick={() => setView('credits')}>
+            {t('menu.credits')}
+          </button>{' '}
+          ·{' '}
+          <a href={ISSUES_URL} target="_blank" rel="noreferrer">
+            {t('menu.feedback')}
+          </a>
+        </p>
       </main>
     </div>
   )

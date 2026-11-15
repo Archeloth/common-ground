@@ -1,0 +1,75 @@
+.crash {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: #ccd6b8;
+}
+
+.crash-card {
+  width: min(26rem, 100%);
+  padding: 1.6rem;
+  border-radius: var(--radius-l);
+  background: #fbfcf7;
+  box-shadow: var(--shadow-m);
+  text-align: center;
+}
+
+.crash-emoji {
+  font-size: 2.6rem;
+}
+
+.crash-card h1 {
+  margin: 0.3rem 0 0.5rem;
+  font-size: 1.35rem;
+  color: var(--ink-strong);
+}
+
+.crash-card p {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+}
+
+.crash-actions {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.crash-actions button {
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba(31, 43, 28, 0.15);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.crash-actions .crash-primary {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.crash-small {
+  font-size: 0.82rem;
+}
+
+.crash-card details {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  text-align: left;
+}
+
+.crash-card code {
+  display: block;
+  margin-top: 0.4rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.crash-card a {
+  color: var(--primary);
+  font-weight: 600;
+}

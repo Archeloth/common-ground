@@ -72,6 +72,9 @@ export default function GameScreen({
   onMenu,
 }: GameScreenProps) {
   const settings = useSettings()
+  if (import.meta.env.DEV && new URLSearchParams(location.search).has('crash')) {
+    throw new Error('Test crash (?crash in development)')
+  }
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [reason, setReason] = useState<Reason | null>(null)
   const [drawer, setDrawer] = useState<DrawerId | null>(null)

@@ -6,7 +6,7 @@ import type { LexiconEntryId } from './ui/lexiconEntries'
 import { useSaves } from './ui/useSaves'
 import { applySettingsToDocument, getSettings } from './ui/settings'
 import { useGame } from './ui/useGame'
-import { createGameStore } from './game/store'
+import { store } from './gameStore'
 import { initialState } from './game/state'
 import { loadScenario } from './game/scenario'
 import { t } from './ui/i18n'
@@ -15,7 +15,6 @@ import './App.css'
 import './ui/mobile.css'
 
 const scenario = loadScenario()
-const store = createGameStore()
 applySettingsToDocument(getSettings())
 
 type Screen = 'menu' | 'game'

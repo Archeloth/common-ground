@@ -272,3 +272,20 @@
 .setting-row input[type='range'] {
   accent-color: var(--primary);
 }
+
+.credits p {
+  margin: 0 0 0.7rem;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+.credits a,
+.menu-about a {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.menu-link.inline {
+  padding: 0;
+  font-size: inherit;
+}

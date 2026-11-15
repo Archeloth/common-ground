@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// The config runs in Node; this is the only Node global it needs, declared
+// here rather than adding @types/node for one line.
+declare const process: { env: Record<string, string | undefined> }
+
 // https://vite.dev/config/
 //
-// Deploying on GitHub Pages later? Set `base` to the repository name, e.g.
-// `base: '/common-ground/'` (see the development plan, Milestone 0 step 5).
+// GitHub Pages serves the game from /<repository>/, so the deploy workflow
+// sets BASE_PATH=/common-ground/. Locally (and on hosts that serve from the
+// root) it stays '/'. Asset URLs in code use import.meta.env.BASE_URL.
 export default defineConfig({
+  base: process.env.BASE_PATH ?? '/',
   plugins: [react()],
 })
