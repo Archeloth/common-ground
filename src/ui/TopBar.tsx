@@ -5,9 +5,9 @@ import type { LexiconEntryId } from './lexiconEntries'
 import { monthlyIncome } from '../game/economy'
 import { loadScenario } from '../game/scenario'
 import type { GameState, Speed } from '../game/types'
+import SpeedControls from './SpeedControls'
 import './TopBar.css'
 
-const SPEEDS: readonly Speed[] = [0, 1, 2, 4]
 const scenario = loadScenario()
 
 interface TopBarProps {
@@ -41,23 +41,7 @@ export default function TopBar({ state, onSpeed, onLexicon }: TopBarProps) {
 
       <div className="topbar-clock">
         <span className="topbar-date">{formatGameDate(state.day)}</span>
-        <div className="speed-controls" role="group" aria-label={t('topbar.speedLabel')}>
-          {SPEEDS.map((speed) => {
-            const nudge = state.speed === 0 && speed === 1
-            return (
-              <button
-                key={speed}
-                type="button"
-                className={`speed-button${state.speed === speed ? ' active' : ''}${nudge ? ' nudge' : ''}`}
-                title={nudge ? t('topbar.pausedHint') : undefined}
-                onClick={() => onSpeed(speed)}
-                aria-pressed={state.speed === speed}
-              >
-                {speed === 0 ? t('topbar.pause') : nudge ? `▶ ${t('topbar.play')}` : `${speed}×`}
-              </button>
-            )
-          })}
-        </div>
+        <SpeedControls speed={state.speed} onSpeed={onSpeed} />
       </div>
 
       <div className="resource-chips">

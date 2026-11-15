@@ -13,7 +13,8 @@ import { createGameStore } from './game/store'
 import { initialState } from './game/state'
 import { useGame } from './ui/useGame'
 import { loadMilestones, milestoneById } from './game/milestones'
-import type { Command, GameState, Reason } from './game/types'
+import type { Command, GameState, Reason, Speed } from './game/types'
+import { isTypingTarget, speedForKey } from './ui/speedKeys'
 import { openSaveDb } from './persistence/db'
 import type { SaveDb } from './persistence/db'
 import { createSave, parseAndLoad } from './persistence/saveFile'
@@ -225,6 +226,25 @@ function App() {
   }, [dispatch])
 
   const closeLexicon = useCallback(() => setLexicon(null), [])
+
+  // Clock shortcuts (Milestone 8.6): Space pauses/resumes at the last speed,
+  // 1/2/3 pick 1x/2x/4x. Off while typing or while the lexicon is open.
+  const lastRunningRef = useRef<Speed>(1)
+  useEffect(() => {
+    if (state.speed !== 0) lastRunningRef.current = state.speed
+  }, [state.speed])
+  useEffect(() => {
+    if (lexicon) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey || isTypingTarget(event.target)) return
+      const next = speedForKey(event.key, store.getState().speed, lastRunningRef.current)
+      if (next === null) return
+      event.preventDefault() // Space would otherwise scroll or press a focused button
+      dispatch({ type: 'setSpeed', speed: next })
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [lexicon, dispatch])
   const openLexicon = useCallback(() => setLexicon('welcome'), [])
   const startPlaying = useCallback(() => {
     setLexicon(null)

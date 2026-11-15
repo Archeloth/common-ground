@@ -1,0 +1,67 @@
+.speed-group {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid rgba(31, 43, 28, 0.22);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.speed-segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.4rem;
+  height: 1.9rem;
+  padding: 0 0.55rem;
+  border: none;
+  border-left: 1px solid rgba(31, 43, 28, 0.14);
+  background: transparent;
+  color: #2d3929;
+  fill: currentColor;
+  cursor: pointer;
+}
+
+.speed-segment:first-child {
+  border-left: none;
+}
+
+.speed-segment:hover {
+  background: #eef2e6;
+}
+
+.speed-segment:focus-visible {
+  outline: 2px solid #3f6a3a;
+  outline-offset: -2px;
+}
+
+.speed-segment.active {
+  background: #3f523a;
+  color: #f2f6e7;
+}
+
+/* While paused, Play breathes gently so the next step is obvious. */
+.speed-segment.nudge {
+  animation: speed-nudge 1.6s ease-in-out infinite;
+}
+
+@keyframes speed-nudge {
+  0%,
+  100% {
+    background: transparent;
+  }
+  50% {
+    background: #d6e8cc;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speed-segment.nudge {
+    animation: none;
+    background: #d6e8cc;
+  }
+}
+
+:root[data-motion='reduced'] .speed-segment.nudge {
+  animation: none;
+  background: #d6e8cc;
+}
