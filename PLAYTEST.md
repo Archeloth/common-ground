@@ -58,3 +58,19 @@ Use the same session script. Watch these in particular:
 - Did they find Continue and the Menu button, and trust that their town was kept?
 - Did they look at the goal tracker without being prompted?
 - Did the speed buttons read as one control? Did anyone try Space?
+
+## Round 3 (Milestone 9) - the exit test
+
+The plan's Milestone 9 exit test: **a stranger describes the game as
+"relaxing" or "cozy" unprompted, and it runs well on an older phone.** Same
+session script as round 1; turn the sound on.
+
+- Note the words testers use to describe it, unprompted. "Relaxing", "cozy",
+  "cute" or "calm" count.
+- Did they notice their projects appearing on the map (panels on roofs, the
+  garden, the turbine)? Did they say anything about it?
+- Did the sounds feel pleasant, or did anyone mute them? Which ones grated?
+- Did anyone open Settings? What did they change?
+- Phone check: play ten minutes on the oldest phone available. Does panning
+  stay smooth? Is the text readable? Can every button be tapped comfortably?
+- Open the game with `?debug` on that phone and note the fps while time runs.

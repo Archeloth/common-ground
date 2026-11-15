@@ -289,3 +289,11 @@
   padding: 0;
   font-size: inherit;
 }
+
+/* Shown for the moment it takes the browser to open the save storage. */
+.menu-loading {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  animation: fade-in 400ms ease 300ms both;
+}

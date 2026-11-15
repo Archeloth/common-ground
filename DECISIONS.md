@@ -277,3 +277,55 @@ to an `audio.ts` facade, so Milestone 9 only adds the sounds.
 **The menu protects the autosave.** The store holds a blank town until the
 player chooses Continue, New game or Load, so autosave only runs while a
 session is active. Returning to the menu flushes the autosave first.
+
+## 15 Nov 2026 - Milestone 9 decisions (look, sound, polish, release prep)
+
+**Art is drawn in code.** Every building, tree, project scene and creature is a
+small vector function (`src/ui/render/sprites/`), so there are no image files,
+no licence questions, crisp results at any zoom, and progress can change the
+picture directly. Each project names its scene in `projects.json` (`visual`);
+some also change the houses around them (solar on roofs, retrofitted roofs and
+warm windows, heat pumps by the walls). A deterministic layout per district
+(`scene/layout.ts`, seeded from the scenario) means the town never reshuffles.
+
+**The state is visible in the picture.** Ground colour follows satisfaction,
+parked cars follow mobility, chimney smoke follows energy, birds follow green
+space, and lapsed projects fade to grey. Nothing new to learn: the map simply
+shows what the panel says.
+
+**Cache the districts, animate on top.** Each district is drawn once into its
+own canvas, keyed by its look and a zoom bucket (steps of about 19%, always a
+little above the real zoom, so it stays sharp), and is redrawn only when that
+key changes. A frame is the river, sixteen image copies and a small living
+layer (turbines, smoke, birds, bees, ripples, buses, pop-ins). Measured at
+about 60 fps in headless Edge; `?debug` shows the numbers. Reduced motion
+draws a still town and redraws only on change.
+
+**Sound files: trimmed, credited, re-mappable.** The interface pack (OpenGameArt,
+offered as CC-BY-SA 3.0 / GPL) is used under CC-BY-SA 3.0. The files were WAVs
+named .ogg and padded to 3.4 s with silence (9 MB); `scripts/trim_audio.py`
+trims them to 0.6 MB and is itself the record of the modification.
+`soundMap.ts` is one table, so sounds can be re-mapped by ear. The author's
+name still needs confirming from the OpenGameArt page (it blocks automated
+reads); LICENSES.md and the credits mark it TO FILL IN.
+
+**Ambience is generated, not recorded.** Wind is filtered brown noise with a
+slow swell; birdsong is short synthesised chirps whose rate follows town-wide
+green space, so a greener town sounds livelier. No files, nothing to license.
+
+**Sounds stay out of the simulation.** The UI plays them: button clicks by
+delegation (`data-sound`), command results in the game screen, and things the
+simulation did by itself (a chapter completed, a request fulfilled, a project
+lapsed) by comparing consecutive states.
+
+**Phones get bottom sheets.** All small-screen rules live in `mobile.css`. The
+neighbourhood panel and drawers become sheets, the goal tracker starts
+collapsed, and a tap shows a district's card for a few seconds (touch has no
+hover).
+
+**Never lose a town, even on a crash.** The store lives in its own module, so
+the error boundary can still offer "Download my save" after the UI fails. It
+is the one class component (React requires it for error boundaries). The menu
+also says "Opening your saves..." while IndexedDB starts up: on a slow disk it
+can take a couple of seconds, and two greyed-out buttons with no explanation
+looked broken.

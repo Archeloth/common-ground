@@ -73,6 +73,11 @@ export default function MainMenu({
 
         {view === 'main' && (
           <nav className="menu-actions" aria-label={t('menu.title')}>
+            {!saves.ready && (
+              <p className="menu-loading" role="status">
+                {t('menu.loadingSaves')}
+              </p>
+            )}
             {autosave && (
               <button type="button" className="menu-button primary" onClick={onContinue}>
                 <span>{t('menu.continue')}</span>
