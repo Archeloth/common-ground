@@ -136,6 +136,16 @@ export function validateGameState(state: unknown): string[] {
     })
   }
 
+  // Town meeting cooldowns: day numbers per district.
+  if (s.lastMeeting === null || typeof s.lastMeeting !== 'object' || Array.isArray(s.lastMeeting)) {
+    problems.push('lastMeeting must be an object')
+  } else {
+    for (const [id, day] of Object.entries(s.lastMeeting as Record<string, unknown>)) {
+      if (!scenario.neighborhoods.some((n) => n.id === id)) problems.push(`lastMeeting.${id} is not a neighbourhood`)
+      else if (typeof day !== 'number' || !Number.isInteger(day) || day < 1) problems.push(`lastMeeting.${id} must be a day number`)
+    }
+  }
+
   // Milestone 7 collections: dynamic engagement, bus links and messages.
   if (s.engagement === null || typeof s.engagement !== 'object') {
     problems.push('engagement must be an object')

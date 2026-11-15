@@ -5,7 +5,7 @@ import { loadScenario, neighborhoodById } from '../game/scenario'
 import { satisfactionOf } from '../game/satisfaction'
 import { NEED_ORDER } from '../game/needs'
 import { TOWN_MEETING_ENGAGEMENT, TOWN_MEETING_TIME } from '../game/constants'
-import { applyCommand } from '../game/state'
+import { applyCommand, meetingReadyIn } from '../game/state'
 import { messageForNeighborhood } from '../game/messages'
 import type { MessageDef } from '../game/messages'
 import ProjectSlots from './ProjectSlots'
@@ -183,7 +183,9 @@ export default function NeighborhoodPanel({
           <p className="panel-action-hint">
             {meeting.ok
               ? t('panel.townMeetingHint', { engagement: TOWN_MEETING_ENGAGEMENT, time: TOWN_MEETING_TIME })
-              : t(`reason.${meeting.reason}`)}
+              : meeting.reason === 'meeting_cooldown'
+                ? t('panel.meetingIn', { days: meetingReadyIn(state, neighborhood.id) })
+                : t(`reason.${meeting.reason}`)}
           </p>
         </div>
 

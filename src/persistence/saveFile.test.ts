@@ -81,9 +81,10 @@ describe('versioned save files', function () {
       2: function (s: unknown) { return { ...(s as object), version: 3, fromTwo: true } },
       3: function (s: unknown) { return { ...(s as object), version: 4, fromThree: true } },
       4: function (s: unknown) { return { ...(s as object), version: 5, fromFour: true } },
+      5: function (s: unknown) { return { ...(s as object), version: 6, fromFive: true } },
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(5)
+    expect(migrated.version).toBe(6)
     expect((migrated as unknown as { fromFour: boolean }).fromFour).toBe(true)
     expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
     expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
@@ -95,9 +96,9 @@ describe('versioned save files', function () {
     expect(function () { migrateSave({ version: 0 } as never) }).toThrow(/no migration/)
   })
 
-  it('the shipped migration table covers the earlier shapes (1 to 4)', function () {
-    expect(CURRENT_SAVE_VERSION).toBe(5)
-    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4])
+  it('the shipped migration table covers the earlier shapes (1 to 5)', function () {
+    expect(CURRENT_SAVE_VERSION).toBe(6)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5])
   })
 
   it('migrates a version-1 save to version 4, seeding research, engagement, messages and the finished tutorial', function () {
@@ -167,6 +168,7 @@ describe('versioned save files', function () {
     v4.version = 4 // fabricate the pre-M8.5 shape
     delete v4.state.projectExpiry
     delete v4.state.expiryNotices
+    delete v4.state.lastMeeting
 
     const result = parseAndLoad(JSON.stringify(v4))
     expect(result.ok).toBe(true)
@@ -176,6 +178,18 @@ describe('versioned save files', function () {
       expect(result.save.state.projectExpiry.old_town[0]).toBe(400 + 36 * 30) // garden: 36 months
       expect(result.save.state.projectExpiry.old_town[1]).toBeNull()
       expect(result.save.state.projects).toEqual(played.projects)
+    }
+  })
+
+  it('migrates a version-5 save to version 6 with no meetings recorded yet', function () {
+    const v5 = createSave(playedState()) as unknown as { version: number; state: { [key: string]: unknown } }
+    v5.version = 5
+    delete v5.state.lastMeeting
+    const result = parseAndLoad(JSON.stringify(v5))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
+      expect(result.save.state.lastMeeting).toEqual({})
     }
   })
 })

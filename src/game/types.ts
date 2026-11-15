@@ -151,6 +151,7 @@ export type Reason =
   | 'tech_not_researched'
   | 'project_permanent'
   | 'renew_too_early'
+  | 'meeting_cooldown'
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; reason: Reason }
 
@@ -199,6 +200,9 @@ export interface GameState {
   // meetings and running projects, keeps the monthly Community-time regen
   // alive and discounts project Community-time costs.
   engagement: { [id: string]: number }
+  // The day of each district's last town meeting (absent = never). One
+  // meeting per district every TOWN_MEETING_COOLDOWN_DAYS.
+  lastMeeting: { [id: string]: number }
   // Bus links between adjacent neighborhoods (Milestone 7): each pair adds
   // BUS_MOBILITY_BONUS to both endpoints' mobility target. Only bridge pairs
   // are adjacent across the river, so lines cross only at the fixed bridges.

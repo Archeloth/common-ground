@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
-import { applyCommand, initialState } from './state'
+import { applyCommand, initialState, meetingReadyIn } from './state'
 import type { Command, GameState } from './types'
 import { TUTORIAL_DONE } from './tutorial'
 
@@ -280,6 +280,30 @@ describe('townMeeting', () => {
     const snapshot = structuredClone(s)
     applyCommand(s, { type: 'townMeeting', neighborhood: 'old_town' })
     expect(s).toEqual(snapshot)
+  })
+})
+
+describe('town meeting cooldown', () => {
+  it('allows one meeting per district every two months', () => {
+    const s = { ...initialState(scenario), time: 10 }
+    const first = applyCommand(s, { type: 'townMeeting', neighborhood: 'old_town' })
+    if (!first.ok) throw new Error(first.reason)
+    expect(applyCommand(first.state, { type: 'townMeeting', neighborhood: 'old_town' })).toEqual({
+      ok: false,
+      reason: 'meeting_cooldown',
+    })
+    expect(meetingReadyIn(first.state, 'old_town')).toBe(60)
+    const later = { ...first.state, day: first.state.day + 59 }
+    expect(applyCommand(later, { type: 'townMeeting', neighborhood: 'old_town' }).ok).toBe(false)
+    const ready = { ...first.state, day: first.state.day + 60 }
+    expect(applyCommand(ready, { type: 'townMeeting', neighborhood: 'old_town' }).ok).toBe(true)
+  })
+
+  it('keeps each district on its own rhythm', () => {
+    const s = { ...initialState(scenario), time: 10 }
+    const first = applyCommand(s, { type: 'townMeeting', neighborhood: 'old_town' })
+    if (!first.ok) throw new Error(first.reason)
+    expect(applyCommand(first.state, { type: 'townMeeting', neighborhood: 'riverside' }).ok).toBe(true)
   })
 })
 

@@ -18,6 +18,7 @@ import {
   ENGAGEMENT_MAX,
   PROJECT_TIME_ENGAGEMENT_DIVISOR,
   TOP_REASONS,
+  TOWN_MEETING_COOLDOWN_DAYS,
   TOWN_MEETING_ENGAGEMENT,
   TOWN_MEETING_TIME,
 } from './constants'
@@ -61,6 +62,7 @@ export function initialState(scenario: ScenarioDef): GameState {
     milestoneNotices: [],
     expiryNotices: [],
     engagement,
+    lastMeeting: {},
     busLines: [],
     messages,
     tutorialStep: 0,
@@ -220,11 +222,19 @@ function applyRenewProject(state: GameState, neighborhoodId: string, slot: numbe
   }
 }
 
+// Days until a district can hold its next town meeting (0 = now).
+export function meetingReadyIn(state: GameState, neighborhoodId: string): number {
+  const last = state.lastMeeting?.[neighborhoodId]
+  if (last === undefined) return 0
+  return Math.max(0, last + TOWN_MEETING_COOLDOWN_DAYS - state.day)
+}
+
 // The organizer's lever (plan): costs 1 Community time, +10 engagement.
 function applyTownMeeting(state: GameState, neighborhoodId: string): CommandResult {
   const scenario = loadScenario()
   const neighborhood = scenario.neighborhoods.find((n) => n.id === neighborhoodId)
   if (!neighborhood) return refusal('unknown_neighborhood')
+  if (meetingReadyIn(state, neighborhoodId) > 0) return refusal('meeting_cooldown')
   if (state.time < TOWN_MEETING_TIME) return refusal('insufficient_time')
   const current = engagementOf(state, neighborhood)
   return {
@@ -232,6 +242,7 @@ function applyTownMeeting(state: GameState, neighborhoodId: string): CommandResu
     state: {
       ...state,
       time: state.time - TOWN_MEETING_TIME,
+      lastMeeting: { ...state.lastMeeting, [neighborhoodId]: state.day },
       engagement: {
         ...state.engagement,
         [neighborhoodId]: Math.min(ENGAGEMENT_MAX, current + TOWN_MEETING_ENGAGEMENT),

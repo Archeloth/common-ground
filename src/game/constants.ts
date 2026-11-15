@@ -39,6 +39,10 @@ export const TOP_REASONS = 3
 // engagement by 10 (plan: "raises one neighborhood's engagement by 10").
 export const TOWN_MEETING_TIME = 1
 export const TOWN_MEETING_ENGAGEMENT = 10
+// Residents need time between meetings: one per district every two months
+// (playtest: meetings could be repeated back to back, so engagement was
+// spammable).
+export const TOWN_MEETING_COOLDOWN_DAYS = 60
 export const ENGAGEMENT_MAX = 100
 
 // Projects finish faster in engaged neighborhoods: Community-time cost is
