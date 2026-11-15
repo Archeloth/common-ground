@@ -1,5 +1,6 @@
 .app {
   height: 100vh;
+  overflow: hidden; /* entrance animations must never create page scrollbars */
   display: flex;
   flex-direction: column;
   background-color: #ccd6b8;
@@ -46,6 +47,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  overflow: hidden; /* a panel sliding in must not resize the map */
 }
 
 .app-help {

@@ -148,7 +148,12 @@ export default function TownMap({
     }
   }, [])
 
-  // Size the canvas to the container and frame the whole town.
+  // Size the canvas to the container. The whole town is framed only on the
+  // first size; later resizes keep the player's view (same zoom, same point in
+  // the middle). Re-framing on every resize made the camera jump back to the
+  // centre whenever anything nudged the layout - e.g. opening a panel after
+  // panning away (playtest bug).
+  const sizeRef = useRef<{ width: number; height: number } | null>(null)
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
@@ -158,11 +163,20 @@ export default function TownMap({
       const width = container.clientWidth
       const height = container.clientHeight
       if (width === 0 || height === 0) return
+      const previous = sizeRef.current
+      if (previous && previous.width === width && previous.height === height) return
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       canvas.style.width = `${width}px`
       canvas.style.height = `${height}px`
-      cameraRef.current = cameraThatFits(scenarioBounds(scenario), width, height)
+      if (!previous) {
+        cameraRef.current = cameraThatFits(scenarioBounds(scenario), width, height)
+      } else {
+        const cam = cameraRef.current
+        const centre = screenToWorld(cam, previous.width / 2, previous.height / 2)
+        cameraRef.current = { x: centre.x - width / 2 / cam.zoom, y: centre.y - height / 2 / cam.zoom, zoom: cam.zoom }
+      }
+      sizeRef.current = { width, height }
       dirtyRef.current = true
     }
     resize()
@@ -333,6 +347,8 @@ export default function TownMap({
       placeBubbles(cssWidth)
 
       if (DEBUG) {
+        // Dev only (?debug): let automated checks read the camera.
+        ;(window as unknown as { __cam?: Camera }).__cam = cameraRef.current
         const stats = statsRef.current
         stats.frames++
         stats.ms += performance.now() - start
