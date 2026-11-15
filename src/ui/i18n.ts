@@ -1,13 +1,13 @@
 // One place for every visible string, from day one (coding standard 11).
 // t("key", { params }) so contributors can translate the game later without
 // touching components. Content strings (kind names, descriptions) live in the
-// data files instead — content is data.
+// data files instead - content is data.
 
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
-  'app.status': 'Willowbrook · Milestone 7',
-  'app.help': 'Drag to pan · scroll to zoom · click a neighborhood',
-  'chip.subtitle': '{kind} · {residents} residents',
+  'app.status': 'Willowbrook - Milestone 8',
+  'app.help': 'Drag to pan - scroll to zoom - click a neighborhood',
+  'chip.subtitle': '{kind} - {residents} residents',
   'panel.close': 'Close panel',
   'panel.residents': 'Residents',
   'panel.engagement': 'Engagement',
@@ -60,7 +60,7 @@ const MESSAGES: Record<string, string> = {
   'saves.empty': 'Empty',
   'saves.save': 'Save',
   'saves.load': 'Load',
-  'saves.lastSavedMeta': 'Day {day} · {time}',
+  'saves.lastSavedMeta': 'Day {day} - {time}',
   'saves.export': 'Export .json',
   'saves.import': 'Import .json',
   'saves.newGame': 'New game',
@@ -86,7 +86,7 @@ const MESSAGES: Record<string, string> = {
   'research.confidence.emerging': 'Emerging',
   'research.confidence.context': 'Context-dependent',
   'milestones.completedTitle': 'Milestone completed',
-  'milestones.completed': '{name} — {goal}',
+  'milestones.completed': '{name} - {goal}',
   'milestones.gotIt': 'Got it',
   'milestones.done': 'Complete',
   'reason.unknown_tech': 'That technology does not exist.',
@@ -94,9 +94,9 @@ const MESSAGES: Record<string, string> = {
   'reason.prerequisites_not_met': 'Its prerequisites have not been researched yet.',
   'reason.insufficient_knowledge': 'Not enough Knowledge yet.',
   'panel.townMeeting': 'Town meeting',
-  'panel.townMeetingHint': '+{engagement} engagement · {time} Community time',
+  'panel.townMeetingHint': '+{engagement} engagement - {time} Community time',
   'panel.message': 'Resident request',
-  'panel.messageDone': 'Request completed — reward paid.',
+  'panel.messageDone': 'Request completed - reward paid.',
   'panel.rewardTime': '+{value} Community time',
   'panel.rewardBudget': '+{value} Budget',
   'panel.rewardKnowledge': '+{value} Knowledge',
@@ -105,6 +105,23 @@ const MESSAGES: Record<string, string> = {
   'panel.busNone': 'Every neighbour is already linked.',
   'reason.bus_line_exists': 'A bus line already links these two.',
   'reason.not_adjacent': 'The bus line must link two adjacent neighbourhoods.',
+  'guide.title': 'What next?',
+  'guide.show': 'Show {name}',
+  'guide.milestone': 'Goal "{goal}": start a {project} in {neighborhood}.',
+  'guide.milestoneCount': 'Goal "{goal}": start another {project} ({remaining} more to go).',
+  'guide.milestoneNeed': 'Goal "{goal}": {need} coverage is lowest in {neighborhood}.',
+  'guide.slots': 'Goal "{goal}": start any project ({remaining} more slots to fill).',
+  'guide.message': 'A resident in {neighborhood} asked for a {project} - a reward waits for you.',
+  'guide.need': '{need} coverage is lowest in {neighborhood} - a {project} would help.',
+  'guide.none': 'No urgent next step - the town is in good shape. Watch the milestones for the long game.',
+  'tutorial.title': 'First steps in Willowbrook',
+  'tutorial.intro': 'Welcome, organiser! Three neighbourhoods are hurting: School Green lacks green space, Linden Flats leaks energy and Southgate Retail has the worst mobility. Click one of the pulsing neighbourhoods to open its panel.',
+  'tutorial.garden': 'Start a Community garden in School Green. It grows food and green space together - you will find it under "Projects" in the panel.',
+  'tutorial.watch': 'Watch the Food and Green space bars rise in School Green as the garden grows. Green space also feeds satisfaction.',
+  'tutorial.research': 'Open the Research menu (top left) and research Building retrofits. It costs 10 Knowledge and is unlocked by Energy audits.',
+  'tutorial.retrofit': 'Start a Retrofit programme - Old Town is a great first choice: warmer homes and lower energy use.',
+  'tutorial.continue': 'Continue',
+  'tutorial.skip': 'Skip',
 }
 
 export function t(key: string, params?: Record<string, string | number>): string {

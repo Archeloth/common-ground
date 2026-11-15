@@ -11,6 +11,7 @@ export const COLORS = {
   selectedStroke: '#1f2b1c',
   labelBackground: 'rgba(255, 255, 255, 0.92)',
   bus: '#46618f', // dashed bus-line strokes (Milestone 7)
+  pulse: '#c4592b', // pulsing tutorial highlight rings (Milestone 8)
 } as const
 
 export const KIND_COLORS: Record<NeighborhoodKind, string> = {

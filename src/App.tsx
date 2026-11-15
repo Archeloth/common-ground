@@ -17,6 +17,9 @@ import { loadSlot, readSlotMeta, saveSlot, SLOT_KEYS } from './persistence/slots
 import type { SlotMeta } from './persistence/slots'
 import { downloadSaveFile, readSaveFile } from './persistence/fileTransfer'
 import { t } from './ui/i18n'
+import TutorialCard from './ui/TutorialCard'
+import GuideButton from './ui/GuideButton'
+import { TUTORIAL_STEPS } from './game/tutorial'
 import './App.css'
 
 const scenario = loadScenario()
@@ -44,6 +47,9 @@ function App() {
   const lastAutoJsonRef = useRef<string | null>(null)
   const onSelectionChange = useCallback((id: string | null) => setSelectedId(id), [])
   const selected = selectedId ? neighborhoodById(scenario, selectedId) : null
+  // Tutorial pulse targets come from the current step (Milestone 8).
+  const pulseIds =
+    state.tutorialStep < TUTORIAL_STEPS.length ? TUTORIAL_STEPS[state.tutorialStep].pulse : []
 
   const refreshMeta = useCallback(async () => {
     const database = dbRef.current
@@ -200,7 +206,12 @@ function App() {
           onNewGame={handleNewGame}
         />
         <ResearchMenu state={state} onResearch={onResearch} />
-        <TownMap selectedId={selectedId} onSelectionChange={onSelectionChange} busLines={state.busLines} />
+        <TownMap
+          selectedId={selectedId}
+          onSelectionChange={onSelectionChange}
+          busLines={state.busLines}
+          pulseIds={pulseIds}
+        />
         {selected && (
           <NeighborhoodPanel
             neighborhood={selected}
@@ -212,6 +223,8 @@ function App() {
             onClose={() => setSelectedId(null)}
           />
         )}
+        <TutorialCard state={state} onNext={() => dispatch({ type: 'tutorialNext' })} />
+        <GuideButton state={state} onShow={onSelectionChange} />
         {(notice || reason) && (
           <div className="reason-banner" role="alert">
             <span>{notice ?? (reason ? t(`reason.${reason}`) : '')}</span>

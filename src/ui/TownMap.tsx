@@ -6,7 +6,7 @@ import type { Point } from '../game/geometry'
 import { pointInPolygon } from '../game/geometry'
 import type { Camera } from './render/camera'
 import { cameraThatFits, panBy, screenToWorld, worldToScreen, zoomAt } from './render/camera'
-import { buildPath2D, drawBusLine, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
+import { buildPath2D, drawBusLine, drawPulseRing, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
 import { COLORS, KIND_COLORS, shade } from './render/colors'
 import { t } from './i18n'
 import './TownMap.css'
@@ -27,12 +27,13 @@ interface TownMapProps {
   selectedId: string | null
   onSelectionChange: (id: string | null) => void
   busLines: Array<[string, string]>
+  pulseIds: string[] // neighborhood ids the tutorial wants highlighted
 }
 
 // Canvas view of the town. The camera and interaction state live in refs so
 // panning and zooming never re-render React; the rAF loop redraws only when a
 // dirty flag is set (performance playbook: a paused town costs almost nothing).
-export default function TownMap({ selectedId, onSelectionChange, busLines }: TownMapProps) {
+export default function TownMap({ selectedId, onSelectionChange, busLines, pulseIds }: TownMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const cameraRef = useRef<Camera>({ x: 0, y: 0, zoom: 1 })
@@ -44,6 +45,7 @@ export default function TownMap({ selectedId, onSelectionChange, busLines }: Tow
   const pointersRef = useRef(new Map<number, Point>())
   const pinchRef = useRef<{ dist: number; x: number; y: number } | null>(null)
   const busLinesRef = useRef<Array<[string, string]>>([])
+  const pulseIdsRef = useRef<string[]>([])
 
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
@@ -109,6 +111,13 @@ export default function TownMap({ selectedId, onSelectionChange, busLines }: Tow
         ctx.stroke(path)
       }
     }
+
+    // Milestone 8: pulsing rings point at the tutorial's target neighbourhoods.
+    const now = performance.now()
+    for (const id of pulseIdsRef.current) {
+      const n = neighborhoodById(scenario, id)
+      drawPulseRing(ctx, cam, n.shape, n.shape.radius, now)
+    }
   }, [pointsFor])
 
   // Size the canvas to the container and frame the whole town.
@@ -143,6 +152,12 @@ export default function TownMap({ selectedId, onSelectionChange, busLines }: Tow
     dirtyRef.current = true
   }, [selectedId])
 
+  // Tutorial pulse targets come from App; mirror them the same way.
+  useEffect(function syncPulseIds() {
+    pulseIdsRef.current = pulseIds
+    dirtyRef.current = true
+  }, [pulseIds])
+
   // Bus lines are sim state; mirror them into the draw loop and redraw.
   useEffect(() => {
     busLinesRef.current = busLines
@@ -166,6 +181,8 @@ export default function TownMap({ selectedId, onSelectionChange, busLines }: Tow
         drawScene()
         dirtyRef.current = false
       }
+      // Keep the pulse rings breathing while the tutorial highlights targets.
+      if (pulseIdsRef.current.length !== 0) dirtyRef.current = true
       frame = requestAnimationFrame(loop)
     }
     frame = requestAnimationFrame(loop)

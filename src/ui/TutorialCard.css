@@ -1,0 +1,46 @@
+.tutorial-card {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: 27rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  background: #2d6a3f;
+  color: #fff;
+  font-size: 0.86rem;
+  box-shadow: 0 3px 12px rgba(20, 50, 28, 0.4);
+}
+
+.tutorial-card-body strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.9;
+}
+
+.tutorial-card-body p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.tutorial-card-button {
+  flex-shrink: 0;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tutorial-card-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

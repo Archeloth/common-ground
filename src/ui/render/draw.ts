@@ -87,3 +87,27 @@ export function drawBusLine(
   ctx.stroke()
   ctx.restore()
 }
+
+// A pulsing ring around a neighbourhood blob, used by the tutorial (Milestone
+// 8) to point at the neighbourhoods the current step is about. The phase comes
+// from the wall clock so the ring breathes while the canvas keeps redrawing.
+export function drawPulseRing(
+  ctx: CanvasRenderingContext2D,
+  cam: Camera,
+  center: Point,
+  worldRadius: number,
+  now: number,
+  color = COLORS.pulse,
+): void {
+  const c = worldToScreen(cam, center.x, center.y)
+  const phase = (now / 700) % 1
+  const radius = (worldRadius + 10 + phase * 16) * cam.zoom
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(c.x, c.y, radius, 0, Math.PI * 2)
+  ctx.strokeStyle = color
+  ctx.globalAlpha = 0.75 - phase * 0.55
+  ctx.lineWidth = Math.max(2.5, 4 * cam.zoom)
+  ctx.stroke()
+  ctx.restore()
+}
