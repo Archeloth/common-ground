@@ -24,7 +24,7 @@ describe('initialState', () => {
     expect(s.milestones).toEqual([])
     expect(s.milestoneNotices).toEqual([])
     expect(s.day).toBe(1)
-    expect(s.speed).toBe(1)
+    expect(s.speed).toBe(0) // a new town starts paused
     for (const n of scenario.neighborhoods) {
       expect(s.projects[n.id]).toHaveLength(n.slots)
       expect(s.projects[n.id].every((slot) => slot === null)).toBe(true)

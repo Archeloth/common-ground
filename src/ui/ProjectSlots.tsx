@@ -26,9 +26,11 @@ function lifetimeText(project: ProjectDef): string {
   return months % 12 === 0 ? t('project.lasts', { years: months / 12 }) : t('project.lastsMonths', { months })
 }
 
-function pickerReason(project: ProjectDef, reason: Reason): string {
+function pickerReason(project: ProjectDef, reason: Reason, engagement: number): string {
   if (reason === 'insufficient_budget') return t('project.needBudget', { value: project.cost })
-  if (reason === 'insufficient_time') return t('project.needTime', { value: project.time })
+  if (reason === 'insufficient_time') {
+    return t('project.needTime', { value: projectTimeCost(project.time, engagement) })
+  }
   return t(`reason.${reason}`)
 }
 
@@ -52,6 +54,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
   const offered = fitsHere.filter((p) => !p.requiresTech || state.research.includes(p.requiresTech))
   const locked = fitsHere.filter((p) => p.requiresTech && !state.research.includes(p.requiresTech))
 
+  const engagement = state.engagement[neighborhood.id] ?? neighborhood.engagement
   const filled: Array<{ slot: number; projectId: string }> = []
   slots.forEach((projectId, index) => {
     if (projectId !== null) filled.push({ slot: index, projectId })
@@ -93,10 +96,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                     onClick={() => onStart({ type: 'renewProject', neighborhood: neighborhood.id, slot })}
                   >
                     {t('project.renew', {
-                      cost: projectTimeCost(
-                        projectById(projects, projectId).time,
-                        state.engagement[neighborhood.id] ?? neighborhood.engagement,
-                      ),
+                      cost: projectTimeCost(projectById(projects, projectId).time, engagement),
                     })}
                   </button>
                 )}
@@ -129,13 +129,13 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                   <span className="project-name">{project.name}</span>
                   <span className="project-meta">
                     {t('project.cost', { value: project.cost })} ·{' '}
-                    {t('project.months', { value: project.time })} · {lifetimeText(project)}
+                    {t('project.months', { value: projectTimeCost(project.time, engagement) })} · {lifetimeText(project)}
                   </span>
                   <span className="project-effects">{effectPreview(project)}</span>
                   <span className="project-explain">{project.explain}</span>
                   {!ready && (
                     <span className="project-disabled-reason">
-                      {pickerReason(project, result.reason)}
+                      {pickerReason(project, result.reason, engagement)}
                     </span>
                   )}
                 </div>

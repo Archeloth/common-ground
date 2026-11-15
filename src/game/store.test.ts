@@ -10,7 +10,7 @@ describe('game store', () => {
   it('starts from the scenario initial state', () => {
     const store = createGameStore()
     expect(store.getState().day).toBe(1)
-    expect(store.getState().speed).toBe(1)
+    expect(store.getState().speed).toBe(0) // starts paused
     expect(store.getState().budget).toBe(scenario.start.budget)
   })
 
@@ -50,6 +50,7 @@ describe('game store', () => {
 
   it('advances one tick per simulated second at speed 1', () => {
     const store = createGameStore()
+    store.dispatch({ type: 'setSpeed', speed: 1 })
     store.step(0) // initialise the clock
     store.step(250)
     store.step(500)
@@ -71,6 +72,7 @@ describe('game store', () => {
 
   it('accumulates sub-tick fractions toward the next tick', () => {
     const store = createGameStore()
+    store.dispatch({ type: 'setSpeed', speed: 1 })
     store.step(0)
     store.step(250) // 0.25 tick
     store.step(500) // 0.5 tick
@@ -112,7 +114,7 @@ describe('game store', () => {
     const store = createGameStore()
     const listener = vi.fn()
     store.subscribe(listener)
-    store.replaceState({ ...initialState(loadScenario()), day: 42 })
+    store.replaceState({ ...initialState(loadScenario()), day: 42, speed: 1 })
     expect(store.getState().day).toBe(42)
     expect(listener).toHaveBeenCalledTimes(1)
     // The swap does not disturb the loop clock (1 in-game second still ticks).

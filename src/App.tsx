@@ -9,7 +9,7 @@ import { createGameStore } from './game/store'
 import { initialState } from './game/state'
 import { useGame } from './ui/useGame'
 import { loadMilestones, milestoneById } from './game/milestones'
-import type { Command, Reason } from './game/types'
+import type { Command, GameState, Reason } from './game/types'
 import { openSaveDb } from './persistence/db'
 import type { SaveDb } from './persistence/db'
 import { createSave, parseAndLoad } from './persistence/saveFile'
@@ -23,6 +23,8 @@ import { TUTORIAL_STEPS } from './game/tutorial'
 import { allExpired } from './game/expiry'
 import { expiryBubbles } from './ui/expiryBubbles'
 import type { ExpiryBubble } from './ui/expiryBubbles'
+import Lexicon from './ui/Lexicon'
+import type { LexiconEntryId } from './ui/lexiconEntries'
 import './App.css'
 
 const scenario = loadScenario()
@@ -30,6 +32,12 @@ const store = createGameStore()
 const milestones = loadMilestones()
 
 const AUTOSAVE_MS = 60_000 // plan: "autosave about once a minute"
+
+// Milestone 8.5: the game always opens paused - after boot, a load or an
+// import - so reading never costs the player progress.
+function paused(state: GameState): GameState {
+  return state.speed === 0 ? state : { ...state, speed: 0 }
+}
 
 // App owns the selected neighborhood; the simulation state lives in the store
 // (src/game/store.ts). Saves are the plan's persistence story: IndexedDB slots
@@ -40,6 +48,7 @@ function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [reason, setReason] = useState<Reason | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
+  const [lexicon, setLexicon] = useState<LexiconEntryId | null>(null)
   const [meta, setMeta] = useState<Record<string, SlotMeta | null>>({
     auto: null,
     s1: null,
@@ -87,9 +96,11 @@ function App() {
       dbRef.current = database
       const autosave = await loadSlot(database, 'auto')
       if (autosave.save) {
-        store.replaceState(autosave.save.state)
-      } else if (autosave.problems.length > 0) {
-        setNotice(t('saves.loadFailed'))
+        store.replaceState(paused(autosave.save.state))
+      } else {
+        // A fresh town: open the lexicon on its welcome page.
+        setLexicon('welcome')
+        if (autosave.problems.length > 0) setNotice(t('saves.loadFailed'))
       }
       await refreshMeta()
     })().catch(() => setNotice(t('saves.loadFailed')))
@@ -148,7 +159,7 @@ function App() {
       if (!database) return
       const result = await loadSlot(database, key)
       if (result.save) {
-        store.replaceState(result.save.state)
+        store.replaceState(paused(result.save.state))
         setNotice(t('saves.loadOk'))
       } else if (result.problems.length > 0) {
         setNotice(`${t('saves.loadFailed')} — ${result.problems[0]}`)
@@ -169,7 +180,7 @@ function App() {
         const text = await readSaveFile(file)
         const result = parseAndLoad(text)
         if (result.ok) {
-          store.replaceState(result.save.state)
+          store.replaceState(paused(result.save.state))
           setNotice(t('saves.loadOk'))
         } else {
           setNotice(`${t('saves.loadFailed')} — ${result.problems[0] ?? ''}`)
@@ -185,6 +196,7 @@ function App() {
   const handleNewGame = useCallback(() => {
     store.replaceState(initialState(scenario))
     setNotice(t('saves.newGameOk'))
+    setLexicon('welcome')
   }, [])
 
   const onResearch = useCallback((tech: string) => {
@@ -207,13 +219,23 @@ function App() {
     dispatch({ type: 'dismissExpiryNotice', notice: key })
   }, [dispatch])
 
+  const closeLexicon = useCallback(() => setLexicon(null), [])
+  const startPlaying = useCallback(() => {
+    setLexicon(null)
+    dispatch({ type: 'setSpeed', speed: 1 })
+  }, [dispatch])
+
   const handleStartBusLine = useCallback((from: string, to: string) => {
     dispatch({ type: 'startBusLine', from, to })
   }, [dispatch])
 
   return (
     <div className="app">
-      <TopBar state={state} onSpeed={(speed) => dispatch({ type: 'setSpeed', speed })} />
+      <TopBar
+        state={state}
+        onSpeed={(speed) => dispatch({ type: 'setSpeed', speed })}
+        onLexicon={setLexicon}
+      />
       <div className="stage">
         <SaveMenu
           meta={meta}
@@ -282,6 +304,9 @@ function App() {
         )}
       </div>
       <p className="app-help">{t('app.help')}</p>
+      {lexicon && (
+        <Lexicon entry={lexicon} onSelect={setLexicon} onClose={closeLexicon} onStart={startPlaying} />
+      )}
     </div>
   )
 }

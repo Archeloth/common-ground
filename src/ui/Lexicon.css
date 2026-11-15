@@ -1,0 +1,149 @@
+.lexicon-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(31, 43, 28, 0.45);
+}
+
+.lexicon {
+  display: flex;
+  flex-direction: column;
+  width: min(52rem, 100%);
+  max-height: min(36rem, 100%);
+  border-radius: 1rem;
+  background: #fbfcf7;
+  box-shadow: 0 12px 40px rgba(31, 43, 28, 0.35);
+  overflow: hidden;
+}
+
+.lexicon-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid rgba(31, 43, 28, 0.12);
+}
+
+.lexicon-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.lexicon-close {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lexicon-close:hover {
+  background: #eef2e6;
+}
+
+.lexicon-columns {
+  display: grid;
+  grid-template-columns: 13rem 1fr;
+  min-height: 0;
+  flex: 1;
+}
+
+.lexicon-contents {
+  overflow-y: auto;
+  padding: 0.6rem;
+  border-right: 1px solid rgba(31, 43, 28, 0.1);
+  background: #f2f5ea;
+}
+
+.lexicon-contents ul {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lexicon-contents button {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: none;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: #2f3d2b;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lexicon-contents button:hover {
+  background: #e4ead9;
+}
+
+.lexicon-contents button.active {
+  background: #3f523a;
+  color: #f2f6e7;
+  font-weight: 600;
+}
+
+.lexicon-body {
+  overflow-y: auto;
+  padding: 1rem 1.4rem 1.4rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #26321f;
+}
+
+.lexicon-body h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+.lexicon-body p {
+  margin: 0 0 0.8rem;
+  max-width: 38rem;
+}
+
+.lexicon-start {
+  margin-top: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: #3f6a3a;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lexicon-start:hover {
+  background: #345a30;
+}
+
+/* Narrow screens: contents become a scrolling row above the entry. */
+@media (max-width: 640px) {
+  .lexicon-columns {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .lexicon-contents {
+    border-right: none;
+    border-bottom: 1px solid rgba(31, 43, 28, 0.1);
+  }
+
+  .lexicon-contents ul {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .lexicon-contents button {
+    white-space: nowrap;
+  }
+}

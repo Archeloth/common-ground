@@ -51,7 +51,8 @@ export function initialState(scenario: ScenarioDef): GameState {
     time: scenario.start.time,
     knowledge: scenario.start.knowledge ?? 0,
     day: 1,
-    speed: 1,
+    // Milestone 8.5: a new town starts paused so the player can read first.
+    speed: 0,
     projects,
     projectExpiry,
     neighborhoods,
