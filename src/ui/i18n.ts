@@ -5,6 +5,7 @@
 
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
+  'app.helpTouch': 'Drag to move - pinch to zoom - tap a neighbourhood to see it and open it',
   'app.help': 'Drag to pan - scroll to zoom - hover a neighbourhood for its stats - click to open it - Esc closes',
   'chip.subtitle': '{kind} - {residents} residents',
   'panel.close': 'Close panel',

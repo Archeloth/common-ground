@@ -13,7 +13,9 @@ type TrackerMode = 'current' | 'all' | 'collapsed'
 function readMode(): TrackerMode {
   try {
     const value = localStorage.getItem(STORAGE_KEY)
-    return value === 'all' || value === 'collapsed' ? value : 'current'
+    if (value === 'all' || value === 'collapsed' || value === 'current') return value
+    // Phones have little room: start as a single line there.
+    return window.matchMedia('(max-width: 700px)').matches ? 'collapsed' : 'current'
   } catch {
     return 'current'
   }

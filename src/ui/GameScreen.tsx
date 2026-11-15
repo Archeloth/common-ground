@@ -32,6 +32,7 @@ import { townNeedAverage } from '../game/milestones'
 
 const scenario = loadScenario()
 const milestones = loadMilestones()
+const TOUCH = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
 
 // The sound each successful command makes (refusals play 'refuse').
 const COMMAND_SOUNDS: Partial<Record<Command['type'], SoundId>> = {
@@ -287,7 +288,7 @@ export default function GameScreen({
           />
         )}
       </div>
-      <p className="app-help">{t('app.help')}</p>
+      <p className="app-help">{t(TOUCH ? 'app.helpTouch' : 'app.help')}</p>
     </div>
   )
 }

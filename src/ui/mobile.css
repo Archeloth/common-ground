@@ -1,0 +1,161 @@
+/* Phone layout (Milestone 9). One place for every small-screen override: the
+   top bar packs into two rows, menus and the neighbourhood panel become bottom
+   sheets, touch targets are at least ~44 px, and the help line speaks touch. */
+
+@media (max-width: 700px) {
+  /* Top bar: clock on one row, resources on the next; no title, no per-month. */
+  .app-header {
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .app-header h1 {
+    display: none;
+  }
+
+  .topbar-clock {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .speed-segment {
+    min-width: 2.75rem;
+    height: 2.4rem;
+  }
+
+  .resource-chips {
+    flex: 1 1 100%;
+    justify-content: space-between;
+    margin-left: 0;
+    gap: 0.35rem;
+  }
+
+  button.resource-chip {
+    flex: 1 1 0;
+    justify-content: center;
+    min-height: 2.2rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .resource-income {
+    display: none;
+  }
+
+  /* Toolbar: one compact row with comfortable touch targets. */
+  .toolbar {
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    max-width: none;
+  }
+
+  .toolbar-buttons {
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .toolbar-button {
+    flex: 1 1 auto;
+    min-height: 2.6rem;
+    padding: 0.4rem 0.45rem;
+    font-size: 0.82rem;
+  }
+
+  .toolbar-menu {
+    margin-left: 0;
+  }
+
+  .toolbar-drawer,
+  .toolbar-drawer.drawer-saves {
+    width: 100%;
+    max-height: 62vh;
+  }
+
+  /* Goal tracker: under the toolbar, full width, collapsed by default. */
+  .goal-tracker {
+    top: 3.9rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+  }
+
+  /* The neighbourhood panel becomes a bottom sheet with a grab handle. */
+  .neighborhood-panel {
+    top: auto;
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: auto;
+    max-height: 60vh;
+    padding-top: 1.3rem;
+    border-radius: var(--radius-l);
+    z-index: 7;
+    background: #fbfcf7; /* opaque: the busy map must not show through text */
+    box-shadow: 0 -4px 24px rgba(31, 43, 28, 0.22);
+    animation: rise-in 280ms var(--ease-out) both;
+  }
+
+  .neighborhood-panel::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    width: 2.6rem;
+    height: 0.3rem;
+    border-radius: 999px;
+    background: rgba(31, 43, 28, 0.2);
+    transform: translateX(-50%);
+  }
+
+  .panel-tab {
+    min-height: 2.5rem;
+  }
+
+  .need-bar {
+    grid-template-columns: 7.2rem 1fr 2.4rem;
+  }
+
+  /* Tutorial and guide share the bottom edge without overlapping. */
+  .tutorial-card {
+    left: 0.5rem;
+    right: 5.6rem;
+    bottom: 0.5rem;
+    max-width: none;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.8rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+
+  .guide-wrap {
+    right: 0.5rem;
+    bottom: 0.5rem;
+  }
+
+  .guide-toggle {
+    min-height: 2.6rem;
+  }
+
+  .guide-popover {
+    max-width: calc(100vw - 1rem);
+  }
+
+  /* Notices sit above the bottom controls, never on the toolbar. */
+  .reason-banner {
+    top: auto;
+    bottom: 4rem;
+    max-width: calc(100% - 1rem);
+  }
+
+  .expiry-bubble {
+    max-width: 13rem;
+  }
+
+  .app-help {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.6rem;
+  }
+}

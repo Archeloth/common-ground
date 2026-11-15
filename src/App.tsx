@@ -12,6 +12,7 @@ import { loadScenario } from './game/scenario'
 import { t } from './ui/i18n'
 import { installUiSounds } from './ui/uiSounds'
 import './App.css'
+import './ui/mobile.css'
 
 const scenario = loadScenario()
 const store = createGameStore()
