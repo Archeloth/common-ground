@@ -2,7 +2,7 @@ import type { Command, CommandResult, GameState } from './types'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
-import { MAX_TICKS_PER_FRAME, TICK_MS } from './constants'
+import { MAX_TICKS_PER_FRAME, TICK_MS, UNDO_WINDOW_MS } from './constants'
 
 // The tiny store the plan's tech table asks for ("a plain TypeScript state
 // object owned by the simulation, exposed to React with useSyncExternalStore").
@@ -15,13 +15,30 @@ import { MAX_TICKS_PER_FRAME, TICK_MS } from './constants'
 // Listeners are notified only when a tick or command actually changed the
 // state, not on every animation frame; the canvas has its own rAF loop.
 
+// Player actions that can be taken back. Speed changes, notices and the
+// tutorial's Continue are not "actions" worth undoing.
+const UNDOABLE = new Set<Command['type']>([
+  'startProject',
+  'removeProject',
+  'renewProject',
+  'research',
+  'startBusLine',
+  'townMeeting',
+])
+
 const MAX_DELTA_MS = 250 // clamp after the tab was hidden (plan performance note)
 
 export interface GameStore {
   getState(): GameState
   getSnapshot(): GameState // stable reference between changes (useSyncExternalStore)
   subscribe(listener: () => void): () => void
-  dispatch(command: Command): CommandResult
+  // `now` (ms) only matters for undo; it defaults to performance.now().
+  dispatch(command: Command, now?: number): CommandResult
+  // The last undoable command, while it can still be undone (else null).
+  undoable(now?: number): Command | null
+  // Take back the last undoable command: restores the town exactly as it
+  // was just before it (so the few days since are rewound too). Once only.
+  undo(now?: number): boolean
   // Swap the whole state (used by the save-loader bootstrap only, never by
   // gameplay — playing goes through dispatch). Notifies subscribers.
   replaceState(state: GameState): void
@@ -62,17 +79,39 @@ export function createGameStore(initial?: GameState): GameStore {
     if (ticks > 0) notify()
   }
 
-  function dispatch(command: Command): CommandResult {
+  // One step of history for undo: the state just before the last undoable
+  // command, and when (real time) it happened.
+  let history: { before: GameState; command: Command; at: number } | null = null
+  const clock = (now?: number) => now ?? (typeof performance !== 'undefined' ? performance.now() : 0)
+
+  function dispatch(command: Command, now?: number): CommandResult {
+    const before = current
     const result = applyCommand(current, command)
     if (result.ok) {
       current = result.state
+      if (UNDOABLE.has(command.type)) history = { before, command, at: clock(now) }
       notify()
     }
     return result
   }
 
+  function undoable(now?: number): Command | null {
+    if (!history || clock(now) - history.at > UNDO_WINDOW_MS) return null
+    return history.command
+  }
+
+  function undo(now?: number): boolean {
+    if (!undoable(now) || !history) return false
+    // Keep the player's current speed: undo takes back the action, not the clock.
+    current = { ...history.before, speed: current.speed }
+    history = null
+    notify()
+    return true
+  }
+
   function replaceState(state: GameState): void {
     current = state
+    history = null // a loaded town has nothing to undo
     notify()
   }
 
@@ -139,6 +178,8 @@ export function createGameStore(initial?: GameState): GameStore {
   return {
     getState: () => current,
     getSnapshot: () => current,
+    undoable,
+    undo,
     subscribe,
     dispatch,
     replaceState,

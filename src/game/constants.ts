@@ -43,6 +43,10 @@ export const TOWN_MEETING_ENGAGEMENT = 10
 // (playtest: meetings could be repeated back to back, so engagement was
 // spammable).
 export const TOWN_MEETING_COOLDOWN_DAYS = 60
+
+// Undo (plan: "undo makes experimenting feel safe"): the last undoable
+// action can be taken back within this many real-time milliseconds.
+export const UNDO_WINDOW_MS = 8000
 export const ENGAGEMENT_MAX = 100
 
 // Projects finish faster in engaged neighborhoods: Community-time cost is

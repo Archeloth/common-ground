@@ -159,3 +159,11 @@
     padding: 0.3rem 0.6rem;
   }
 }
+
+@media (max-width: 700px) {
+  /* Above the bottom controls, like the notices. */
+  .undo-toast {
+    top: auto;
+    bottom: 4rem;
+  }
+}

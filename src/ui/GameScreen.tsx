@@ -19,6 +19,8 @@ import type { Saves } from './useSaves'
 import { useSettings } from './settings'
 import { isTypingTarget, speedForKey } from './speedKeys'
 import { t } from './i18n'
+import { undoText } from './undoText'
+import { UNDO_WINDOW_MS } from '../game/constants'
 import { playSound } from './audio'
 import type { SoundId } from './soundMap'
 import { refreshAmbience, startAmbience, stopAmbience } from './ambience'
@@ -96,15 +98,49 @@ export default function GameScreen({
   )
   const bubbles = useMemo(() => expiryBubbles(state, scenario), [state])
 
+  // Undo (Milestone 9 polish): a soft toast offers to take back the last action
+  // for a few seconds; Z or Ctrl+Z does the same.
+  const [undoOffer, setUndoOffer] = useState<{ text: string; id: number } | null>(null)
+
   const dispatch = useCallback(
     (command: Command) => {
+      // Wording for a removal needs the project before it is gone.
+      const removed =
+        command.type === 'removeProject' ? store.getState().projects[command.neighborhood]?.[command.slot] : null
       const result = store.dispatch(command)
       setReason(result.ok ? null : result.reason)
       const sound = result.ok ? COMMAND_SOUNDS[command.type] : 'refuse'
       if (sound) playSound(sound)
+      if (result.ok && store.undoable()) setUndoOffer({ text: undoText(command, removed), id: Date.now() })
     },
     [store],
   )
+
+  const undo = useCallback(() => {
+    if (store.undo()) {
+      playSound('close')
+      setUndoOffer(null)
+      setReason(null)
+    }
+  }, [store])
+
+  useEffect(() => {
+    if (!undoOffer) return
+    const timer = window.setTimeout(() => setUndoOffer(null), UNDO_WINDOW_MS)
+    return () => window.clearTimeout(timer)
+  }, [undoOffer])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (isTypingTarget(event.target) || event.altKey) return
+      if (event.key.toLowerCase() !== 'z' || event.shiftKey) return
+      if (!store.undoable()) return
+      event.preventDefault()
+      undo()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [store, undo])
 
   // Sounds for things the simulation did on its own: a chapter completed, a
   // resident request fulfilled, a project that ran its course.
@@ -272,6 +308,15 @@ export default function GameScreen({
         )}
         <TutorialCard state={state} onNext={() => dispatch({ type: 'tutorialNext' })} />
         <GuideButton state={state} onShow={showDistrict} />
+        {undoOffer && (
+          <div className="undo-toast" role="status" key={undoOffer.id}>
+            <span>{undoOffer.text}</span>
+            <button type="button" className="undo-button" data-sound="none" onClick={undo}>
+              {t('undo.button')}
+            </button>
+            <span className="undo-timer" aria-hidden="true" />
+          </div>
+        )}
         {(notice || reason) && (
           <div className={`reason-banner${notice ? ' info' : ''}`} role={notice ? 'status' : 'alert'}>
             <span>{notice ?? (reason ? t(`reason.${reason}`) : '')}</span>

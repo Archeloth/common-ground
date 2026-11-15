@@ -188,3 +188,39 @@ describe('game store and tab visibility', () => {
     }
   })
 })
+
+describe('undo', () => {
+  it('takes back the last action exactly, once', () => {
+    const store = createGameStore(initialState(scenario))
+    const before = store.getState()
+    expect(store.dispatch({ type: 'startProject', neighborhood: 'school_green', project: 'community_garden' }, 1000).ok).toBe(true)
+    expect(store.undoable(2000)?.type).toBe('startProject')
+    expect(store.undo(2000)).toBe(true)
+    expect(store.getState()).toEqual(before)
+    expect(store.undo(2100)).toBe(false) // once only
+  })
+
+  it('expires after the undo window', () => {
+    const store = createGameStore(initialState(scenario))
+    store.dispatch({ type: 'startProject', neighborhood: 'school_green', project: 'community_garden' }, 1000)
+    expect(store.undoable(1000 + 8001)).toBeNull()
+    expect(store.undo(1000 + 8001)).toBe(false)
+  })
+
+  it('ignores speed changes and keeps the current speed when undoing', () => {
+    const store = createGameStore(initialState(scenario))
+    store.dispatch({ type: 'startProject', neighborhood: 'school_green', project: 'community_garden' }, 0)
+    store.dispatch({ type: 'setSpeed', speed: 2 }, 100)
+    expect(store.undoable(200)?.type).toBe('startProject')
+    store.undo(200)
+    expect(store.getState().speed).toBe(2)
+    expect(store.getState().projects.school_green).not.toContain('community_garden')
+  })
+
+  it('has nothing to undo after a save is loaded', () => {
+    const store = createGameStore(initialState(scenario))
+    store.dispatch({ type: 'townMeeting', neighborhood: 'old_town' }, 0)
+    store.replaceState(initialState(scenario))
+    expect(store.undoable(10)).toBeNull()
+  })
+})

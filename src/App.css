@@ -98,3 +98,55 @@
   background: #2f4a2b;
   box-shadow: 0 3px 12px rgba(31, 43, 28, 0.3);
 }
+
+/* Undo (Milestone 9 polish): a soft toast at the bottom centre with a timer
+   line that empties over the undo window. */
+.undo-toast {
+  position: absolute;
+  left: 50%;
+  top: 3.6rem; /* under the notices; the hover card owns the bottom centre */
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  overflow: hidden;
+  max-width: calc(100% - 2rem);
+  padding: 0.5rem 0.6rem 0.6rem 1rem;
+  border-radius: 999px;
+  background: var(--forest);
+  color: var(--on-dark);
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-m);
+  transform: translateX(-50%);
+  animation: fade-in 200ms ease both;
+}
+
+.undo-button {
+  padding: 0.3rem 0.9rem;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--forest);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.undo-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.55);
+  transform-origin: left;
+  animation: undo-timer 8s linear both;
+}
+
+@keyframes undo-timer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
