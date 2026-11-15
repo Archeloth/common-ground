@@ -4,13 +4,14 @@ import GameScreen from './ui/GameScreen'
 import Lexicon from './ui/Lexicon'
 import type { LexiconEntryId } from './ui/lexiconEntries'
 import { useSaves } from './ui/useSaves'
-import { applySettingsToDocument, getSettings } from './ui/settings'
+import { applySettingsToDocument, getSettings, useSettings } from './ui/settings'
 import { useGame } from './ui/useGame'
 import { store } from './gameStore'
 import { initialState } from './game/state'
 import { loadScenario } from './game/scenario'
 import { t } from './ui/i18n'
 import { installUiSounds } from './ui/uiSounds'
+import { refreshMusic } from './ui/music'
 import './App.css'
 import './ui/mobile.css'
 
@@ -28,6 +29,12 @@ function App() {
   const [notice, setNotice] = useState<string | null>(null)
   const [lexicon, setLexicon] = useState<LexiconEntryId | null>(null)
   const saves = useSaves(store, setNotice)
+  const settings = useSettings()
+
+  // The music follows the volume settings live (and is never hushed in the menu).
+  useEffect(() => {
+    refreshMusic(screen === 'menu' ? { paused: false } : undefined)
+  }, [settings, screen])
 
   useEffect(() => {
     store.start()

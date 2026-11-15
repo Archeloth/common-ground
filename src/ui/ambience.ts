@@ -1,10 +1,12 @@
 import { audioContext, audioLevels } from './audio'
 import { getSettings } from './settings'
 
-// Generated ambience (Milestone 9): a soft wind bed and synthesised birdsong,
-// made with Web Audio (no files, no licences). Birds sing more often as the
-// town gets greener, so a greener town literally sounds livelier. Volume
-// follows the "Music and ambience" slider; while paused it drops to a hush.
+// Generated ambience (Milestone 9): synthesised birdsong made with Web Audio
+// (no files, no licences), singing on top of the background music. Birds sing
+// more often as the town gets greener, so a greener town literally sounds
+// livelier. A soft generated wind bed is kept as a fallback, heard only if the
+// music track cannot load (music.ts). Volume follows the "Music and ambience"
+// slider; while paused it drops to a hush.
 
 const BASE_LEVEL = 0.22 // the whole bed stays well under the effects
 const WIND_LEVEL = 0.5
@@ -12,6 +14,7 @@ const PAUSED_FACTOR = 0.35
 
 interface Running {
   master: GainNode
+  windOut: GainNode // 0 while the music plays; 1 if it failed to load
   noise: AudioBufferSourceNode
   lfo: OscillatorNode
   birdTimer: number | null
@@ -20,6 +23,7 @@ interface Running {
 let running: Running | null = null
 let green = 0.5
 let isPaused = false
+let windWanted = false
 
 function targetLevel(): number {
   return BASE_LEVEL * audioLevels(getSettings()).music * (isPaused ? PAUSED_FACTOR : 1)
@@ -94,11 +98,13 @@ export function startAmbience(): void {
   const lfoDepth = ctx.createGain()
   lfoDepth.gain.value = WIND_LEVEL * 0.45
   lfo.connect(lfoDepth).connect(wind.gain)
-  noise.connect(lowpass).connect(wind).connect(master)
+  const windOut = ctx.createGain()
+  windOut.gain.value = windWanted ? 1 : 0
+  noise.connect(lowpass).connect(wind).connect(windOut).connect(master)
   noise.start()
   lfo.start()
 
-  running = { master, noise, lfo, birdTimer: null }
+  running = { master, windOut, noise, lfo, birdTimer: null }
   refreshAmbience()
   scheduleBirds()
 }
@@ -124,4 +130,11 @@ export function refreshAmbience(mood?: { green?: number; paused?: boolean }): vo
   const ctx = audioContext()
   if (!running || !ctx) return
   running.master.gain.setTargetAtTime(Math.max(0.0001, targetLevel()), ctx.currentTime, 0.8)
+}
+
+// The fallback wind: switched on only when the music cannot play.
+export function setAmbienceWind(on: boolean): void {
+  windWanted = on
+  const ctx = audioContext()
+  if (running && ctx) running.windOut.gain.setTargetAtTime(on ? 1 : 0, ctx.currentTime, 0.8)
 }

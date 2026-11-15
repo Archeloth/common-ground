@@ -12,12 +12,12 @@ describe('settings', () => {
 
   it('keeps valid values, clamps volumes and ignores wrong types', () => {
     const parsed = parseSettings(
-      JSON.stringify({ masterVolume: 3, musicVolume: -1, effectsVolume: 'loud', largeText: true, muted: 'yes' }),
+      JSON.stringify({ masterVolume: 3, musicVolume: -1, gameVolume: 'loud', largeText: true, muted: 'yes' }),
       defaults,
     )
     expect(parsed.masterVolume).toBe(1)
     expect(parsed.musicVolume).toBe(0)
-    expect(parsed.effectsVolume).toBe(defaults.effectsVolume)
+    expect(parsed.gameVolume).toBe(defaults.gameVolume)
     expect(parsed.largeText).toBe(true)
     expect(parsed.muted).toBe(defaults.muted)
   })
@@ -42,5 +42,11 @@ describe('settings', () => {
     const read = readSettings(store)
     expect(read.pauseOnPanels).toBe(true)
     expect(read.masterVolume).toBe(0.25)
+  })
+
+  it('carries an old single Effects volume over to both new sliders', () => {
+    const parsed = parseSettings(JSON.stringify({ effectsVolume: 0.3 }), defaults)
+    expect(parsed.interfaceVolume).toBe(0.3)
+    expect(parsed.gameVolume).toBe(0.3)
   })
 })

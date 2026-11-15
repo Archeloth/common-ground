@@ -8,8 +8,20 @@ development plan asks: add each item when it is added, not at the end).
 
 All source code in this repository is under the **MIT licence** (see
 [`LICENSE`](LICENSE)). That includes the art, which is drawn in code
-(`src/ui/render/sprites/`), and the ambience, which is generated with Web
+(`src/ui/render/sprites/`), and the extra birdsong, which is generated with Web
 Audio (`src/ui/ambience.ts`). Neither uses any image or audio file.
+
+## Music
+
+| File | Title | Author | Licence | Changes |
+| --- | --- | --- | --- | --- |
+| `public/audio/music/peaceful-village.mp3` | Peaceful Village | **TO FILL IN: author and source link** | **CC BY** (version TO FILL IN, e.g. 3.0 or 4.0) | None (renamed only). |
+
+CC BY requires credit: the game shows it in **Main menu -> Credits**.
+
+> **Release checklist:** confirm the track's author, source link and CC BY
+> version, then replace the "TO FILL IN" entries above and the
+> `credits.musicAuthor` string in `src/ui/i18n.ts`.
 
 ## Sound effects
 

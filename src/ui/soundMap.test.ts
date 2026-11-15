@@ -15,6 +15,15 @@ describe('sound map', () => {
     }
   })
 
+  it('puts every sound on a volume slider', () => {
+    for (const [id, def] of Object.entries(SOUND_MAP)) expect(['interface', 'game'], id).toContain(def.category)
+  })
+
+  it('keeps the bright chime for completed chapters only', () => {
+    const chime = Object.entries(SOUND_MAP).filter(([, def]) => def.files.includes('message.wav')).map(([id]) => id)
+    expect(chime).toEqual(['milestone'])
+  })
+
   it('has a sensible gain for every sound', () => {
     for (const [id, def] of Object.entries(SOUND_MAP)) {
       expect(def.gain, id).toBeGreaterThan(0)

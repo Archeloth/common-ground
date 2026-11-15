@@ -8,7 +8,8 @@ import { useSyncExternalStore } from 'react'
 export interface Settings {
   masterVolume: number // 0..1
   musicVolume: number // 0..1, music and ambience
-  effectsVolume: number // 0..1
+  interfaceVolume: number // 0..1, clicks, tabs, toggles, drawers
+  gameVolume: number // 0..1, building, research, rewards, chapters
   muted: boolean
   reducedMotion: boolean
   largeText: boolean
@@ -29,7 +30,8 @@ export function defaultSettings(reducedMotion = systemPrefersReducedMotion()): S
   return {
     masterVolume: 0.8,
     musicVolume: 0.6,
-    effectsVolume: 0.8,
+    interfaceVolume: 0.7,
+    gameVolume: 0.8,
     muted: false,
     reducedMotion,
     largeText: false,
@@ -59,7 +61,9 @@ export function parseSettings(raw: string | null, defaults: Settings): Settings 
   return {
     masterVolume: volume(data.masterVolume, defaults.masterVolume),
     musicVolume: volume(data.musicVolume, defaults.musicVolume),
-    effectsVolume: volume(data.effectsVolume, defaults.effectsVolume),
+    // Older saves of the settings had one Effects slider: it seeds both.
+    interfaceVolume: volume(data.interfaceVolume ?? data.effectsVolume, defaults.interfaceVolume),
+    gameVolume: volume(data.gameVolume ?? data.effectsVolume, defaults.gameVolume),
     muted: flag(data.muted, defaults.muted),
     reducedMotion: flag(data.reducedMotion, defaults.reducedMotion),
     largeText: flag(data.largeText, defaults.largeText),

@@ -1,4 +1,5 @@
 import { playSound, unlockAudio } from './audio'
+import { startMusic } from './music'
 import type { SoundId } from './soundMap'
 import { SOUND_MAP } from './soundMap'
 
@@ -8,7 +9,10 @@ import { SOUND_MAP } from './soundMap'
 // plays its own sound (starting a project plays "build" from the game events).
 // The first pointer or key press also unlocks audio (browser autoplay rules).
 export function installUiSounds(): () => void {
-  const onFirstGesture = () => unlockAudio()
+  const onFirstGesture = () => {
+    unlockAudio()
+    startMusic()
+  }
   const onClick = (event: MouseEvent) => {
     const target = event.target instanceof Element ? event.target : null
     const control = target?.closest('button, input[type="checkbox"], [role="tab"]')

@@ -12,14 +12,16 @@ export type { SoundId } from './soundMap'
 
 export interface AudioLevels {
   music: number // effective 0..1 after master volume and mute
-  effects: number
+  interface: number
+  game: number
 }
 
 export function audioLevels(settings: Settings): AudioLevels {
-  if (settings.muted) return { music: 0, effects: 0 }
+  if (settings.muted) return { music: 0, interface: 0, game: 0 }
   return {
     music: settings.masterVolume * settings.musicVolume,
-    effects: settings.masterVolume * settings.effectsVolume,
+    interface: settings.masterVolume * settings.interfaceVolume,
+    game: settings.masterVolume * settings.gameVolume,
   }
 }
 
@@ -68,21 +70,21 @@ export function unlockAudio(): void {
 export function playSound(sound: SoundId): void {
   const ctx = context
   if (!ctx) return
-  const effects = audioLevels(getSettings()).effects
-  if (effects <= 0) return
+  const def = SOUND_MAP[sound]
+  const level = audioLevels(getSettings())[def.category]
+  if (level <= 0) return
   const now = performance.now()
   if (now - (lastPlayed.get(sound) ?? -Infinity) < DEBOUNCE_MS) return
   lastPlayed.set(sound, now)
-  const def = SOUND_MAP[sound]
   const file = def.files[Math.floor(Math.random() * def.files.length)]
   const buffer = buffers.get(file)
   if (!buffer) return
   const source = ctx.createBufferSource()
   source.buffer = buffer
   // A touch of pitch variety (±4%) keeps repeated sounds from feeling robotic.
-  source.playbackRate.value = 0.96 + Math.random() * 0.08
+  source.playbackRate.value = (def.rate ?? 1) * (0.96 + Math.random() * 0.08)
   const gain = ctx.createGain()
-  gain.gain.value = Math.min(4, def.gain * effects)
+  gain.gain.value = Math.min(4, def.gain * level)
   source.connect(gain).connect(ctx.destination)
   source.start()
 }

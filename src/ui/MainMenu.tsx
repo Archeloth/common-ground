@@ -153,6 +153,9 @@ export default function MainMenu({
             <h2>{t('menu.credits')}</h2>
             <p>{t('credits.game')}</p>
             <p>
+              {t('credits.music')} Peaceful Village {t('credits.soundsBy', { author: t('credits.musicAuthor') })}, CC BY.
+            </p>
+            <p>
               {t('credits.sounds')}{' '}
               <a href={SOUNDS_URL} target="_blank" rel="noreferrer">
                 Interface Sounds Starter Pack

@@ -22,6 +22,7 @@ import { t } from './i18n'
 import { playSound } from './audio'
 import type { SoundId } from './soundMap'
 import { refreshAmbience, startAmbience, stopAmbience } from './ambience'
+import { refreshMusic } from './music'
 import type { GameStore } from '../game/store'
 import type { Command, GameState, Reason, Speed } from '../game/types'
 import { loadScenario, neighborhoodById } from '../game/scenario'
@@ -41,7 +42,7 @@ const COMMAND_SOUNDS: Partial<Record<Command['type'], SoundId>> = {
   renewProject: 'renew',
   startBusLine: 'renew',
   research: 'research',
-  townMeeting: 'reward',
+  townMeeting: 'meeting',
 }
 
 function countDone(state: GameState): number {
@@ -126,6 +127,7 @@ export default function GameScreen({
   const green = Math.round(townNeedAverage(state, scenario, 'green') * 20) / 20
   useEffect(() => {
     refreshAmbience({ green, paused: state.speed === 0 })
+    refreshMusic({ paused: state.speed === 0 })
   }, [green, state.speed, settings])
 
   // Clock shortcuts (Milestone 8.6): Space pauses/resumes at the last speed,

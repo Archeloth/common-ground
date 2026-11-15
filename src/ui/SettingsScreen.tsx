@@ -2,10 +2,10 @@ import { updateSettings, useSettings } from './settings'
 import type { Settings } from './settings'
 import { t } from './i18n'
 
-type VolumeKey = 'masterVolume' | 'musicVolume' | 'effectsVolume'
+type VolumeKey = 'masterVolume' | 'musicVolume' | 'interfaceVolume' | 'gameVolume'
 type FlagKey = 'muted' | 'reducedMotion' | 'largeText' | 'pauseOnPanels'
 
-const VOLUMES: VolumeKey[] = ['masterVolume', 'musicVolume', 'effectsVolume']
+const VOLUMES: VolumeKey[] = ['masterVolume', 'musicVolume', 'interfaceVolume', 'gameVolume']
 const FLAGS: FlagKey[] = ['reducedMotion', 'largeText', 'pauseOnPanels']
 
 function Volume({ id, settings }: { id: VolumeKey; settings: Settings }) {
@@ -50,7 +50,6 @@ export default function SettingsScreen({ onBack }: { onBack: () => void }) {
 
       <fieldset>
         <legend>{t('settings.audio')}</legend>
-        <p className="settings-note">{t('settings.audioSoon')}</p>
         {VOLUMES.map((id) => (
           <Volume key={id} id={id} settings={settings} />
         ))}
