@@ -155,6 +155,15 @@ export function tick(state: GameState): GameState {
     }
   }
 
+  // Construction: a project finished today becomes a built project (its
+  // ready day is cleared, so a finished slot reads exactly like an old one).
+  let projectReady = state.projectReady
+  for (const n of scenario.neighborhoods) {
+    const days = state.projectReady?.[n.id]
+    if (!days || !days.some((d) => d !== null && d <= day)) continue
+    projectReady = { ...projectReady, [n.id]: days.map((d) => (d !== null && d <= day ? null : d)) }
+  }
+
   // Milestone 8.5: a project whose lifetime ends today raises a notice once.
   let expiryNotices = state.expiryNotices
   for (const n of scenario.neighborhoods) {
@@ -175,7 +184,7 @@ export function tick(state: GameState): GameState {
   // are recorded, queued as a notice and pay out their Knowledge reward.
   let milestones = state.milestones
   let milestoneNotices = state.milestoneNotices
-  const withNewSim = { ...state, day, budget, time, neighborhoods, expiryNotices }
+  const withNewSim = { ...state, day, budget, time, neighborhoods, expiryNotices, projectReady }
   for (const def of loadMilestones()) {
     if (milestones.includes(def.id)) continue
     if (milestoneCompleted(withNewSim, def, scenario)) {

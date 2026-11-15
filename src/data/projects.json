@@ -29,7 +29,8 @@
         "farmland",
         "woodland"
       ],
-      "visual": "garden"
+      "visual": "garden",
+      "buildDays": 14
     },
     {
       "id": "rooftop_solar",
@@ -53,7 +54,8 @@
         "industrial_edge",
         "retail_park"
       ],
-      "visual": "solar"
+      "visual": "solar",
+      "buildDays": 21
     },
     {
       "id": "retrofit_program",
@@ -83,7 +85,8 @@
         "farmland",
         "woodland"
       ],
-      "visual": "retrofit"
+      "visual": "retrofit",
+      "buildDays": 30
     },
     {
       "id": "heat_pump_scheme",
@@ -111,7 +114,8 @@
         "industrial_edge",
         "retail_park"
       ],
-      "visual": "heatPump"
+      "visual": "heatPump",
+      "buildDays": 30
     },
     {
       "id": "energy_coop",
@@ -137,7 +141,8 @@
         "retail_park",
         "farmland"
       ],
-      "visual": "energyCoop"
+      "visual": "energyCoop",
+      "buildDays": 45
     },
     {
       "id": "compost_point",
@@ -168,7 +173,8 @@
         "farmland",
         "woodland"
       ],
-      "visual": "compost"
+      "visual": "compost",
+      "buildDays": 10
     },
     {
       "id": "local_food_market",
@@ -197,7 +203,8 @@
         "retail_park",
         "farmland"
       ],
-      "visual": "market"
+      "visual": "market",
+      "buildDays": 14
     },
     {
       "id": "safe_streets",
@@ -221,7 +228,8 @@
         "industrial_edge",
         "retail_park"
       ],
-      "visual": "safeStreets"
+      "visual": "safeStreets",
+      "buildDays": 21
     },
     {
       "id": "bike_car_share",
@@ -245,7 +253,8 @@
         "industrial_edge",
         "retail_park"
       ],
-      "visual": "bikeShare"
+      "visual": "bikeShare",
+      "buildDays": 14
     },
     {
       "id": "repair_cafe",
@@ -270,7 +279,8 @@
         "industrial_edge",
         "retail_park"
       ],
-      "visual": "repairCafe"
+      "visual": "repairCafe",
+      "buildDays": 21
     },
     {
       "id": "recycling_point",
@@ -295,7 +305,8 @@
         "retail_park",
         "farmland"
       ],
-      "visual": "recycling"
+      "visual": "recycling",
+      "buildDays": 10
     },
     {
       "id": "pocket_meadow",
@@ -322,7 +333,8 @@
         "farmland",
         "woodland"
       ],
-      "visual": "meadow"
+      "visual": "meadow",
+      "buildDays": 10
     },
     {
       "id": "street_trees",
@@ -350,7 +362,8 @@
         "industrial_edge",
         "retail_park"
       ],
-      "visual": "streetTrees"
+      "visual": "streetTrees",
+      "buildDays": 21
     },
     {
       "id": "rain_garden",
@@ -374,7 +387,8 @@
         "riverside",
         "woodland"
       ],
-      "visual": "rainGarden"
+      "visual": "rainGarden",
+      "buildDays": 30
     },
     {
       "id": "workshop_series",
@@ -392,7 +406,8 @@
         "apartments",
         "suburb"
       ],
-      "visual": "workshop"
+      "visual": "workshop",
+      "buildDays": 7
     }
   ]
 }

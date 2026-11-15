@@ -111,6 +111,9 @@ export interface ProjectDef {
   // Which little scene the map draws on the project's plot (Milestone 9).
   // Plain content: the UI checks it against its sprite list in a test.
   visual: string
+  // In-game days from starting to finishing (construction time). Nothing
+  // works, costs upkeep or counts toward goals until then.
+  buildDays: number
 }
 
 // Player commands against the simulation state. Types follow the plan core
@@ -184,6 +187,9 @@ export interface GameState {
   // neighborhoodId: the day each slot's project runs out (Milestone 8.5).
   // null = permanent or empty; a number always lines up with a project.
   projectExpiry: { [id: string]: (number | null)[] }
+  // neighborhoodId: the day each slot's project is finished building
+  // (construction time); null = built (or empty).
+  projectReady: { [id: string]: (number | null)[] }
   // neighborhoodId: dynamic per-neighborhood simulation values
   neighborhoods: { [id: string]: NeighborhoodSimState }
   // Researched technology ids (Milestone 6), seeded from the scenario

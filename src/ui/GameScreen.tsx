@@ -47,6 +47,17 @@ const COMMAND_SOUNDS: Partial<Record<Command['type'], SoundId>> = {
   townMeeting: 'meeting',
 }
 
+// Slots whose project has finished building (construction time).
+function countFinished(state: GameState): number {
+  let total = 0
+  for (const [id, slots] of Object.entries(state.projects)) {
+    slots.forEach((p, slot) => {
+      if (p !== null && (state.projectReady?.[id]?.[slot] ?? null) === null) total++
+    })
+  }
+  return total
+}
+
 function countDone(state: GameState): number {
   return Object.values(state.messages).filter((status) => status === 'done').length
 }
@@ -111,7 +122,9 @@ export default function GameScreen({
       setReason(result.ok ? null : result.reason)
       const sound = result.ok ? COMMAND_SOUNDS[command.type] : 'refuse'
       if (sound) playSound(sound)
-      if (result.ok && store.undoable()) setUndoOffer({ text: undoText(command, removed), id: Date.now() })
+      // Offer undo only for this very action (not e.g. a speed change made
+      // while an earlier action is still undoable).
+      if (result.ok && store.undoable() === command) setUndoOffer({ text: undoText(command, removed), id: Date.now() })
     },
     [store],
   )
@@ -152,6 +165,7 @@ export default function GameScreen({
     if (state.milestones.length > before.milestones.length) playSound('milestone')
     else if (countDone(state) > countDone(before)) playSound('reward')
     if (state.expiryNotices.length > before.expiryNotices.length) playSound('expire')
+    if (countFinished(state) > countFinished(before)) playSound('complete')
   }, [state])
 
   // Generated ambience: on while playing; livelier as the town gets greener;

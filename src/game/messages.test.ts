@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { finishConstruction } from './testHelpers'
 import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { applyCommand, initialState } from './state'
@@ -45,7 +46,10 @@ describe('resident messages', () => {
       project: def.request.project,
     })
     expect(started.ok).toBe(true)
-    if (started.ok) expect(messageFulfilled(started.state, def)).toBe(true)
+    if (started.ok) {
+      expect(messageFulfilled(started.state, def)).toBe(false) // still being built
+      expect(messageFulfilled(finishConstruction(started.state), def)).toBe(true)
+    }
   })
 
   it('applies a reward without mutating the input', () => {

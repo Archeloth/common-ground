@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { finishConstruction } from './testHelpers'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
@@ -155,7 +156,7 @@ describe('tick', () => {
     // Push displayed satisfaction over the goal; tick smooths it but it stays.
     // Messages are all marked done so they don't muddy the milestone rewards.
     const boosted = {
-      ...state,
+      ...finishConstruction(state),
       neighborhoods: Object.fromEntries(
         scenario.neighborhoods.map((n) => [
           n.id,

@@ -89,7 +89,7 @@ export default function TownMap({
   const liftsRef = useRef(new Map<string, number>())
   const popsRef = useRef<Pop[]>([])
   const floatersRef = useRef<Floater[]>([])
-  const previousProjectsRef = useRef<GameState['projects'] | null>(null)
+  const previousProjectsRef = useRef<GameState | null>(null)
   const flightRef = useRef<{ from: Camera; to: Camera; start: number } | null>(null)
   const statsRef = useRef({ frames: 0, ms: 0, last: 0, fps: 0, avgMs: 0 })
   // Expiry bubbles are DOM nodes pinned to world positions; the draw loop
@@ -193,15 +193,20 @@ export default function TownMap({
     looksRef.current = looks
     busLinesRef.current = state.busLines
 
+    // A project pops in when it is finished (construction time), not when it
+    // is started: that is the moment it starts to help.
     const before = previousProjectsRef.current
-    previousProjectsRef.current = state.projects
-    if (before && before !== state.projects && !reducedMotionRef.current) {
+    previousProjectsRef.current = state
+    const built = (s: GameState, id: string, slot: number): string | null => {
+      const project = s.projects[id]?.[slot] ?? null
+      return project !== null && (s.projectReady?.[id]?.[slot] ?? null) === null ? project : null
+    }
+    if (before && before !== state && !reducedMotionRef.current) {
       const fresh: Array<{ neighborhood: string; slot: number; projectId: string }> = []
       for (const n of scenario.neighborhoods) {
-        const now = state.projects[n.id] ?? []
-        const was = before[n.id] ?? []
-        now.forEach((id, slot) => {
-          if (id !== null && was[slot] !== id) fresh.push({ neighborhood: n.id, slot, projectId: id })
+        ;(state.projects[n.id] ?? []).forEach((_, slot) => {
+          const now = built(state, n.id, slot)
+          if (now !== null && built(before, n.id, slot) !== now) fresh.push({ neighborhood: n.id, slot, projectId: now })
         })
       }
       if (fresh.length > 0 && fresh.length <= MAX_POPS_AT_ONCE) {

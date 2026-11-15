@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { finishConstruction } from './testHelpers'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
@@ -28,7 +29,7 @@ describe('monthlyIncome (shown in the top bar)', () => {
     const before = monthlyIncome(s, scenario).knowledge
     const started = applyCommand(s, { type: 'startProject', neighborhood: 'school_green', project: 'workshop_series' })
     if (!started.ok) throw new Error(started.reason)
-    s = started.state
+    s = finishConstruction(started.state)
     expect(monthlyIncome(s, scenario).knowledge).toBe(before + 2)
     expect(settle(s).knowledge - s.knowledge).toBe(before + 2)
   })
@@ -59,7 +60,7 @@ describe('balance pass: scarcity', () => {
       if (!r.ok) throw new Error(r.reason)
       s = r.state
     }
-    return s
+    return finishConstruction(s)
   }
 
   it('charges upkeep for running projects and bus lines (5% of price)', () => {
@@ -110,7 +111,7 @@ describe('balance pass: scarcity', () => {
     const build = (neighborhood: string) => {
       const result = applyCommand(s, { type: 'startProject', neighborhood, project: 'workshop_series' })
       if (!result.ok) throw new Error(result.reason)
-      s = result.state
+      s = finishConstruction(result.state)
     }
     build('old_town')
     expect(projectKnowledgeIncome(s)).toBe(2)

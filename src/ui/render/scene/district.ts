@@ -7,7 +7,7 @@ import { KIND_COLORS, shade } from '../colors'
 import { buildPath2D, drawRaisedBlob } from '../draw'
 import type { Overlays } from '../sprites/buildings'
 import { drawBuilding, drawCar, drawGreenery } from '../sprites/buildings'
-import { drawDecoration } from '../sprites/decorations'
+import { drawConstruction, drawDecoration } from '../sprites/decorations'
 import type { VisualId } from '../sprites/decorations'
 import { SPRITE_SCALE, mix } from '../sprites/kit'
 import { layoutFor } from './layout'
@@ -21,6 +21,7 @@ export interface SlotLook {
   projectId: string
   visual: VisualId
   expired: boolean
+  building: number | null // 0..1 while under construction, else null
 }
 
 export interface DistrictLook {
@@ -43,12 +44,19 @@ export function districtLook(state: GameState, n: NeighborhoodDef): DistrictLook
       slots.push(null)
       continue
     }
-    const visual = projectById(projects, id).visual as VisualId
+    const def = projectById(projects, id)
+    const visual = def.visual as VisualId
     const expired = isExpired(state, n.id, i)
-    slots.push({ projectId: id, visual, expired })
-    if (!expired && visual === 'solar') overlays.solar = true
-    if (!expired && visual === 'retrofit') overlays.retrofit = true
-    if (!expired && visual === 'heatPump') overlays.heatPump = true
+    const ready = state.projectReady?.[n.id]?.[i] ?? null
+    const building =
+      ready !== null && state.day < ready
+        ? Math.min(1, Math.max(0, 1 - (ready - state.day) / Math.max(1, def.buildDays)))
+        : null
+    slots.push({ projectId: id, visual, expired, building })
+    const working = !expired && building === null
+    if (working && visual === 'solar') overlays.solar = true
+    if (working && visual === 'retrofit') overlays.retrofit = true
+    if (working && visual === 'heatPump') overlays.heatPump = true
   }
   const sim = state.neighborhoods[n.id]
   const needs = sim?.needs ?? n.needs
@@ -57,7 +65,9 @@ export function districtLook(state: GameState, n: NeighborhoodDef): DistrictLook
   const cars = layoutFor(n).cars.length
   const carsShown = Math.round(cars * Math.min(1, Math.max(0, (0.95 - needs.mobility) * 2)))
   const band = Math.round(satisfaction / 4)
-  const slotKey = slots.map((s) => (s ? `${s.visual}${s.expired ? '~' : ''}` : '-')).join(',')
+  const slotKey = slots
+    .map((s) => (s ? `${s.building !== null ? 'build' : s.visual}${s.expired ? '~' : ''}` : '-'))
+    .join(',')
   const key = `${slotKey}|${overlays.solar ? 1 : 0}${overlays.retrofit ? 1 : 0}${overlays.heatPump ? 1 : 0}|${band}|${carsShown}`
   return { slots, overlays, satisfaction, needs, carsShown, key }
 }
@@ -179,7 +189,8 @@ export function renderDistrict(
           ctx.globalAlpha = 0.5
           ctx.filter = 'grayscale(0.85)'
         }
-        drawDecoration(ctx, slot.visual, x, y, s, plot.variant)
+        if (slot.building !== null) drawConstruction(ctx, x, y, s, plot.variant)
+        else drawDecoration(ctx, slot.visual, x, y, s, plot.variant)
         ctx.restore()
       },
     })

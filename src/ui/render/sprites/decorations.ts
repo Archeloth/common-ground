@@ -404,6 +404,95 @@ function rainGarden(ctx: Ctx, x: number, y: number, s: number): void {
   }
 }
 
+// A project being built (construction time): wooden scaffolding, a stack of
+// crates, a little yellow crane and a cone. Its progress ring is drawn live.
+export function drawConstruction(ctx: Ctx, x: number, y: number, s: number, variant: number): void {
+  ctx.save()
+  ctx.lineJoin = 'round'
+  ctx.lineCap = 'round'
+  groundShadow(ctx, x, y, 20, s)
+  // Scaffolding: two levels of poles and planks.
+  ctx.strokeStyle = '#b9895c'
+  ctx.lineWidth = Math.max(0.7, 0.7 * s)
+  ctx.beginPath()
+  for (const dx of [-7, -2, 3]) {
+    ctx.moveTo(x + dx * s, y)
+    ctx.lineTo(x + dx * s, y - 9 * s)
+  }
+  for (const dy of [-3, -6, -9]) {
+    ctx.moveTo(x - 7.5 * s, y + dy * s)
+    ctx.lineTo(x + 3.5 * s, y + dy * s)
+  }
+  ctx.moveTo(x - 7 * s, y)
+  ctx.lineTo(x - 2 * s, y - 6 * s)
+  ctx.moveTo(x - 2 * s, y)
+  ctx.lineTo(x + 3 * s, y - 6 * s)
+  ctx.stroke()
+  // Planks.
+  for (const dy of [-3, -6]) {
+    roundRect(ctx, x - 7.6 * s, y + (dy - 0.6) * s, 11.2 * s, 1.2 * s, 0.4 * s)
+    ctx.fillStyle = '#d9b48a'
+    ctx.fill()
+  }
+  // Crates.
+  for (const [dx, dy] of [
+    [5, 0],
+    [7.6, 0],
+    [6.3, -2.4],
+  ]) {
+    roundRect(ctx, x + dx * s - 1.2 * s, y + dy * s - 2.4 * s, 2.4 * s, 2.4 * s, 0.3 * s)
+    fillOutlined(ctx, '#c99a6b', s, 0.35)
+  }
+  // A little crane: mast, jib, counterweight, cable and hook.
+  const mastX = x + 9.5 * s
+  ctx.strokeStyle = '#e0a82e'
+  ctx.lineWidth = Math.max(0.8, 0.9 * s)
+  ctx.beginPath()
+  ctx.moveTo(mastX, y)
+  ctx.lineTo(mastX, y - 16 * s)
+  ctx.moveTo(mastX - 9 * s, y - 15 * s)
+  ctx.lineTo(mastX + 3 * s, y - 15 * s)
+  ctx.stroke()
+  roundRect(ctx, mastX + 1.6 * s, y - 15.8 * s, 2 * s, 1.8 * s, 0.3 * s)
+  ctx.fillStyle = '#6f7c8f'
+  ctx.fill()
+  const hookX = mastX - 6 * s - variant * 2 * s
+  ctx.strokeStyle = '#5a5a5a'
+  ctx.lineWidth = Math.max(0.4, 0.3 * s)
+  ctx.beginPath()
+  ctx.moveTo(hookX, y - 15 * s)
+  ctx.lineTo(hookX, y - 10.5 * s)
+  ctx.stroke()
+  roundRect(ctx, hookX - 0.9 * s, y - 10.6 * s, 1.8 * s, 1.4 * s, 0.3 * s)
+  fillOutlined(ctx, '#c99a6b', s, 0.3)
+  // A traffic cone.
+  ctx.beginPath()
+  ctx.moveTo(x - 10 * s, y)
+  ctx.lineTo(x - 9 * s, y - 3 * s)
+  ctx.lineTo(x - 8 * s, y)
+  ctx.closePath()
+  ctx.fillStyle = '#ef7d3c'
+  ctx.fill()
+  ctx.restore()
+}
+
+// The progress ring above a project being built (drawn every frame).
+export function drawBuildRing(ctx: Ctx, x: number, y: number, s: number, progress: number): void {
+  const r = 3 * s
+  const cy = y - 21 * s
+  ctx.save()
+  circle(ctx, x, cy, r + 1.2 * s)
+  ctx.fillStyle = 'rgba(255,255,255,0.92)'
+  ctx.fill()
+  ctx.beginPath()
+  ctx.arc(x, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0.02, Math.min(1, progress)))
+  ctx.strokeStyle = '#3f6a3a'
+  ctx.lineWidth = Math.max(1.2, 1.1 * s)
+  ctx.lineCap = 'round'
+  ctx.stroke()
+  ctx.restore()
+}
+
 export const DECORATIONS: Record<VisualId, Draw> = {
   garden,
   solar: solarArray,

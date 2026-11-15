@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
-import { activeProjectIds, countActive, isExpired, projectEndsAt } from './expiry'
+import { activeProjectIds, countActive, isExpired, isUnderConstruction, projectEndsAt } from './expiry'
 import { TICKS_PER_MONTH } from './constants'
 import type { CommandResult, GameState } from './types'
 
@@ -21,7 +21,8 @@ function withProjects(): GameState {
   return s
 }
 
-const GARDEN_ENDS = projectEndsAt(1, 36)
+// The garden builds for 14 days; its 36-month lifetime counts from then.
+const GARDEN_ENDS = projectEndsAt(1 + 14, 36)
 
 describe('project lifetimes (Milestone 8.5)', () => {
   it('records an expiry day for volunteer projects and null for infrastructure', () => {
@@ -106,5 +107,25 @@ describe('project lifetimes (Milestone 8.5)', () => {
     const s = { ...withProjects(), expiryNotices: ['school_green:0', 'old_town:1'] }
     const after = ok(applyCommand(s, { type: 'dismissExpiryNotice', notice: 'school_green:0' }))
     expect(after.expiryNotices).toEqual(['old_town:1'])
+  })
+
+  it('builds before it works: no effects or upkeep until its ready day', () => {
+    let s = initialState(scenario)
+    s = ok(applyCommand(s, { type: 'startProject', neighborhood: 'school_green', project: 'community_garden' }))
+    expect(s.projectReady.school_green[0]).toBe(1 + 14)
+    expect(isUnderConstruction(s, 'school_green', 0)).toBe(true)
+    expect(activeProjectIds(s, 'school_green')).toEqual([])
+    for (let i = 0; i < 13; i++) s = tick(s)
+    expect(activeProjectIds(s, 'school_green')).toEqual([])
+    s = tick(s) // day 15: finished
+    expect(s.projectReady.school_green[0]).toBeNull()
+    expect(activeProjectIds(s, 'school_green')).toEqual(['community_garden'])
+  })
+
+  it('forgets the ready day when a project is removed mid-build', () => {
+    let s = initialState(scenario)
+    s = ok(applyCommand(s, { type: 'startProject', neighborhood: 'school_green', project: 'community_garden' }))
+    s = ok(applyCommand(s, { type: 'removeProject', neighborhood: 'school_green', slot: 0 }))
+    expect(s.projectReady.school_green[0]).toBeNull()
   })
 })

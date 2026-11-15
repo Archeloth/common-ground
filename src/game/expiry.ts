@@ -28,15 +28,42 @@ export function isRenewable(state: GameState, neighborhoodId: string, slot: numb
   return expires !== null && expires - state.day <= RENEW_WINDOW_MONTHS * TICKS_PER_MONTH
 }
 
-// Project ids still giving effects in a neighborhood (skips expired slots).
+// The day the project in a slot is finished (null = already built).
+export function readyDay(state: GameState, neighborhoodId: string, slot: number): number | null {
+  return state.projectReady?.[neighborhoodId]?.[slot] ?? null
+}
+
+// Still being built (construction time): no effects, upkeep or goal credit yet.
+export function isUnderConstruction(state: GameState, neighborhoodId: string, slot: number): boolean {
+  const ready = readyDay(state, neighborhoodId, slot)
+  return ready !== null && state.day < ready
+}
+
+// Project ids giving effects in a neighborhood: built and not lapsed.
 export function activeProjectIds(state: GameState, neighborhoodId: string): string[] {
   const slots = state.projects[neighborhoodId] ?? []
   const out: string[] = []
   for (let i = 0; i < slots.length; i++) {
     const id = slots[i]
-    if (id !== null && !isExpired(state, neighborhoodId, i)) out.push(id)
+    if (id !== null && !isExpired(state, neighborhoodId, i) && !isUnderConstruction(state, neighborhoodId, i)) {
+      out.push(id)
+    }
   }
   return out
+}
+
+// Projects started town-wide (built or still being built, not lapsed); with a
+// project id, only that one. Guidance uses it so it never asks for a project
+// that is already on its way.
+export function countStarted(state: GameState, projectId?: string): number {
+  let total = 0
+  for (const [id, slots] of Object.entries(state.projects)) {
+    slots.forEach((running, slot) => {
+      if (running === null || isExpired(state, id, slot)) return
+      if (projectId === undefined || running === projectId) total++
+    })
+  }
+  return total
 }
 
 // Slots whose project ran its course in a neighborhood (badges, panel).

@@ -8,7 +8,7 @@ import { messageCatalog, messageFulfilled } from './messages'
 import { applyCommand } from './state'
 import { loadTechnologies, technologyById } from './technologies'
 import { currentTutorialStep } from './tutorial'
-import { activeProjectIds, allExpired, countActive } from './expiry'
+import { allExpired, countStarted } from './expiry'
 
 // The "what should I do next?" hint (Milestone 8, plan item 2): a pure
 // function that reads the open goals and returns the single best next step.
@@ -103,7 +103,8 @@ function suggestionForCondition(
 ): NextAction | null {
   switch (condition.type) {
     case 'projectIn': {
-      if (activeProjectIds(state, condition.neighborhood).includes(condition.project)) return null
+      // Already started (even if still being built): nothing to suggest.
+      if ((state.projects[condition.neighborhood] ?? []).includes(condition.project)) return null
       const research = researchFirst(state, projects, def, condition.project)
       if (research !== undefined) return research
       const neighborhood = neighborhoodById(scenario, condition.neighborhood)
@@ -120,7 +121,7 @@ function suggestionForCondition(
       }
     }
     case 'projectCount': {
-      const total = countActive(state, condition.project)
+      const total = countStarted(state, condition.project)
       if (total >= condition.min) return null
       const research = researchFirst(state, projects, def, condition.project)
       if (research !== undefined) return research
@@ -141,7 +142,7 @@ function suggestionForCondition(
       }
     }
     case 'slotsFilled': {
-      const total = countActive(state)
+      const total = countStarted(state)
       if (total >= condition.min) return null
       const start = firstReachableStart(state, scenario, projects)
       if (!start) return null

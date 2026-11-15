@@ -15,7 +15,8 @@ export type SoundId =
   | 'open' // a drawer, panel or the lexicon opens
   | 'close'
   | 'refuse' // an action was refused
-  | 'build' // a project starts (and again when it is finished)
+  | 'build' // a project starts
+  | 'complete' // a project is finished building
   | 'remove' // a project is removed
   | 'renew' // a project is renewed, or a bus line starts
   | 'research' // a technology is researched
@@ -42,6 +43,7 @@ export const SOUND_MAP: Record<SoundId, SoundDef> = {
   close: { files: ['click5.wav'], gain: 1.2, category: 'interface' },
   refuse: { files: ['click5.wav'], gain: 1.4, rate: 0.75, category: 'interface' },
   build: { files: ['snap.wav', 'snap1.wav'], gain: 1.8, category: 'game' },
+  complete: { files: ['snap1.wav'], gain: 1.8, rate: 1.15, category: 'game' },
   remove: { files: ['dustbin.wav'], gain: 3.5, category: 'game' },
   renew: { files: ['drop.wav'], gain: 2, category: 'game' },
   research: { files: ['appear-online.wav'], gain: 3, category: 'game' },

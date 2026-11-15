@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { finishConstruction } from './testHelpers'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { loadMilestones, milestoneCompleted, townSatisfaction } from './milestones'
@@ -42,14 +43,14 @@ describe('milestone conditions', () => {
       project: 'community_garden',
     })
     expect(started.ok).toBe(true)
-    if (started.ok) expect(milestoneCompleted(started.state, def, scenario)).toBe(true)
+    if (started.ok) expect(milestoneCompleted(finishConstruction(started.state), def, scenario)).toBe(true)
   })
 
   it('counts projects town-wide and filled slots', () => {
     let state: GameState = { ...initialState(scenario), research: [...initialState(scenario).research, 'building_retrofits'] }
     const start = (command: Command): void => {
       const result = applyCommand(state, command)
-      if (result.ok) state = result.state
+      if (result.ok) state = finishConstruction(result.state)
     }
     start({ type: 'startProject', neighborhood: 'old_town', project: 'retrofit_program' })
     start({ type: 'startProject', neighborhood: 'station_quarter', project: 'retrofit_program' })
@@ -96,7 +97,7 @@ describe('milestone conditions', () => {
     let state: GameState = { ...initialState(scenario), research: [...initialState(scenario).research, 'building_retrofits'] }
     const start = (command: Command): void => {
       const result = applyCommand(state, command)
-      if (result.ok) state = result.state
+      if (result.ok) state = finishConstruction(result.state)
     }
     start({ type: 'startProject', neighborhood: 'linden_flats', project: 'community_garden' })
     for (const id of ['old_town', 'station_quarter', 'meadow_rise']) {

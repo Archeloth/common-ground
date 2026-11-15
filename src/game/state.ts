@@ -32,12 +32,14 @@ import {
 export function initialState(scenario: ScenarioDef): GameState {
   const projects: Record<string, Array<string | null>> = {}
   const projectExpiry: Record<string, Array<number | null>> = {}
+  const projectReady: Record<string, Array<number | null>> = {}
   const neighborhoods: Record<string, NeighborhoodSimState> = {}
   const engagement: Record<string, number> = {}
   const messages: Record<string, 'open' | 'done'> = {}
   for (const n of scenario.neighborhoods) {
     projects[n.id] = Array.from({ length: n.slots }, () => null)
     projectExpiry[n.id] = Array.from({ length: n.slots }, () => null)
+    projectReady[n.id] = Array.from({ length: n.slots }, () => null)
     const needs = { ...n.needs }
     neighborhoods[n.id] = {
       needs,
@@ -56,6 +58,7 @@ export function initialState(scenario: ScenarioDef): GameState {
     speed: 0,
     projects,
     projectExpiry,
+    projectReady,
     neighborhoods,
     research: [...scenario.start.unlockedTech],
     milestones: [],
@@ -116,9 +119,14 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
 
     const newSlots = slots.slice()
     newSlots[freeIndex] = command.project
+    // Construction time: it works from its ready day, and its lifetime
+    // (volunteer-run projects) counts from then.
+    const ready = project.buildDays > 0 ? state.day + project.buildDays : null
+    const newReady = readySlotsOf(state, neighborhood).slice()
+    newReady[freeIndex] = ready
     const newExpiry = expirySlotsOf(state, neighborhood).slice()
     newExpiry[freeIndex] =
-      project.durationMonths === undefined ? null : projectEndsAt(state.day, project.durationMonths)
+      project.durationMonths === undefined ? null : projectEndsAt(ready ?? state.day, project.durationMonths)
     return {
       ok: true,
       state: {
@@ -127,6 +135,7 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
         time: state.time - timeCost,
         projects: { ...state.projects, [neighborhood.id]: newSlots },
         projectExpiry: { ...state.projectExpiry, [neighborhood.id]: newExpiry },
+        projectReady: { ...state.projectReady, [neighborhood.id]: newReady },
       },
     }
   }
@@ -145,6 +154,8 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     newSlots[command.slot] = null
     const newExpiry = expirySlotsOf(state, neighborhood).slice()
     newExpiry[command.slot] = null
+    const newReady = readySlotsOf(state, neighborhood).slice()
+    newReady[command.slot] = null
     const key = expiryNoticeKey(neighborhood.id, command.slot)
     return {
       ok: true,
@@ -152,6 +163,7 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
         ...state,
         projects: { ...state.projects, [neighborhood.id]: newSlots },
         projectExpiry: { ...state.projectExpiry, [neighborhood.id]: newExpiry },
+        projectReady: { ...state.projectReady, [neighborhood.id]: newReady },
         expiryNotices: state.expiryNotices.filter((notice) => notice !== key),
       },
     }
@@ -179,6 +191,14 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
   // setSpeed, the only remaining variant.
   if (![0, 1, 2, 4].includes(command.speed)) return refusal('invalid_speed')
   return { ok: true, state: { ...state, speed: command.speed } }
+}
+
+// Ready days per slot (construction), padded for a stale save.
+function readySlotsOf(state: GameState, neighborhood: NeighborhoodDef): Array<number | null> {
+  const days = state.projectReady?.[neighborhood.id]
+  return days && days.length === neighborhood.slots
+    ? days
+    : Array.from({ length: neighborhood.slots }, () => null)
 }
 
 // Expiry days per slot, padded for a stale save (same fallback as slotsOf).

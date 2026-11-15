@@ -28,6 +28,7 @@ interface RawProject {
   durationMonths?: number
   knowledgePerMonth?: number
   visual?: string
+  buildDays?: number
 }
 
 // The projects catalog is content (data/projects.json), not code. loadProjects
@@ -58,6 +59,7 @@ function buildLoadProjects(): ProjectDef[] {
     durationMonths: p.durationMonths,
     knowledgePerMonth: p.knowledgePerMonth ?? 0,
     visual: p.visual ?? '',
+    buildDays: p.buildDays ?? 0,
   }))
   const techIds = new Set(loadTechnologies().map((tech) => tech.id))
 
@@ -74,6 +76,9 @@ function buildLoadProjects(): ProjectDef[] {
       fail(`project "${p.id}" needs at least one effect`)
     }
     if (!p.visual.trim()) fail(`project "${p.id}" needs a visual`)
+    if (!(Number.isInteger(p.buildDays) && p.buildDays >= 0)) {
+      fail(`project "${p.id}" buildDays must be a whole number of days >= 0`)
+    }
     if (!(Number.isInteger(p.knowledgePerMonth) && p.knowledgePerMonth >= 0)) {
       fail(`project "${p.id}" knowledgePerMonth must be a whole number >= 0`)
     }

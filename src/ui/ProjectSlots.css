@@ -250,3 +250,26 @@
   box-shadow: none;
   cursor: not-allowed;
 }
+
+/* Construction time: a slot being built, with its progress. */
+.slot-row.building {
+  background: #f3eee2;
+}
+
+.slot-progress {
+  display: block;
+  width: 9rem;
+  height: 0.3rem;
+  margin-top: 0.25rem;
+  border-radius: 999px;
+  background: #e2dccd;
+  overflow: hidden;
+}
+
+.slot-progress span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+  transition: width 600ms var(--ease-out);
+}

@@ -1,7 +1,7 @@
 import type { Command, GameState, NeighborhoodDef, ProjectDef, Reason } from '../game/types'
 import { loadProjects, projectById } from '../game/projects'
 import { applyCommand, projectTimeCost } from '../game/state'
-import { expiryOf, isExpired, isRenewable } from '../game/expiry'
+import { expiryOf, isExpired, isRenewable, isUnderConstruction, readyDay } from '../game/expiry'
 import { t } from './i18n'
 import { formatGameDate } from './dates'
 import NeedIcon from './NeedIcon'
@@ -101,20 +101,30 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
           const renew = renewable
             ? applyCommand(state, { type: 'renewProject', neighborhood: neighborhood.id, slot })
             : null
-          const status =
-            ends === null
+          const ready = readyDay(state, neighborhood.id, slot)
+          const building = isUnderConstruction(state, neighborhood.id, slot)
+          const buildDays = projectById(projects, projectId).buildDays
+          const status = building
+            ? t('project.building', { date: formatGameDate(ready ?? state.day) })
+            : ends === null
               ? t('project.permanent')
               : expired
                 ? t('project.expired')
                 : t('project.endsOn', { date: formatGameDate(ends) })
+          const progress = building && ready !== null ? 1 - (ready - state.day) / Math.max(1, buildDays) : 1
           return (
-            <li key={slot} className={`slot-row${expired ? ' expired' : renewable ? ' ending' : ''}`}>
+            <li key={slot} className={`slot-row${building ? ' building' : expired ? ' expired' : renewable ? ' ending' : ''}`}>
               <span className="slot-info">
                 <span className="slot-name">
                   <span aria-hidden="true">{projectIcon(projectById(projects, projectId).visual)} </span>
                   {projectById(projects, projectId).name}
                 </span>
                 <span className="slot-status">{status}</span>
+                {building && (
+                  <span className="slot-progress" aria-hidden="true">
+                    <span style={{ width: `${Math.round(progress * 100)}%` }} />
+                  </span>
+                )}
               </span>
               <span className="slot-actions">
                 {renew && (
@@ -174,6 +184,9 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                     </span>
                     <span className="pill" title={t('project.lifetime')}>
                       {project.durationMonths === undefined ? '🏗️' : '⏳'} {lifetimeText(project)}
+                    </span>
+                    <span className="pill" title={t('project.buildTimeHint')}>
+                      🚧 {t('project.buildTime', { days: project.buildDays })}
                     </span>
                   </span>
                   <EffectChips project={project} />

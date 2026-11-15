@@ -124,6 +124,29 @@ export function validateGameState(state: unknown): string[] {
       })
     }
   }
+  // Construction: ready days line up with projects, like expiry days.
+  if (s.projectReady === null || typeof s.projectReady !== 'object') {
+    problems.push('projectReady must be an object')
+  } else {
+    const ready = s.projectReady as Record<string, unknown>
+    const slotsRecord = (s.projects ?? {}) as Record<string, unknown>
+    for (const n of scenario.neighborhoods) {
+      const days = ready[n.id]
+      if (!Array.isArray(days) || days.length !== n.slots) {
+        problems.push(`projectReady.${n.id} must have ${n.slots} entries`)
+        continue
+      }
+      const slots = Array.isArray(slotsRecord[n.id]) ? (slotsRecord[n.id] as unknown[]) : []
+      days.forEach((day, index) => {
+        if (day === null) return
+        if (typeof day !== 'number' || !Number.isInteger(day) || day < 1) {
+          problems.push(`projectReady.${n.id}[${index}] must be a day number or null`)
+        } else if (slots[index] === null || slots[index] === undefined) {
+          problems.push(`projectReady.${n.id}[${index}] is set for an empty slot`)
+        }
+      })
+    }
+  }
   if (!Array.isArray(s.expiryNotices)) {
     problems.push('expiryNotices must be an array')
   } else {

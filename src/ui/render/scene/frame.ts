@@ -7,7 +7,7 @@ import { worldToScreen } from '../camera'
 import { COLORS } from '../colors'
 import { buildPath2D, drawBadge, drawBridge, drawBusLine, drawPulseRing, drawRiver } from '../draw'
 import { CHIMNEY_TOP } from '../sprites/buildings'
-import { drawDecoration, turbineHub } from '../sprites/decorations'
+import { drawBuildRing, drawDecoration, turbineHub } from '../sprites/decorations'
 import type { VisualId } from '../sprites/decorations'
 import { SPRITE_SCALE } from '../sprites/kit'
 import { bees, bird, bus, butterfly, floatingLabel, popScale, ripple, smoke, sparkles, turbineBlades } from '../sprites/life'
@@ -224,6 +224,10 @@ function drawLife(
       drawDecoration(ctx, pop.visual, p.x, p.y, s, plot.variant)
       ctx.restore()
       sparkles(ctx, p.x, p.y, s, progress)
+      return
+    }
+    if (slot && slot.building !== null) {
+      drawBuildRing(ctx, p.x, p.y, s, slot.building)
       return
     }
     if (!slot || slot.expired) {
