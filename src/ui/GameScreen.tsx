@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import TopBar from './TopBar'
 import TownMap from './TownMap'
+import type { FocusRequest } from './TownMap'
 import NeighborhoodPanel from './NeighborhoodPanel'
 import SaveMenu from './SaveMenu'
 import ResearchMenu from './ResearchMenu'
@@ -73,6 +74,12 @@ export default function GameScreen({
   const [reason, setReason] = useState<Reason | null>(null)
   const [drawer, setDrawer] = useState<DrawerId | null>(null)
   const onSelectionChange = useCallback((id: string | null) => setSelectedId(id), [])
+  // "Show" buttons select a district and fly the camera to it (Milestone 9).
+  const [focus, setFocus] = useState<FocusRequest | null>(null)
+  const showDistrict = useCallback((id: string | null) => {
+    setSelectedId(id)
+    if (id) setFocus((previous) => ({ id, nonce: (previous?.nonce ?? 0) + 1 }))
+  }, [])
   const selected = selectedId ? neighborhoodById(scenario, selectedId) : null
   // Tutorial pulse targets come from the current step (Milestone 8).
   const pulseIds = state.tutorialStep < TUTORIAL_STEPS.length ? TUTORIAL_STEPS[state.tutorialStep].pulse : []
@@ -195,7 +202,6 @@ export default function GameScreen({
         <TownMap
           selectedId={selectedId}
           onSelectionChange={onSelectionChange}
-          busLines={state.busLines}
           pulseIds={pulseIds}
           expiredIds={expiredIds}
           bubbles={bubbles}
@@ -203,6 +209,8 @@ export default function GameScreen({
           onDismiss={handleDismissExpiry}
           state={state}
           reducedMotion={settings.reducedMotion}
+          onShow={showDistrict}
+          focus={focus}
         />
         <GoalTracker state={state} />
         <Toolbar
@@ -216,7 +224,7 @@ export default function GameScreen({
                 state={state}
                 onSelect={(id) => {
                   setDrawer(null)
-                  onSelectionChange(id)
+                  showDistrict(id)
                 }}
               />
             ),
@@ -244,7 +252,7 @@ export default function GameScreen({
           />
         )}
         <TutorialCard state={state} onNext={() => dispatch({ type: 'tutorialNext' })} />
-        <GuideButton state={state} onShow={onSelectionChange} />
+        <GuideButton state={state} onShow={showDistrict} />
         {(notice || reason) && (
           <div className={`reason-banner${notice ? ' info' : ''}`} role={notice ? 'status' : 'alert'}>
             <span>{notice ?? (reason ? t(`reason.${reason}`) : '')}</span>

@@ -1,4 +1,4 @@
-import type { NeighborhoodKind } from '../../game/types'
+import type { NeedId, NeighborhoodKind } from '../../game/types'
 
 // One flat ~12-colour palette — placeholder art, tuned by eye later
 // (development plan, "Art plan for an open-source project"). Nothing here is
@@ -17,6 +17,18 @@ export const COLORS = {
   pulse: '#c4592b', // pulsing tutorial highlight rings (Milestone 8)
   badge: '#b4561f', // expired-project badge (Milestone 8.5)
 } as const
+
+// One colour per need (Milestone 9): need bars, effect chips and the
+// floating "+12% Food" labels all use it, so a need is recognisable at a
+// glance. Always shown next to the need's name or icon, never alone.
+export const NEED_COLORS: Record<NeedId, string> = {
+  energy: '#d98c1f',
+  food: '#d9663f',
+  mobility: '#3f7fc4',
+  green: '#3f9a4a',
+  waste: '#2f9a8f',
+  housing: '#c25a87',
+}
 
 export const KIND_COLORS: Record<NeighborhoodKind, string> = {
   old_town: '#c98f6b', // warm terracotta

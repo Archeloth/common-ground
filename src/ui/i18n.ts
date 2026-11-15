@@ -181,6 +181,7 @@ const MESSAGES: Record<string, string> = {
   'speed.tooltip': '{label} - key {key}',
   'topbar.pausedHint': 'Paused - press Play when you are ready',
   'toolbar.label': 'Menus',
+  'map.label': 'Map of Willowbrook',
   'toolbar.town': 'Town',
   'toolbar.research': 'Research',
   'toolbar.saves': 'Save',

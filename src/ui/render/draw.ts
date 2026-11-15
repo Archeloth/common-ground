@@ -161,7 +161,8 @@ export function drawBadge(
   glyph: string,
 ): void {
   const c = worldToScreen(cam, center.x + worldRadius * 0.7, center.y - worldRadius * 0.45)
-  const r = Math.max(9, 11 * cam.zoom)
+  // Readable when zoomed out, but never a giant coin when zoomed in.
+  const r = Math.min(14, Math.max(9, 11 * cam.zoom))
   ctx.save()
   ctx.beginPath()
   ctx.arc(c.x, c.y, r, 0, Math.PI * 2)

@@ -108,6 +108,9 @@ export interface ProjectDef {
   // Knowledge paid each month while the project runs (Milestone 8.5): the
   // workshop series is the town's steady Knowledge source.
   knowledgePerMonth: number
+  // Which little scene the map draws on the project's plot (Milestone 9).
+  // Plain content: the UI checks it against its sprite list in a test.
+  visual: string
 }
 
 // Player commands against the simulation state. Types follow the plan core

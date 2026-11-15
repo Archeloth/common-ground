@@ -10,10 +10,26 @@
       "requiresTech": "community_gardens",
       "durationMonths": 36,
       "effects": [
-        { "need": "food", "change": 0.12 },
-        { "need": "green", "change": 0.08 }
+        {
+          "need": "food",
+          "change": 0.12
+        },
+        {
+          "need": "green",
+          "change": 0.08
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park",
+        "farmland",
+        "woodland"
+      ],
+      "visual": "garden"
     },
     {
       "id": "rooftop_solar",
@@ -24,9 +40,20 @@
       "engagement": 0,
       "requiresTech": "energy_audits",
       "effects": [
-        { "need": "energy", "change": 0.25 }
+        {
+          "need": "energy",
+          "change": 0.25
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park"
+      ],
+      "visual": "solar"
     },
     {
       "id": "retrofit_program",
@@ -37,10 +64,26 @@
       "engagement": 0,
       "requiresTech": "building_retrofits",
       "effects": [
-        { "need": "housing", "change": 0.15 },
-        { "need": "energy", "change": 0.2 }
+        {
+          "need": "housing",
+          "change": 0.15
+        },
+        {
+          "need": "energy",
+          "change": 0.2
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park",
+        "farmland",
+        "woodland"
+      ],
+      "visual": "retrofit"
     },
     {
       "id": "heat_pump_scheme",
@@ -51,10 +94,24 @@
       "engagement": 0,
       "requiresTech": "heat_pumps",
       "effects": [
-        { "need": "energy", "change": 0.15 },
-        { "need": "housing", "change": 0.05 }
+        {
+          "need": "energy",
+          "change": 0.15
+        },
+        {
+          "need": "housing",
+          "change": 0.05
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park"
+      ],
+      "visual": "heatPump"
     },
     {
       "id": "energy_coop",
@@ -66,9 +123,21 @@
       "requiresTech": "energy_cooperatives",
       "durationMonths": 48,
       "effects": [
-        { "need": "energy", "change": 0.15 }
+        {
+          "need": "energy",
+          "change": 0.15
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park",
+        "farmland"
+      ],
+      "visual": "energyCoop"
     },
     {
       "id": "compost_point",
@@ -80,10 +149,26 @@
       "requiresTech": "composting",
       "durationMonths": 24,
       "effects": [
-        { "need": "waste", "change": 0.15 },
-        { "need": "food", "change": 0.03 }
+        {
+          "need": "waste",
+          "change": 0.15
+        },
+        {
+          "need": "food",
+          "change": 0.03
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park",
+        "farmland",
+        "woodland"
+      ],
+      "visual": "compost"
     },
     {
       "id": "local_food_market",
@@ -95,10 +180,24 @@
       "requiresTech": "local_food_hubs",
       "durationMonths": 36,
       "effects": [
-        { "need": "food", "change": 0.08 },
-        { "need": "waste", "change": 0.04 }
+        {
+          "need": "food",
+          "change": 0.08
+        },
+        {
+          "need": "waste",
+          "change": 0.04
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "retail_park", "farmland"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "retail_park",
+        "farmland"
+      ],
+      "visual": "market"
     },
     {
       "id": "safe_streets",
@@ -109,9 +208,20 @@
       "engagement": 0,
       "requiresTech": "safe_streets",
       "effects": [
-        { "need": "mobility", "change": 0.15 }
+        {
+          "need": "mobility",
+          "change": 0.15
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park"
+      ],
+      "visual": "safeStreets"
     },
     {
       "id": "bike_car_share",
@@ -122,9 +232,20 @@
       "engagement": 0,
       "requiresTech": "shared_mobility",
       "effects": [
-        { "need": "mobility", "change": 0.12 }
+        {
+          "need": "mobility",
+          "change": 0.12
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park"
+      ],
+      "visual": "bikeShare"
     },
     {
       "id": "repair_cafe",
@@ -136,9 +257,20 @@
       "requiresTech": "repair_cafes",
       "durationMonths": 24,
       "effects": [
-        { "need": "waste", "change": 0.1 }
+        {
+          "need": "waste",
+          "change": 0.1
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park"
+      ],
+      "visual": "repairCafe"
     },
     {
       "id": "recycling_point",
@@ -149,9 +281,21 @@
       "engagement": 0,
       "requiresTech": "separate_collection",
       "effects": [
-        { "need": "waste", "change": 0.12 }
+        {
+          "need": "waste",
+          "change": 0.12
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park",
+        "farmland"
+      ],
+      "visual": "recycling"
     },
     {
       "id": "pocket_meadow",
@@ -163,9 +307,22 @@
       "requiresTech": "pollinator_meadows",
       "durationMonths": 36,
       "effects": [
-        { "need": "green", "change": 0.1 }
+        {
+          "need": "green",
+          "change": 0.1
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park",
+        "farmland",
+        "woodland"
+      ],
+      "visual": "meadow"
     },
     {
       "id": "street_trees",
@@ -176,10 +333,24 @@
       "engagement": 0,
       "requiresTech": "urban_trees",
       "effects": [
-        { "need": "green", "change": 0.12 },
-        { "need": "housing", "change": 0.03 }
+        {
+          "need": "green",
+          "change": 0.12
+        },
+        {
+          "need": "housing",
+          "change": 0.03
+        }
       ],
-      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb",
+        "riverside",
+        "industrial_edge",
+        "retail_park"
+      ],
+      "visual": "streetTrees"
     },
     {
       "id": "rain_garden",
@@ -190,10 +361,20 @@
       "engagement": 0,
       "requiresTech": "rain_gardens",
       "effects": [
-        { "need": "green", "change": 0.08 },
-        { "need": "housing", "change": 0.05 }
+        {
+          "need": "green",
+          "change": 0.08
+        },
+        {
+          "need": "housing",
+          "change": 0.05
+        }
       ],
-      "allowedKinds": ["riverside", "woodland"]
+      "allowedKinds": [
+        "riverside",
+        "woodland"
+      ],
+      "visual": "rainGarden"
     },
     {
       "id": "workshop_series",
@@ -206,7 +387,12 @@
       "requiresTech": "community_learning",
       "durationMonths": 24,
       "effects": [],
-      "allowedKinds": ["old_town", "apartments", "suburb"]
+      "allowedKinds": [
+        "old_town",
+        "apartments",
+        "suburb"
+      ],
+      "visual": "workshop"
     }
   ]
 }
