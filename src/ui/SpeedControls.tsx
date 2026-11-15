@@ -43,6 +43,7 @@ export default function SpeedControls({ speed, onSpeed }: { speed: Speed; onSpee
             key={value}
             type="button"
             role="radio"
+            data-sound="toggle"
             aria-checked={active}
             aria-label={label}
             title={nudge ? t('topbar.pausedHint') : t('speed.tooltip', { label, key: SHORTCUTS[value] })}

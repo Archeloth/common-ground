@@ -50,6 +50,7 @@ function TechCard({
           <button
             type="button"
             className="tech-learn"
+            data-sound="none"
             disabled={failure !== null}
             onClick={() => onResearch(tech.id)}
           >

@@ -381,7 +381,7 @@ export default function TownMap({
             {bubble.text}
           </p>
           <div className="expiry-bubble-actions">
-            <button type="button" className="expiry-renew" disabled={!bubble.canRenew} onClick={() => onRenew(bubble)}>
+            <button type="button" className="expiry-renew" data-sound="none" disabled={!bubble.canRenew} onClick={() => onRenew(bubble)}>
               {bubble.renewLabel}
             </button>
             <button type="button" onClick={() => onSelectionChange(bubble.neighborhoodId)}>

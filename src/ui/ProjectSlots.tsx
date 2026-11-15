@@ -102,6 +102,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                   <button
                     type="button"
                     className="slot-renew"
+                    data-sound="none"
                     disabled={!renew.ok}
                     title={renew.ok ? undefined : t(`reason.${renew.reason}`)}
                     onClick={() => onStart({ type: 'renewProject', neighborhood: neighborhood.id, slot })}
@@ -112,6 +113,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                 <button
                   type="button"
                   className="slot-remove"
+                  data-sound="none"
                   onClick={() => onRemove({ type: 'removeProject', neighborhood: neighborhood.id, slot })}
                 >
                   {t('project.remove')}
@@ -151,6 +153,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                 <button
                   type="button"
                   className="project-start"
+                  data-sound="none"
                   disabled={!ready}
                   onClick={() =>
                     onStart({

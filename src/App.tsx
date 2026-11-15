@@ -10,6 +10,7 @@ import { createGameStore } from './game/store'
 import { initialState } from './game/state'
 import { loadScenario } from './game/scenario'
 import { t } from './ui/i18n'
+import { installUiSounds } from './ui/uiSounds'
 import './App.css'
 
 const scenario = loadScenario()
@@ -32,6 +33,9 @@ function App() {
     store.start()
     return () => store.stop()
   }, [])
+
+  // Button clicks and the audio unlock on the first gesture (Milestone 9).
+  useEffect(() => installUiSounds(), [])
 
   const enterGame = useCallback(() => {
     saves.setSessionActive(true)

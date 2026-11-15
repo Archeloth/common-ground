@@ -17,15 +17,33 @@ import type { Saves } from './useSaves'
 import { useSettings } from './settings'
 import { isTypingTarget, speedForKey } from './speedKeys'
 import { t } from './i18n'
+import { playSound } from './audio'
+import type { SoundId } from './soundMap'
+import { refreshAmbience, startAmbience, stopAmbience } from './ambience'
 import type { GameStore } from '../game/store'
 import type { Command, GameState, Reason, Speed } from '../game/types'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { loadMilestones, milestoneById } from '../game/milestones'
 import { TUTORIAL_STEPS } from '../game/tutorial'
 import { allExpired } from '../game/expiry'
+import { townNeedAverage } from '../game/milestones'
 
 const scenario = loadScenario()
 const milestones = loadMilestones()
+
+// The sound each successful command makes (refusals play 'refuse').
+const COMMAND_SOUNDS: Partial<Record<Command['type'], SoundId>> = {
+  startProject: 'build',
+  removeProject: 'remove',
+  renewProject: 'renew',
+  startBusLine: 'renew',
+  research: 'research',
+  townMeeting: 'reward',
+}
+
+function countDone(state: GameState): number {
+  return Object.values(state.messages).filter((status) => status === 'done').length
+}
 
 interface GameScreenProps {
   store: GameStore
@@ -69,9 +87,34 @@ export default function GameScreen({
     (command: Command) => {
       const result = store.dispatch(command)
       setReason(result.ok ? null : result.reason)
+      const sound = result.ok ? COMMAND_SOUNDS[command.type] : 'refuse'
+      if (sound) playSound(sound)
     },
     [store],
   )
+
+  // Sounds for things the simulation did on its own: a chapter completed, a
+  // resident request fulfilled, a project that ran its course.
+  const previousRef = useRef(state)
+  useEffect(() => {
+    const before = previousRef.current
+    previousRef.current = state
+    if (before === state) return
+    if (state.milestones.length > before.milestones.length) playSound('milestone')
+    else if (countDone(state) > countDone(before)) playSound('reward')
+    if (state.expiryNotices.length > before.expiryNotices.length) playSound('expire')
+  }, [state])
+
+  // Generated ambience: on while playing; livelier as the town gets greener;
+  // hushed while paused. Volume follows the settings.
+  useEffect(() => {
+    startAmbience()
+    return () => stopAmbience()
+  }, [])
+  const green = Math.round(townNeedAverage(state, scenario, 'green') * 20) / 20
+  useEffect(() => {
+    refreshAmbience({ green, paused: state.speed === 0 })
+  }, [green, state.speed, settings])
 
   // Clock shortcuts (Milestone 8.6): Space pauses/resumes at the last speed,
   // 1/2/3 pick 1x/2x/4x. Off while typing or while the lexicon is open.

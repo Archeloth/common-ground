@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Original, untrimmed sound files (see scripts/trim_audio.py and LICENSES.md)
+audio-src/

@@ -33,6 +33,7 @@ export default function Toolbar({ open, onOpen, onLexicon, onMenu, drawers }: To
             type="button"
             className={`toolbar-button${open === id ? ' active' : ''}`}
             aria-expanded={open === id}
+            data-sound={open === id ? 'close' : 'open'}
             onClick={() => onOpen(open === id ? null : id)}
           >
             {t(`toolbar.${id}`)}

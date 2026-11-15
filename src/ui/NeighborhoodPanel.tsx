@@ -174,6 +174,7 @@ export default function NeighborhoodPanel({
           <button
             type="button"
             className="town-meeting"
+              data-sound="none"
             disabled={!meeting.ok}
             onClick={() => onTownMeeting(neighborhood.id)}
           >
@@ -227,6 +228,7 @@ export default function NeighborhoodPanel({
                 type="button"
                 className="save-action"
                 disabled={!busMeeting?.ok}
+                data-sound="none"
                 onClick={() => onStartBusLine(neighborhood.id, busTarget)}
               >
                 {t('panel.busLineStart')}
