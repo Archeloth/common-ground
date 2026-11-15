@@ -22,6 +22,8 @@ import { activeProjectIds, allExpired, countActive } from './expiry'
 // Suggestions that need a project are only returned when applyCommand would
 // accept the start, so the hint never sends the player into a refusal banner.
 
+const t_busLine = 'bus line'
+
 export interface NextAction {
   kind: 'tutorial' | 'renew' | 'milestone' | 'message' | 'need'
   textKey: string
@@ -175,6 +177,9 @@ function suggestionForCondition(
     }
     case 'busLineCount': {
       if (state.busLines.length >= condition.min) return null
+      if (!state.research.includes('public_transport')) {
+        return researchHint(state, def, 'public_transport', t_busLine)
+      }
       for (const n of scenario.neighborhoods) {
         for (const other of n.neighbors) {
           if (applyCommand(state, { type: 'startBusLine', from: n.id, to: other }).ok) {
@@ -205,16 +210,68 @@ function researchFirst(
 ): NextAction | null | undefined {
   const project = projectById(projects, projectId)
   if (!project.requiresTech || state.research.includes(project.requiresTech)) return undefined
-  if (!applyCommand(state, { type: 'research', tech: project.requiresTech }).ok) return null
+  return researchHint(state, def, project.requiresTech, project.name, projectId)
+}
+
+// The first technology on the way to `techId` whose prerequisites are all
+// researched (so "Rain gardens" points at "Urban trees" first).
+function nextTechToward(state: GameState, techId: string): string {
+  const techs = loadTechnologies()
+  let id = techId
+  for (let guard = 0; guard < techs.length; guard++) {
+    const missing = technologyById(techs, id).prerequisites.find((pre) => !state.research.includes(pre))
+    if (!missing) return id
+    id = missing
+  }
+  return id
+}
+
+// Research the next step toward a goal's technology, or earn the Knowledge
+// for it first. `thing` names what the research unlocks for the player.
+function researchHint(
+  state: GameState,
+  def: MilestoneDef,
+  goalTech: string,
+  thing: string,
+  projectId?: string,
+): NextAction | null {
+  const techs = loadTechnologies()
+  const next = nextTechToward(state, goalTech)
+  if (!applyCommand(state, { type: 'research', tech: next }).ok) {
+    // Not enough Knowledge yet: point at the town's way of earning it.
+    return knowledgeHint(state, def, technologyById(techs, next).name)
+  }
   return {
     kind: 'milestone',
-    textKey: 'guide.research',
+    textKey: next === goalTech ? 'guide.research' : 'guide.researchStep',
     params: {
       goal: def.name,
-      tech: technologyById(loadTechnologies(), project.requiresTech).name,
-      project: project.name,
+      tech: technologyById(techs, next).name,
+      target: technologyById(techs, goalTech).name,
+      project: thing,
     },
     projectId,
+  }
+}
+
+// A goal needs research the town cannot afford yet: suggest a workshop series
+// (or researching Community learning first), or nothing if neither is possible.
+function knowledgeHint(state: GameState, def: MilestoneDef, techName: string): NextAction | null {
+  const scenario = loadScenario()
+  if (!state.research.includes('community_learning')) {
+    if (!applyCommand(state, { type: 'research', tech: 'community_learning' }).ok) return null
+    return { kind: 'milestone', textKey: 'guide.learnFirst', params: { goal: def.name, tech: techName } }
+  }
+  const where = scenario.neighborhoods.find(
+    (n) => applyCommand(state, { type: 'startProject', neighborhood: n.id, project: 'workshop_series' }).ok,
+  )
+  if (!where) return null
+  return {
+    kind: 'milestone',
+    textKey: 'guide.needKnowledge',
+    params: { goal: def.name, tech: techName, neighborhood: where.name },
+    neighborhoodId: where.id,
+    projectId: 'workshop_series',
   }
 }
 

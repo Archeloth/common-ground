@@ -9,9 +9,13 @@ export const TICK_MS = 1000 // one tick per second at speed 1x (plan loop snippe
 export const MAX_TICKS_PER_FRAME = 200 // guard against a catch-up spiral
 export const TICKS_PER_MONTH = 30 // in-game days per month
 
-// Monthly Budget income from local taxes (plan: "about 0.25 per resident" —
-// Willowbrook's ~11,800 residents give ~2,950/month, close to the plan's ~3,000).
-export const BUDGET_PER_RESIDENT_PER_MONTH = 0.25
+// Monthly Budget income from local taxes, per resident (balance pass): a base
+// plus a share that grows with town satisfaction - a happy town keeps its
+// shops and residents, so good play pays. Willowbrook's ~11,800 residents give
+// ~2,970/month at satisfaction 60 (close to the plan's ~3,000), ~3,250 at 80
+// and ~2,690 at 40.
+export const TAX_BASE_PER_RESIDENT = 0.13
+export const TAX_SATISFACTION_PER_RESIDENT = 0.14 // x town satisfaction / 100
 
 // Monthly Community-time regeneration (plan: "regenerates from the average
 // engagement"). A baseline plus an engagement-scaled share keeps it gentle.
@@ -61,3 +65,18 @@ export const KNOWLEDGE_BASE_PER_MONTH = 1
 // Volunteer-run projects can be renewed in their last three months (and any
 // time after they expire), so the reminder arrives before the effects stop.
 export const RENEW_WINDOW_MONTHS = 3
+
+// --- Balance pass: scarcity ----------------------------------------------------
+
+// Every running project costs upkeep each month (the plan's "about 3% of cost
+// per month", a little higher so it bites): materials, staff time and repairs.
+// Lapsed projects cost nothing. A busy town runs ~2,000/month, so money keeps mattering.
+export const UPKEEP_RATE = 0.05
+// A bus line's running cost per month (drivers, fuel or charging).
+export const BUS_LINE_UPKEEP = 60
+
+// Volunteers who are given nothing to do drift away: the pool holds at most a
+// base plus two months of new volunteers. It stops hoarding and makes the
+// engagement lever (which raises monthly volunteers) also raise the cap.
+export const VOLUNTEER_CAP_BASE = 6
+export const VOLUNTEER_CAP_MONTHS = 2

@@ -285,8 +285,11 @@ describe('townMeeting', () => {
 
 describe('startBusLine', () => {
   const researched = (): GameState => {
-    const result = applyCommand(initialState(scenario), { type: 'research', tech: 'public_transport' })
-    return result.ok ? result.state : initialState(scenario)
+    // Enough Knowledge for the research (it costs more than the start gives).
+    const rich = { ...initialState(scenario), knowledge: 50 }
+    const result = applyCommand(rich, { type: 'research', tech: 'public_transport' })
+    if (!result.ok) throw new Error(`research refused: ${result.reason}`)
+    return result.state
   }
 
   it('links two adjacent neighborhoods and costs 1,000 budget', () => {

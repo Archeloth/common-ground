@@ -51,3 +51,12 @@ button.resource-chip:hover {
     display: none;
   }
 }
+
+/* Balance pass: money shrinking each month, or volunteers at their cap. */
+button.resource-chip.warn {
+  background: #8a4a2a;
+}
+
+button.resource-chip.warn .resource-income {
+  color: #ffd2b8;
+}

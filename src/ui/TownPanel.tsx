@@ -4,6 +4,7 @@ import { loadMilestones, townNeedAverage, townSatisfaction } from '../game/miles
 import { loadTechnologies } from '../game/technologies'
 import { allExpired, countActive } from '../game/expiry'
 import { NEED_ORDER } from '../game/needs'
+import { monthlyIncome, monthlyUpkeep } from '../game/economy'
 import NeedBar from './NeedBar'
 import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
@@ -62,6 +63,15 @@ export default function TownPanel({ state, onSelect }: TownPanelProps) {
           <dd>
             {countActive(state)}
             {lapsed > 0 && <span className="town-stat-note warn">{t('town.lapsed', { count: lapsed })}</span>}
+          </dd>
+        </div>
+        <div className={`town-stat${monthlyUpkeep(state) > monthlyIncome(state, scenario).budget ? ' tier-low' : ''}`}>
+          <dt>{t('town.upkeep')}</dt>
+          <dd>
+            {monthlyUpkeep(state).toLocaleString('en-GB')}
+            <span className="town-stat-note">
+              {t('town.upkeepOf', { income: monthlyIncome(state, scenario).budget.toLocaleString('en-GB') })}
+            </span>
           </dd>
         </div>
         <div className="town-stat">

@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
+import { monthlyIncome } from './economy'
 import { loadMilestones } from './milestones'
 import {
-  BUDGET_PER_RESIDENT_PER_MONTH,
   COMMUNITY_TIME_BASE_PER_MONTH,
   COMMUNITY_TIME_ENGAGEMENT_FACTOR,
   TICKS_PER_MONTH,
@@ -35,10 +35,8 @@ describe('tick', () => {
 
   it('runs the monthly settlement on every 30th day: budget income + community time', () => {
     const s = initialState(scenario)
-    const residents = scenario.neighborhoods.reduce((sum, n) => sum + n.residents, 0)
     const avgEngagement =
       scenario.neighborhoods.reduce((sum, n) => sum + n.engagement, 0) / scenario.neighborhoods.length
-    const income = Math.round(residents * BUDGET_PER_RESIDENT_PER_MONTH)
     const regen = COMMUNITY_TIME_BASE_PER_MONTH + Math.round((avgEngagement / 100) * COMMUNITY_TIME_ENGAGEMENT_FACTOR)
 
     // The plan: 30 ticks = one month; nothing moves before the 30th day.
@@ -47,6 +45,8 @@ describe('tick', () => {
     expect(justBefore.budget).toBe(s.budget)
     expect(justBefore.time).toBe(s.time)
 
+    // Income follows town satisfaction at the moment of settlement.
+    const income = monthlyIncome(justBefore, scenario).budget
     const afterMonth = runTicks(s, TICKS_PER_MONTH)
     expect(afterMonth.day).toBe(TICKS_PER_MONTH + 1)
     expect(afterMonth.budget).toBe(s.budget + income)
@@ -197,7 +197,7 @@ describe('tick', () => {
   })
 
   it('a bus line adds mobility coverage to both linked neighborhoods', () => {
-    let state = initialState(scenario)
+    let state = { ...initialState(scenario), knowledge: 50 }
     const research = applyCommand(state, { type: 'research', tech: 'public_transport' })
     if (!research.ok) throw new Error('research failed')
     state = research.state

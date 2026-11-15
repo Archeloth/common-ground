@@ -6,7 +6,7 @@ import { loadMilestones, milestoneCompleted } from './milestones'
 import { messageCatalog, messageFulfilled, applyMessageReward } from './messages'
 import { advanceTutorial } from './tutorial'
 import { activeProjectIds, expiryNoticeKey } from './expiry'
-import { monthlyIncome } from './economy'
+import { monthlyIncome, monthlyUpkeep, volunteerCap } from './economy'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import { clamp, clamp01, moveNeedsToward, needTargets, round } from './needs'
 import {
@@ -126,7 +126,10 @@ export function tick(state: GameState): GameState {
   if (day > 1 && (day - 1) % TICKS_PER_MONTH === 0) {
     // The amounts come from economy.ts, which the top bar shows as "+x/mo".
     const income = monthlyIncome(state, scenario)
-    budget += income.budget
+    // Upkeep is paid from the same settlement. Money never goes below zero:
+    // a stretched town simply has nothing left over (no penalties, no
+    // removals - the plan's non-punitive tone).
+    budget = Math.max(0, budget + income.budget - monthlyUpkeep(state))
     time += income.time
     knowledge += income.knowledge
 
@@ -164,6 +167,9 @@ export function tick(state: GameState): GameState {
       if (!expiryNotices.includes(key)) expiryNotices = [...expiryNotices, key]
     }
   }
+
+  // Volunteers who have nothing to do drift away (balance pass).
+  time = Math.min(time, volunteerCap({ ...state, engagement }, scenario))
 
   // Milestone 6: check uncompleted chapters once per tick; newly completed ones
   // are recorded, queued as a notice and pay out their Knowledge reward.

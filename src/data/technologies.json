@@ -6,7 +6,9 @@
       "branch": "energy",
       "cost": 0,
       "prerequisites": [],
-      "unlocks": ["building_retrofits"],
+      "unlocks": [
+        "building_retrofits"
+      ],
       "benefit": "Reveals each neighbourhood's biggest energy losses. Unlocks rooftop solar and deeper retrofit research.",
       "limit": "Cheap and fast, but the savings depend on the building and on people acting on the findings.",
       "confidence": "established",
@@ -17,8 +19,12 @@
       "name": "Building retrofits",
       "branch": "energy",
       "cost": 10,
-      "prerequisites": ["energy_audits"],
-      "unlocks": ["heat_pumps"],
+      "prerequisites": [
+        "energy_audits"
+      ],
+      "unlocks": [
+        "heat_pumps"
+      ],
       "benefit": "Insulation and windows cut heating demand and raise comfort.",
       "limit": "Strong in older, poorly insulated housing; deep retrofits are costly and disruptive.",
       "confidence": "established",
@@ -28,9 +34,13 @@
       "id": "heat_pumps",
       "name": "Heat pumps",
       "branch": "energy",
-      "cost": 15,
-      "prerequisites": ["building_retrofits"],
-      "unlocks": ["energy_cooperatives"],
+      "cost": 30,
+      "prerequisites": [
+        "building_retrofits"
+      ],
+      "unlocks": [
+        "energy_cooperatives"
+      ],
       "benefit": "Move heat rather than burn fuel, so homes get several units of heat per unit of electricity.",
       "limit": "Efficient heat, but less so in very cold weather; works best in homes that are retrofitted first.",
       "confidence": "established",
@@ -40,8 +50,10 @@
       "id": "energy_cooperatives",
       "name": "Energy cooperatives",
       "branch": "energy",
-      "cost": 25,
-      "prerequisites": ["heat_pumps"],
+      "cost": 45,
+      "prerequisites": [
+        "heat_pumps"
+      ],
       "unlocks": [],
       "benefit": "Residents jointly own local renewable energy: more clean power and a stronger sense of ownership.",
       "limit": "Many European communities run them, but success depends on local rules and steady organising effort.",
@@ -54,7 +66,9 @@
       "branch": "food",
       "cost": 0,
       "prerequisites": [],
-      "unlocks": ["composting"],
+      "unlocks": [
+        "composting"
+      ],
       "benefit": "Shared food growing: food, green space and engagement in a neighbourhood.",
       "limit": "Meaningful social benefits, but only a small share of a town's total food.",
       "confidence": "established",
@@ -64,9 +78,13 @@
       "id": "composting",
       "name": "Composting",
       "branch": "food",
-      "cost": 10,
-      "prerequisites": ["community_gardens"],
-      "unlocks": ["local_food_hubs"],
+      "cost": 20,
+      "prerequisites": [
+        "community_gardens"
+      ],
+      "unlocks": [
+        "local_food_hubs"
+      ],
       "benefit": "Diverts food waste and builds soil fertility for nearby gardens.",
       "limit": "Needs good sorting and careful management of smells and pests.",
       "confidence": "established",
@@ -76,8 +94,10 @@
       "id": "local_food_hubs",
       "name": "Local food hubs and markets",
       "branch": "food",
-      "cost": 15,
-      "prerequisites": ["composting"],
+      "cost": 35,
+      "prerequisites": [
+        "composting"
+      ],
       "unlocks": [],
       "benefit": "A weekly market brings local growers and residents together: more local food, less packaging.",
       "limit": "Shorter chains help local growers, but local does not always mean lower emissions.",
@@ -90,7 +110,9 @@
       "branch": "mobility",
       "cost": 0,
       "prerequisites": [],
-      "unlocks": ["public_transport"],
+      "unlocks": [
+        "public_transport"
+      ],
       "benefit": "Walking and cycling infrastructure: mobility up, car emissions down.",
       "limit": "Works best as a connected network, not isolated lanes.",
       "confidence": "established",
@@ -100,9 +122,13 @@
       "id": "public_transport",
       "name": "Frequent public transport",
       "branch": "mobility",
-      "cost": 10,
-      "prerequisites": ["safe_streets"],
-      "unlocks": ["shared_mobility"],
+      "cost": 20,
+      "prerequisites": [
+        "safe_streets"
+      ],
+      "unlocks": [
+        "shared_mobility"
+      ],
       "benefit": "Unlocks bus lines between neighbouring neighbourhoods (they cross the river only at the bridges).",
       "limit": "Frequency and reliability matter more than coverage; low-density areas are harder to serve.",
       "confidence": "established",
@@ -112,8 +138,10 @@
       "id": "shared_mobility",
       "name": "Shared mobility (car and bike sharing)",
       "branch": "mobility",
-      "cost": 15,
-      "prerequisites": ["public_transport"],
+      "cost": 35,
+      "prerequisites": [
+        "public_transport"
+      ],
       "unlocks": [],
       "benefit": "Shared bikes and cars mean fewer cars per household and easier trips without owning one.",
       "limit": "Helps most where density and good alternatives already exist.",
@@ -124,9 +152,11 @@
       "id": "repair_cafes",
       "name": "Repair cafés and tool libraries",
       "branch": "circular",
-      "cost": 10,
+      "cost": 15,
       "prerequisites": [],
-      "unlocks": ["separate_collection"],
+      "unlocks": [
+        "separate_collection"
+      ],
       "benefit": "Neighbours fix and share things instead of throwing them away: less waste, more engagement.",
       "limit": "Repair sits above recycling in the waste hierarchy, but needs volunteers and a space to meet.",
       "confidence": "established",
@@ -136,8 +166,10 @@
       "id": "separate_collection",
       "name": "Separate collection and recycling",
       "branch": "circular",
-      "cost": 10,
-      "prerequisites": ["repair_cafes"],
+      "cost": 25,
+      "prerequisites": [
+        "repair_cafes"
+      ],
       "unlocks": [],
       "benefit": "Sorted collection points raise the share of waste that is recycled.",
       "limit": "Quality depends on clean sorting, and recycling is not the same as preventing waste.",
@@ -150,7 +182,9 @@
       "branch": "ecology",
       "cost": 0,
       "prerequisites": [],
-      "unlocks": ["urban_trees"],
+      "unlocks": [
+        "urban_trees"
+      ],
       "benefit": "Mowing less and sowing native flowers turns lawns into green space that is alive with insects.",
       "limit": "Benefits grow over several seasons, and a tidy-lawn culture can resist the change.",
       "confidence": "established",
@@ -160,9 +194,13 @@
       "id": "urban_trees",
       "name": "Urban trees and green roofs",
       "branch": "ecology",
-      "cost": 10,
-      "prerequisites": ["pollinator_meadows"],
-      "unlocks": ["rain_gardens"],
+      "cost": 20,
+      "prerequisites": [
+        "pollinator_meadows"
+      ],
+      "unlocks": [
+        "rain_gardens"
+      ],
       "benefit": "Street trees add shade, cooling and green space that residents notice every day.",
       "limit": "Young trees need water and care for years; green roofs need structural support.",
       "confidence": "established",
@@ -172,8 +210,10 @@
       "id": "rain_gardens",
       "name": "Rain gardens and wetlands",
       "branch": "ecology",
-      "cost": 15,
-      "prerequisites": ["urban_trees"],
+      "cost": 35,
+      "prerequisites": [
+        "urban_trees"
+      ],
       "unlocks": [],
       "benefit": "Planted hollows and wetlands soak up and filter runoff along the river.",
       "limit": "They need space and upkeep, and cannot stop extreme floods on their own.",
@@ -184,7 +224,7 @@
       "id": "community_learning",
       "name": "Community learning",
       "branch": "community",
-      "cost": 5,
+      "cost": 10,
       "prerequisites": [],
       "unlocks": [],
       "benefit": "Evening workshops at the school or library: residents learn together and the town gains Knowledge each month.",

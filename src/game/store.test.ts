@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { loadScenario } from './scenario'
 import { createGameStore } from './store'
 import { initialState } from './state'
-import { BUDGET_PER_RESIDENT_PER_MONTH, TICKS_PER_MONTH } from './constants'
+import { TICKS_PER_MONTH } from './constants'
+import { monthlyIncome, monthlyUpkeep } from './economy'
 
 const scenario = loadScenario()
 
@@ -95,11 +96,14 @@ describe('game store', () => {
     store.dispatch({ type: 'setSpeed', speed: 4 })
     store.step(0)
     // At 4x, 250 ms of elapsed time advances one in-game day.
-    for (let i = 0; i < TICKS_PER_MONTH; i++) store.step(250 * (i + 1))
+    for (let i = 0; i < TICKS_PER_MONTH - 1; i++) store.step(250 * (i + 1))
+    // The settlement pays what economy.ts says for the state at that moment.
+    const before = store.getState()
+    const expected = before.budget + monthlyIncome(before, scenario).budget - monthlyUpkeep(before)
+    store.step(250 * TICKS_PER_MONTH)
     const state = store.getState()
     expect(state.day).toBe(TICKS_PER_MONTH + 1)
-    const residents = scenario.neighborhoods.reduce((sum, n) => sum + n.residents, 0)
-    expect(state.budget).toBe(scenario.start.budget + Math.round(residents * BUDGET_PER_RESIDENT_PER_MONTH))
+    expect(state.budget).toBe(expected)
   })
 
   it('getSnapshot returns a stable reference between changes', () => {

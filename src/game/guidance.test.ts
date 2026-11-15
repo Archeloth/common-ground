@@ -105,4 +105,24 @@ describe('nextAction (what should I do next?)', function () {
     }
     expect(nextAction(state)).toBeNull()
   })
+
+  it('walks the research chain, then suggests earning Knowledge when it is out of reach', function () {
+    // Chapter 3 needs a rain garden: Rain gardens needs Urban trees first.
+    const ch3 = {
+      ...pastTutorial(),
+      milestones: ['first_steps', 'getting_around'],
+      messages: allMessagesDone(),
+      knowledge: 25,
+    }
+    const step = nextAction(ch3)
+    expect(step?.textKey).toBe('guide.researchStep')
+    expect(step?.params.tech).toBe('Urban trees and green roofs')
+    // Too little Knowledge for Urban trees (20) but enough for Community learning (10).
+    expect(nextAction({ ...ch3, knowledge: 12 })?.textKey).toBe('guide.learnFirst')
+    // With Community learning researched, a workshop series is the way.
+    const learned = { ...ch3, knowledge: 2, research: [...ch3.research, 'community_learning'] }
+    const action = nextAction(learned)
+    expect(action?.textKey).toBe('guide.needKnowledge')
+    expect(action?.projectId).toBe('workshop_series')
+  })
 })

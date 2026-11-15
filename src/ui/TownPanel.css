@@ -10,7 +10,7 @@
 
 .town-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(6.4rem, 1fr));
   gap: 0.4rem;
   margin: 0;
 }

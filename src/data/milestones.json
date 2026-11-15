@@ -23,7 +23,7 @@
         }
       ],
       "reward": {
-        "knowledge": 10
+        "knowledge": 8
       }
     },
     {
@@ -49,7 +49,7 @@
         }
       ],
       "reward": {
-        "knowledge": 15
+        "knowledge": 12
       }
     },
     {
@@ -76,7 +76,7 @@
         }
       ],
       "reward": {
-        "knowledge": 20
+        "knowledge": 15
       }
     },
     {
@@ -103,7 +103,7 @@
         }
       ],
       "reward": {
-        "knowledge": 25
+        "knowledge": 18
       }
     },
     {
@@ -129,7 +129,7 @@
         }
       ],
       "reward": {
-        "knowledge": 30
+        "knowledge": 20
       }
     }
   ]

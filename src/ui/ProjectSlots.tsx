@@ -7,6 +7,7 @@ import { formatGameDate } from './dates'
 import NeedIcon from './NeedIcon'
 import { NEED_COLORS } from './render/colors'
 import { projectIcon } from './projectIcons'
+import { projectUpkeep } from '../game/economy'
 import './ProjectSlots.css'
 
 const projects = loadProjects()
@@ -163,6 +164,11 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                     <span className="pill" title={t('resources.budget')}>
                       💰 {project.cost.toLocaleString('en-GB')}
                     </span>
+                    {projectUpkeep(project.cost) > 0 && (
+                      <span className="pill" title={t('project.upkeepHint')}>
+                        🔧 {t('project.upkeep', { value: projectUpkeep(project.cost) })}
+                      </span>
+                    )}
                     <span className="pill" title={t('resources.time')}>
                       🙋 {volunteersText(projectTimeCost(project.time, engagement))}
                     </span>
