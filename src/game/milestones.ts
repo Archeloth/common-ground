@@ -3,6 +3,7 @@ import { NEED_ORDER } from './needs'
 import { loadProjects } from './projects'
 import { loadScenario } from './scenario'
 import milestonesCatalog from '../data/milestones.json'
+import { activeProjectIds, countActive } from './expiry'
 
 // The five chapter milestones (Milestone 6), as content: each is a list of
 // state-checkable conditions plus a small Knowledge reward — the plan's
@@ -122,22 +123,14 @@ export function townSatisfaction(state: GameState, scenario: ScenarioDef): numbe
 export function milestoneCompleted(state: GameState, def: MilestoneDef, scenario: ScenarioDef): boolean {
   return def.conditions.every((condition) => {
     switch (condition.type) {
+      // Running projects only (Milestone 8.5): a lapsed project counts again
+      // once it is renewed.
       case 'projectIn':
-        return (state.projects[condition.neighborhood] ?? []).includes(condition.project)
-      case 'projectCount': {
-        let total = 0
-        for (const slots of Object.values(state.projects)) {
-          for (const id of slots) if (id === condition.project) total++
-        }
-        return total >= condition.min
-      }
-      case 'slotsFilled': {
-        let total = 0
-        for (const slots of Object.values(state.projects)) {
-          for (const id of slots) if (id !== null) total++
-        }
-        return total >= condition.min
-      }
+        return activeProjectIds(state, condition.neighborhood).includes(condition.project)
+      case 'projectCount':
+        return countActive(state, condition.project) >= condition.min
+      case 'slotsFilled':
+        return countActive(state) >= condition.min
       case 'busLineCount':
         return state.busLines.length >= condition.min
       case 'townSatisfaction':

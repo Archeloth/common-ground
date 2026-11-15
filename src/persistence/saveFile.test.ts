@@ -80,9 +80,11 @@ describe('versioned save files', function () {
       1: function (s: unknown) { return { ...(s as object), version: 2, fromOne: true } },
       2: function (s: unknown) { return { ...(s as object), version: 3, fromTwo: true } },
       3: function (s: unknown) { return { ...(s as object), version: 4, fromThree: true } },
+      4: function (s: unknown) { return { ...(s as object), version: 5, fromFour: true } },
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(4)
+    expect(migrated.version).toBe(5)
+    expect((migrated as unknown as { fromFour: boolean }).fromFour).toBe(true)
     expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
     expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
     expect((migrated as unknown as { fromTwo: boolean }).fromTwo).toBe(true)
@@ -93,9 +95,9 @@ describe('versioned save files', function () {
     expect(function () { migrateSave({ version: 0 } as never) }).toThrow(/no migration/)
   })
 
-  it('the shipped migration table covers the earlier shapes (1, 2 and 3)', function () {
-    expect(CURRENT_SAVE_VERSION).toBe(4)
-    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3])
+  it('the shipped migration table covers the earlier shapes (1 to 4)', function () {
+    expect(CURRENT_SAVE_VERSION).toBe(5)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4])
   })
 
   it('migrates a version-1 save to version 4, seeding research, engagement, messages and the finished tutorial', function () {
@@ -156,6 +158,24 @@ describe('versioned save files', function () {
       expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
       expect(result.save.state.tutorialStep).toBe(TUTORIAL_DONE)
       expect(result.save.state.projects).toEqual(playedState().projects)
+    }
+  })
+
+  it('migrates a version-4 save to version 5: running volunteer projects get a full lifetime', function () {
+    const played = playedState() // a community garden in Old Town
+    const v4 = createSave({ ...played, day: 400 }) as unknown as { version: number; state: { [key: string]: unknown } }
+    v4.version = 4 // fabricate the pre-M8.5 shape
+    delete v4.state.projectExpiry
+    delete v4.state.expiryNotices
+
+    const result = parseAndLoad(JSON.stringify(v4))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
+      expect(result.save.state.expiryNotices).toEqual([])
+      expect(result.save.state.projectExpiry.old_town[0]).toBe(400 + 36 * 30) // garden: 36 months
+      expect(result.save.state.projectExpiry.old_town[1]).toBeNull()
+      expect(result.save.state.projects).toEqual(played.projects)
     }
   })
 })

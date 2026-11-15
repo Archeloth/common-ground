@@ -2,6 +2,8 @@ import type { GameState } from '../game/types'
 import { loadScenario } from '../game/scenario'
 import { validateGameState } from '../game/validate'
 import { TUTORIAL_DONE } from '../game/tutorial'
+import { loadProjects } from '../game/projects'
+import { projectEndsAt } from '../game/expiry'
 
 // The plan's versioned save format (section "Commands and a versioned save
 // format"): { version, savedAt, seed, state }. Every load runs through the
@@ -9,7 +11,7 @@ import { TUTORIAL_DONE } from '../game/tutorial'
 // fails validation reports problems instead of crashing. All functions here
 // are pure, so the round-trip, migration and corrupt-save tests run in Node.
 
-export const CURRENT_SAVE_VERSION = 4
+export const CURRENT_SAVE_VERSION = 5
 
 export interface SaveFile {
   version: number
@@ -66,6 +68,26 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
       ...s,
       version: 4,
       state: { ...s.state, tutorialStep: TUTORIAL_DONE },
+    }
+  },
+  // 4 -> 5 (Milestone 8.5): project lifetimes. Volunteer-run projects already
+  // running get a full lifetime from the save's current day (the player never
+  // saw a countdown before, so nothing lapses on load); infrastructure stays
+  // permanent. No expiry notices are pending yet.
+  4: (save) => {
+    const s = save as { state: GameState }
+    const projects = loadProjects()
+    const projectExpiry: Record<string, Array<number | null>> = {}
+    for (const [id, slots] of Object.entries(s.state.projects ?? {})) {
+      projectExpiry[id] = (slots ?? []).map((projectId) => {
+        const def = projectId === null ? undefined : projects.find((p) => p.id === projectId)
+        return def?.durationMonths === undefined ? null : projectEndsAt(s.state.day, def.durationMonths)
+      })
+    }
+    return {
+      ...s,
+      version: 5,
+      state: { ...s.state, projectExpiry, expiryNotices: [] },
     }
   },
 }

@@ -2,6 +2,7 @@ import type { GameState } from './types'
 import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import messagesCatalog from '../data/messages.json'
+import { activeProjectIds } from './expiry'
 
 // One resident message per neighborhood (Milestone 7): a simple request — start
 // a specific project here — with a small reward (Community time, Budget or
@@ -110,7 +111,7 @@ export function messageForNeighborhood(neighborhoodId: string): MessageDef {
 
 // The request is fulfilled when the neighbourhood hosts the requested project.
 export function messageFulfilled(state: GameState, def: MessageDef): boolean {
-  return (state.projects[def.neighborhood] ?? []).includes(def.request.project)
+  return activeProjectIds(state, def.neighborhood).includes(def.request.project)
 }
 
 // Add the (one-off) reward to the state; returns a copy. Callers must only do

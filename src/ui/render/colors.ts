@@ -15,6 +15,7 @@ export const COLORS = {
   labelBackground: 'rgba(255, 255, 255, 0.92)',
   bus: '#46618f', // dashed bus-line strokes (Milestone 7)
   pulse: '#c4592b', // pulsing tutorial highlight rings (Milestone 8)
+  badge: '#b4561f', // expired-project badge (Milestone 8.5)
 } as const
 
 export const KIND_COLORS: Record<NeighborhoodKind, string> = {

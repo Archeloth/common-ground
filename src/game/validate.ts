@@ -2,6 +2,7 @@ import type { NeedId, NeighborhoodSimState } from './types'
 import { NEED_ORDER } from './needs'
 import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
+import { parseExpiryNoticeKey } from './expiry'
 import { loadTechnologies } from './technologies'
 import { loadMilestones } from './milestones'
 import { TUTORIAL_DONE } from './tutorial'
@@ -98,6 +99,42 @@ export function validateGameState(state: unknown): string[] {
   checkIdList(s.research, 'research', techIds, problems)
   checkIdList(s.milestones, 'milestones', milestoneIds, problems)
   checkIdList(s.milestoneNotices, 'milestoneNotices', milestoneIds, problems)
+
+  // Milestone 8.5: per-slot expiry days line up with the projects, and the
+  // pending expiry notices are "neighborhood:slot" keys.
+  if (s.projectExpiry === null || typeof s.projectExpiry !== 'object') {
+    problems.push('projectExpiry must be an object')
+  } else {
+    const expiry = s.projectExpiry as Record<string, unknown>
+    const slotsRecord = (s.projects ?? {}) as Record<string, unknown>
+    for (const n of scenario.neighborhoods) {
+      const days = expiry[n.id]
+      if (!Array.isArray(days) || days.length !== n.slots) {
+        problems.push(`projectExpiry.${n.id} must have ${n.slots} entries`)
+        continue
+      }
+      const slots = Array.isArray(slotsRecord[n.id]) ? (slotsRecord[n.id] as unknown[]) : []
+      days.forEach((day, index) => {
+        if (day === null) return
+        if (typeof day !== 'number' || !Number.isInteger(day) || day < 1) {
+          problems.push(`projectExpiry.${n.id}[${index}] must be a day number or null`)
+        } else if (slots[index] === null || slots[index] === undefined) {
+          problems.push(`projectExpiry.${n.id}[${index}] is set for an empty slot`)
+        }
+      })
+    }
+  }
+  if (!Array.isArray(s.expiryNotices)) {
+    problems.push('expiryNotices must be an array')
+  } else {
+    s.expiryNotices.forEach((key, index) => {
+      const parsed = typeof key === 'string' ? parseExpiryNoticeKey(key) : null
+      const n = parsed ? scenario.neighborhoods.find((x) => x.id === parsed.neighborhood) : undefined
+      if (!parsed || !n || parsed.slot >= n.slots) {
+        problems.push(`expiryNotices[${index}] must be a "neighborhood:slot" key`)
+      }
+    })
+  }
 
   // Milestone 7 collections: dynamic engagement, bus links and messages.
   if (s.engagement === null || typeof s.engagement !== 'object') {

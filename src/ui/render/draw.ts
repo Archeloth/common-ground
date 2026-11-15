@@ -150,3 +150,30 @@ export function drawPulseRing(
   ctx.stroke()
   ctx.restore()
 }
+
+// A small round badge at a blob's top-right edge (Milestone 8.5: an hourglass
+// on districts where a project has run its course).
+export function drawBadge(
+  ctx: CanvasRenderingContext2D,
+  cam: Camera,
+  center: Point,
+  worldRadius: number,
+  glyph: string,
+): void {
+  const c = worldToScreen(cam, center.x + worldRadius * 0.7, center.y - worldRadius * 0.45)
+  const r = Math.max(9, 11 * cam.zoom)
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(c.x, c.y, r, 0, Math.PI * 2)
+  ctx.fillStyle = COLORS.badge
+  ctx.fill()
+  ctx.lineWidth = 2
+  ctx.strokeStyle = '#fff'
+  ctx.stroke()
+  ctx.fillStyle = '#fff'
+  ctx.font = `${Math.round(r * 1.1)}px system-ui, sans-serif`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(glyph, c.x, c.y + 1)
+  ctx.restore()
+}

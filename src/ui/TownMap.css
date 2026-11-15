@@ -38,3 +38,63 @@
   font-size: 0.8rem;
   color: #4a5c44;
 }
+
+/* Milestone 8.5: expiry popups pinned above their district (positioned by the
+   canvas draw loop through a transform). */
+.expiry-bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  max-width: 15rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.7rem;
+  background: #fffaf2;
+  border: 2px solid #b4561f;
+  box-shadow: 0 4px 14px rgba(74, 24, 10, 0.25);
+  font-size: 0.8rem;
+}
+
+.expiry-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 12px;
+  height: 12px;
+  background: #fffaf2;
+  border-right: 2px solid #b4561f;
+  border-bottom: 2px solid #b4561f;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.expiry-bubble p {
+  margin: 0 0 0.45rem;
+}
+
+.expiry-bubble-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.expiry-bubble-actions button {
+  padding: 0.25rem 0.55rem;
+  border: none;
+  border-radius: 0.45rem;
+  background: #ece5d8;
+  color: #3d3326;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.expiry-bubble-actions .expiry-renew {
+  background: #3f6a3a;
+  color: #fff;
+  font-weight: 600;
+}
+
+.expiry-bubble-actions .expiry-renew:disabled {
+  background: #b9c2b1;
+  cursor: not-allowed;
+}

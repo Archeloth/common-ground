@@ -1,7 +1,9 @@
 import type { Command, GameState, NeighborhoodDef, ProjectDef, Reason } from '../game/types'
 import { loadProjects, projectById } from '../game/projects'
-import { applyCommand } from '../game/state'
+import { applyCommand, projectTimeCost } from '../game/state'
+import { expiryOf, isExpired, isRenewable } from '../game/expiry'
 import { t } from './i18n'
+import { formatGameDate } from './dates'
 import './ProjectSlots.css'
 
 const projects = loadProjects()
@@ -62,18 +64,53 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
       {filled.length === 0 && <p className="project-empty">{t('panel.noProjects')}</p>}
 
       <ul className="slot-list">
-        {filled.map(({ slot, projectId }) => (
-          <li key={slot} className="slot-row">
-            <span className="slot-name">{projectById(projects, projectId).name}</span>
-            <button
-              type="button"
-              className="slot-remove"
-              onClick={() => onRemove({ type: 'removeProject', neighborhood: neighborhood.id, slot })}
-            >
-              {t('project.remove')}
-            </button>
-          </li>
-        ))}
+        {filled.map(({ slot, projectId }) => {
+          const expired = isExpired(state, neighborhood.id, slot)
+          const ends = expiryOf(state, neighborhood.id, slot)
+          const renewable = isRenewable(state, neighborhood.id, slot)
+          const renew = renewable
+            ? applyCommand(state, { type: 'renewProject', neighborhood: neighborhood.id, slot })
+            : null
+          const status =
+            ends === null
+              ? t('project.permanent')
+              : expired
+                ? t('project.expired')
+                : t('project.endsOn', { date: formatGameDate(ends) })
+          return (
+            <li key={slot} className={`slot-row${expired ? ' expired' : renewable ? ' ending' : ''}`}>
+              <span className="slot-info">
+                <span className="slot-name">{projectById(projects, projectId).name}</span>
+                <span className="slot-status">{status}</span>
+              </span>
+              <span className="slot-actions">
+                {renew && (
+                  <button
+                    type="button"
+                    className="slot-renew"
+                    disabled={!renew.ok}
+                    title={renew.ok ? undefined : t(`reason.${renew.reason}`)}
+                    onClick={() => onStart({ type: 'renewProject', neighborhood: neighborhood.id, slot })}
+                  >
+                    {t('project.renew', {
+                      cost: projectTimeCost(
+                        projectById(projects, projectId).time,
+                        state.engagement[neighborhood.id] ?? neighborhood.engagement,
+                      ),
+                    })}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="slot-remove"
+                  onClick={() => onRemove({ type: 'removeProject', neighborhood: neighborhood.id, slot })}
+                >
+                  {t('project.remove')}
+                </button>
+              </span>
+            </li>
+          )
+        })}
       </ul>
 
       {freeCount > 0 ? (

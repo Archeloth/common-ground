@@ -138,3 +138,51 @@
   font-style: italic;
   color: #6a7564;
 }
+
+/* Milestone 8.5: project lifetimes - when a slot ends, and renewal. */
+.slot-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.slot-status {
+  font-size: 0.74rem;
+  color: #6a7564;
+}
+
+.slot-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.slot-row.ending {
+  background: #f6efd9;
+}
+
+.slot-row.expired {
+  background: #f7e3d6;
+}
+
+.slot-row.expired .slot-status {
+  color: #a2451a;
+  font-weight: 600;
+}
+
+.slot-renew {
+  padding: 0.35rem 0.7rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #3f6a3a;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.slot-renew:disabled {
+  background: #b9c2b1;
+  cursor: not-allowed;
+}

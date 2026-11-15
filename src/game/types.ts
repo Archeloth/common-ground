@@ -124,6 +124,8 @@ export type Command =
   | { type: 'townMeeting'; neighborhood: string }
   | { type: 'startBusLine'; from: string; to: string }
   | { type: 'tutorialNext' }
+  | { type: 'renewProject'; neighborhood: string; slot: number }
+  | { type: 'dismissExpiryNotice'; notice: string }
 
 // Machine-readable refusal codes; the UI maps each to t("reason.<code>").
 export type Reason =
@@ -144,6 +146,8 @@ export type Reason =
   | 'bus_line_exists'
   | 'not_adjacent'
   | 'tech_not_researched'
+  | 'project_permanent'
+  | 'renew_too_early'
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; reason: Reason }
 
@@ -173,6 +177,9 @@ export interface GameState {
   speed: Speed
   // neighborhoodId: project id per slot (null = empty slot)
   projects: { [id: string]: (string | null)[] }
+  // neighborhoodId: the day each slot's project runs out (Milestone 8.5).
+  // null = permanent or empty; a number always lines up with a project.
+  projectExpiry: { [id: string]: (number | null)[] }
   // neighborhoodId: dynamic per-neighborhood simulation values
   neighborhoods: { [id: string]: NeighborhoodSimState }
   // Researched technology ids (Milestone 6), seeded from the scenario
@@ -182,6 +189,9 @@ export interface GameState {
   milestones: string[]
   // Milestone ids completed since the player last dismissed the banner.
   milestoneNotices: string[]
+  // "neighborhood:slot" keys of projects that ran their course and have not
+  // been renewed or dismissed yet (Milestone 8.5: a bubble on the district).
+  expiryNotices: string[]
   // Dynamic engagement per neighborhood (Milestone 7): rises with town
   // meetings and running projects, keeps the monthly Community-time regen
   // alive and discounts project Community-time costs.

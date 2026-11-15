@@ -8,6 +8,7 @@ import { messageCatalog, messageFulfilled } from './messages'
 import { applyCommand } from './state'
 import { loadTechnologies, technologyById } from './technologies'
 import { currentTutorialStep } from './tutorial'
+import { activeProjectIds, allExpired, countActive } from './expiry'
 
 // The "what should I do next?" hint (Milestone 8, plan item 2): a pure
 // function that reads the open goals and returns the single best next step.
@@ -22,7 +23,7 @@ import { currentTutorialStep } from './tutorial'
 // accept the start, so the hint never sends the player into a refusal banner.
 
 export interface NextAction {
-  kind: 'tutorial' | 'milestone' | 'message' | 'need'
+  kind: 'tutorial' | 'renew' | 'milestone' | 'message' | 'need'
   textKey: string
   params: Record<string, string | number>
   neighborhoodId?: string
@@ -41,6 +42,22 @@ export function nextAction(state: GameState): NextAction | null {
       textKey: `tutorial.${step.id}`,
       params: {},
       neighborhoodId: step.pulse[0],
+    }
+  }
+
+  // A lapsed volunteer project is the cheapest win: renew it.
+  for (const lapsed of allExpired(state, scenario)) {
+    const command = { type: 'renewProject', neighborhood: lapsed.neighborhood, slot: lapsed.slot } as const
+    if (!applyCommand(state, command).ok) continue
+    return {
+      kind: 'renew',
+      textKey: 'guide.renew',
+      params: {
+        project: projectById(projects, lapsed.projectId).name,
+        neighborhood: neighborhoodById(scenario, lapsed.neighborhood).name,
+      },
+      neighborhoodId: lapsed.neighborhood,
+      projectId: lapsed.projectId,
     }
   }
 
@@ -84,7 +101,7 @@ function suggestionForCondition(
 ): NextAction | null {
   switch (condition.type) {
     case 'projectIn': {
-      if ((state.projects[condition.neighborhood] ?? []).includes(condition.project)) return null
+      if (activeProjectIds(state, condition.neighborhood).includes(condition.project)) return null
       const research = researchFirst(state, projects, def, condition.project)
       if (research !== undefined) return research
       const neighborhood = neighborhoodById(scenario, condition.neighborhood)
@@ -101,10 +118,7 @@ function suggestionForCondition(
       }
     }
     case 'projectCount': {
-      let total = 0
-      for (const slots of Object.values(state.projects)) {
-        for (const id of slots) if (id === condition.project) total++
-      }
+      const total = countActive(state, condition.project)
       if (total >= condition.min) return null
       const research = researchFirst(state, projects, def, condition.project)
       if (research !== undefined) return research
@@ -125,10 +139,7 @@ function suggestionForCondition(
       }
     }
     case 'slotsFilled': {
-      let total = 0
-      for (const slots of Object.values(state.projects)) {
-        for (const id of slots) if (id !== null) total++
-      }
+      const total = countActive(state)
       if (total >= condition.min) return null
       const start = firstReachableStart(state, scenario, projects)
       if (!start) return null

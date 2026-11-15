@@ -6,9 +6,10 @@ import type { Point } from '../game/geometry'
 import { pointInPolygon } from '../game/geometry'
 import type { Camera } from './render/camera'
 import { cameraThatFits, panBy, screenToWorld, worldToScreen, zoomAt } from './render/camera'
-import { buildPath2D, drawBridge, drawBusLine, drawPulseRing, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
+import { buildPath2D, drawBadge, drawBridge, drawBusLine, drawPulseRing, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
 import { COLORS, KIND_COLORS, shade } from './render/colors'
 import { t } from './i18n'
+import type { ExpiryBubble } from './expiryBubbles'
 import './TownMap.css'
 
 // Pointer travel below this counts as a click, above it as a drag-pan.
@@ -24,12 +25,25 @@ interface TownMapProps {
   onSelectionChange: (id: string | null) => void
   busLines: Array<[string, string]>
   pulseIds: string[] // neighborhood ids the tutorial wants highlighted
+  expiredIds: string[] // neighbourhoods with a project that ran its course
+  bubbles: ExpiryBubble[] // expiry popups pinned above their district
+  onRenew: (bubble: ExpiryBubble) => void
+  onDismiss: (key: string) => void
 }
 
 // Canvas view of the town. The camera and interaction state live in refs so
 // panning and zooming never re-render React; the rAF loop redraws only when a
 // dirty flag is set (performance playbook: a paused town costs almost nothing).
-export default function TownMap({ selectedId, onSelectionChange, busLines, pulseIds }: TownMapProps) {
+export default function TownMap({
+  selectedId,
+  onSelectionChange,
+  busLines,
+  pulseIds,
+  expiredIds,
+  bubbles,
+  onRenew,
+  onDismiss,
+}: TownMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const cameraRef = useRef<Camera>({ x: 0, y: 0, zoom: 1 })
@@ -42,6 +56,11 @@ export default function TownMap({ selectedId, onSelectionChange, busLines, pulse
   const pinchRef = useRef<{ dist: number; x: number; y: number } | null>(null)
   const busLinesRef = useRef<Array<[string, string]>>([])
   const pulseIdsRef = useRef<string[]>([])
+  const expiredIdsRef = useRef<string[]>([])
+  // Expiry bubbles are DOM nodes pinned to world positions; the draw loop
+  // moves them with the camera so they follow pans and zooms without React.
+  const bubbleElsRef = useRef(new Map<string, HTMLDivElement>())
+  const bubbleAnchorsRef = useRef(new Map<string, string>())
 
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
@@ -113,6 +132,21 @@ export default function TownMap({ selectedId, onSelectionChange, busLines, pulse
       }
     }
 
+    // Milestone 8.5: an hourglass on districts with a lapsed project.
+    for (const id of expiredIdsRef.current) {
+      const n = neighborhoodById(scenario, id)
+      drawBadge(ctx, cam, n.shape, n.shape.radius, '⌛')
+    }
+
+    // Pin each expiry bubble just above its district.
+    for (const [key, el] of bubbleElsRef.current) {
+      const id = bubbleAnchorsRef.current.get(key)
+      if (!id) continue
+      const n = neighborhoodById(scenario, id)
+      const at = worldToScreen(cam, n.shape.x, n.shape.y - n.shape.radius * 0.55)
+      el.style.transform = `translate(${Math.round(at.x)}px, ${Math.round(at.y)}px) translate(-50%, -100%)`
+    }
+
     // Milestone 8: pulsing rings point at the tutorial's target neighbourhoods.
     const now = performance.now()
     for (const id of pulseIdsRef.current) {
@@ -158,6 +192,13 @@ export default function TownMap({ selectedId, onSelectionChange, busLines, pulse
     pulseIdsRef.current = pulseIds
     dirtyRef.current = true
   }, [pulseIds])
+
+  // Expired districts and bubbles change with sim state; redraw to place them.
+  useEffect(() => {
+    expiredIdsRef.current = expiredIds
+    bubbleAnchorsRef.current = new Map(bubbles.map((b) => [b.key, b.neighborhoodId]))
+    dirtyRef.current = true
+  }, [expiredIds, bubbles])
 
   // Bus lines are sim state; mirror them into the draw loop and redraw.
   useEffect(() => {
@@ -305,6 +346,33 @@ export default function TownMap({ selectedId, onSelectionChange, busLines, pulse
   return (
     <div ref={containerRef} className="town-map">
       <canvas ref={canvasRef} className="town-map-canvas" aria-label="Willowbrook town map" />
+      {bubbles.map((bubble) => (
+        <div
+          key={bubble.key}
+          className="expiry-bubble"
+          role="alert"
+          ref={(el) => {
+            if (el) bubbleElsRef.current.set(bubble.key, el)
+            else bubbleElsRef.current.delete(bubble.key)
+          }}
+        >
+          <p>
+            <span aria-hidden="true">{'⌛'} </span>
+            {bubble.text}
+          </p>
+          <div className="expiry-bubble-actions">
+            <button type="button" className="expiry-renew" disabled={!bubble.canRenew} onClick={() => onRenew(bubble)}>
+              {bubble.renewLabel}
+            </button>
+            <button type="button" onClick={() => onSelectionChange(bubble.neighborhoodId)}>
+              {t('expiry.open')}
+            </button>
+            <button type="button" onClick={() => onDismiss(bubble.key)}>
+              {t('expiry.dismiss')}
+            </button>
+          </div>
+        </div>
+      ))}
       {label && (
         <div className="neighborhood-chip" role="status">
           <strong>{label.name}</strong>

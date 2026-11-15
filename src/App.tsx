@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import TopBar from './ui/TopBar'
 import TownMap from './ui/TownMap'
 import NeighborhoodPanel from './ui/NeighborhoodPanel'
@@ -20,6 +20,9 @@ import { t } from './ui/i18n'
 import TutorialCard from './ui/TutorialCard'
 import GuideButton from './ui/GuideButton'
 import { TUTORIAL_STEPS } from './game/tutorial'
+import { allExpired } from './game/expiry'
+import { expiryBubbles } from './ui/expiryBubbles'
+import type { ExpiryBubble } from './ui/expiryBubbles'
 import './App.css'
 
 const scenario = loadScenario()
@@ -50,6 +53,13 @@ function App() {
   // Tutorial pulse targets come from the current step (Milestone 8).
   const pulseIds =
     state.tutorialStep < TUTORIAL_STEPS.length ? TUTORIAL_STEPS[state.tutorialStep].pulse : []
+
+  // Milestone 8.5: lapsed projects (map badges) and pending expiry popups.
+  const expiredIds = useMemo(
+    () => [...new Set(allExpired(state, scenario).map((entry) => entry.neighborhood))],
+    [state],
+  )
+  const bubbles = useMemo(() => expiryBubbles(state, scenario), [state])
 
   const refreshMeta = useCallback(async () => {
     const database = dbRef.current
@@ -189,6 +199,14 @@ function App() {
     dispatch({ type: 'townMeeting', neighborhood: neighborhoodId })
   }, [dispatch])
 
+  const handleRenew = useCallback((bubble: ExpiryBubble) => {
+    dispatch({ type: 'renewProject', neighborhood: bubble.neighborhoodId, slot: bubble.slot })
+  }, [dispatch])
+
+  const handleDismissExpiry = useCallback((key: string) => {
+    dispatch({ type: 'dismissExpiryNotice', notice: key })
+  }, [dispatch])
+
   const handleStartBusLine = useCallback((from: string, to: string) => {
     dispatch({ type: 'startBusLine', from, to })
   }, [dispatch])
@@ -211,6 +229,10 @@ function App() {
           onSelectionChange={onSelectionChange}
           busLines={state.busLines}
           pulseIds={pulseIds}
+          expiredIds={expiredIds}
+          bubbles={bubbles}
+          onRenew={handleRenew}
+          onDismiss={handleDismissExpiry}
         />
         {selected && (
           <NeighborhoodPanel

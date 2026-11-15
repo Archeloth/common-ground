@@ -57,3 +57,7 @@ export const BUS_MOBILITY_BONUS = 0.2
 // workshops could stall: milestones pay Knowledge only after research-gated
 // goals are met. Workshops add their own knowledgePerMonth on top.
 export const KNOWLEDGE_BASE_PER_MONTH = 1
+
+// Volunteer-run projects can be renewed in their last three months (and any
+// time after they expire), so the reminder arrives before the effects stop.
+export const RENEW_WINDOW_MONTHS = 3

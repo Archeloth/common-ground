@@ -11,6 +11,7 @@ import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
 import { TUTORIAL_DONE } from './tutorial'
+import { expiryNoticeKey, isRenewable, projectEndsAt } from './expiry'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import {
   BUS_LINE_COST,
@@ -29,11 +30,13 @@ import {
 
 export function initialState(scenario: ScenarioDef): GameState {
   const projects: Record<string, Array<string | null>> = {}
+  const projectExpiry: Record<string, Array<number | null>> = {}
   const neighborhoods: Record<string, NeighborhoodSimState> = {}
   const engagement: Record<string, number> = {}
   const messages: Record<string, 'open' | 'done'> = {}
   for (const n of scenario.neighborhoods) {
     projects[n.id] = Array.from({ length: n.slots }, () => null)
+    projectExpiry[n.id] = Array.from({ length: n.slots }, () => null)
     const needs = { ...n.needs }
     neighborhoods[n.id] = {
       needs,
@@ -50,10 +53,12 @@ export function initialState(scenario: ScenarioDef): GameState {
     day: 1,
     speed: 1,
     projects,
+    projectExpiry,
     neighborhoods,
     research: [...scenario.start.unlockedTech],
     milestones: [],
     milestoneNotices: [],
+    expiryNotices: [],
     engagement,
     busLines: [],
     messages,
@@ -108,6 +113,9 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
 
     const newSlots = slots.slice()
     newSlots[freeIndex] = command.project
+    const newExpiry = expirySlotsOf(state, neighborhood).slice()
+    newExpiry[freeIndex] =
+      project.durationMonths === undefined ? null : projectEndsAt(state.day, project.durationMonths)
     return {
       ok: true,
       state: {
@@ -115,6 +123,7 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
         budget: state.budget - project.cost,
         time: state.time - timeCost,
         projects: { ...state.projects, [neighborhood.id]: newSlots },
+        projectExpiry: { ...state.projectExpiry, [neighborhood.id]: newExpiry },
       },
     }
   }
@@ -131,10 +140,24 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
 
     const newSlots = slots.slice()
     newSlots[command.slot] = null
+    const newExpiry = expirySlotsOf(state, neighborhood).slice()
+    newExpiry[command.slot] = null
+    const key = expiryNoticeKey(neighborhood.id, command.slot)
     return {
       ok: true,
-      state: { ...state, projects: { ...state.projects, [neighborhood.id]: newSlots } },
+      state: {
+        ...state,
+        projects: { ...state.projects, [neighborhood.id]: newSlots },
+        projectExpiry: { ...state.projectExpiry, [neighborhood.id]: newExpiry },
+        expiryNotices: state.expiryNotices.filter((notice) => notice !== key),
+      },
     }
+  }
+
+  if (command.type === 'renewProject') return applyRenewProject(state, command.neighborhood, command.slot)
+
+  if (command.type === 'dismissExpiryNotice') {
+    return { ok: true, state: { ...state, expiryNotices: state.expiryNotices.filter((n) => n !== command.notice) } }
   }
 
   if (command.type === 'townMeeting') return applyTownMeeting(state, command.neighborhood)
@@ -153,6 +176,47 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
   // setSpeed, the only remaining variant.
   if (![0, 1, 2, 4].includes(command.speed)) return refusal('invalid_speed')
   return { ok: true, state: { ...state, speed: command.speed } }
+}
+
+// Expiry days per slot, padded for a stale save (same fallback as slotsOf).
+function expirySlotsOf(state: GameState, neighborhood: NeighborhoodDef): Array<number | null> {
+  const days = state.projectExpiry?.[neighborhood.id]
+  return days && days.length === neighborhood.slots
+    ? days
+    : Array.from({ length: neighborhood.slots }, () => null)
+}
+
+// Renewal (Milestone 8.5): a volunteer-run project gets a fresh lifetime for
+// its Volunteer cost (engagement discount applies) and no Budget. It opens in
+// the last RENEW_WINDOW_MONTHS and the new lifetime starts when the old one
+// ends (or today, if it already lapsed), so renewing early never loses time.
+function applyRenewProject(state: GameState, neighborhoodId: string, slot: number): CommandResult {
+  const neighborhood = loadScenario().neighborhoods.find((n) => n.id === neighborhoodId)
+  if (!neighborhood) return refusal('unknown_neighborhood')
+  const slots = slotsOf(state, neighborhood)
+  if (!Number.isInteger(slot) || slot < 0 || slot >= slots.length) return refusal('invalid_slot')
+  const projectId = slots[slot]
+  if (projectId === null) return refusal('empty_slot')
+  const project = loadProjects().find((p) => p.id === projectId)
+  if (!project) return refusal('unknown_project')
+  const expiry = expirySlotsOf(state, neighborhood)
+  const ends = expiry[slot]
+  if (project.durationMonths === undefined || ends === null) return refusal('project_permanent')
+  if (!isRenewable(state, neighborhood.id, slot)) return refusal('renew_too_early')
+  const timeCost = projectTimeCost(project.time, engagementOf(state, neighborhood))
+  if (state.time < timeCost) return refusal('insufficient_time')
+  const newExpiry = expiry.slice()
+  newExpiry[slot] = projectEndsAt(Math.max(state.day, ends), project.durationMonths)
+  const key = expiryNoticeKey(neighborhood.id, slot)
+  return {
+    ok: true,
+    state: {
+      ...state,
+      time: state.time - timeCost,
+      projectExpiry: { ...state.projectExpiry, [neighborhood.id]: newExpiry },
+      expiryNotices: state.expiryNotices.filter((notice) => notice !== key),
+    },
+  }
 }
 
 // The organizer's lever (plan): costs 1 Community time, +10 engagement.

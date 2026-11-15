@@ -5,6 +5,7 @@ import { loadProjects, projectById } from './projects'
 import { loadMilestones, milestoneCompleted } from './milestones'
 import { messageCatalog, messageFulfilled, applyMessageReward } from './messages'
 import { advanceTutorial } from './tutorial'
+import { activeProjectIds, expiryNoticeKey } from './expiry'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import { clamp, clamp01, moveNeedsToward, needTargets, round } from './needs'
 import {
@@ -36,13 +37,12 @@ import {
 // - open resident messages are fulfilled (reward paid once) when met;
 //   milestones complete the moment their conditions are met.
 
+// Expired projects (Milestone 8.5) keep their slot but give nothing: every
+// helper below reads the running projects only.
 function activeEffects(state: GameState, neighborhoodId: string): ProjectEffect[] {
   const projects = loadProjects()
-  const slots = state.projects[neighborhoodId] ?? []
   const effects: ProjectEffect[] = []
-  for (const id of slots) {
-    if (id !== null) effects.push(...projectById(projects, id).effects)
-  }
+  for (const id of activeProjectIds(state, neighborhoodId)) effects.push(...projectById(projects, id).effects)
   return effects
 }
 
@@ -50,11 +50,8 @@ function activeEffects(state: GameState, neighborhoodId: string): ProjectEffect[
 // (plan: community garden "+5 per month while it runs").
 function engagementBonusOf(state: GameState, neighborhoodId: string): number {
   const projects = loadProjects()
-  const slots = state.projects[neighborhoodId] ?? []
   let bonus = 0
-  for (const id of slots) {
-    if (id !== null) bonus += projectById(projects, id).engagement
-  }
+  for (const id of activeProjectIds(state, neighborhoodId)) bonus += projectById(projects, id).engagement
   return bonus
 }
 
@@ -63,8 +60,8 @@ function engagementBonusOf(state: GameState, neighborhoodId: string): number {
 function knowledgeIncome(state: GameState): number {
   const projects = loadProjects()
   let total = 0
-  for (const slots of Object.values(state.projects)) {
-    for (const id of slots) if (id !== null) total += projectById(projects, id).knowledgePerMonth
+  for (const neighborhoodId of Object.keys(state.projects)) {
+    for (const id of activeProjectIds(state, neighborhoodId)) total += projectById(projects, id).knowledgePerMonth
   }
   return total
 }
@@ -178,11 +175,24 @@ export function tick(state: GameState): GameState {
     }
   }
 
+  // Milestone 8.5: a project whose lifetime ends today raises a notice once.
+  let expiryNotices = state.expiryNotices
+  for (const n of scenario.neighborhoods) {
+    const days = state.projectExpiry[n.id] ?? []
+    for (let slot = 0; slot < days.length; slot++) {
+      const ends = days[slot]
+      if (ends === null || ends === undefined || !(state.day < ends && day >= ends)) continue
+      if ((state.projects[n.id] ?? [])[slot] === null) continue
+      const key = expiryNoticeKey(n.id, slot)
+      if (!expiryNotices.includes(key)) expiryNotices = [...expiryNotices, key]
+    }
+  }
+
   // Milestone 6: check uncompleted chapters once per tick; newly completed ones
   // are recorded, queued as a notice and pay out their Knowledge reward.
   let milestones = state.milestones
   let milestoneNotices = state.milestoneNotices
-  const withNewSim = { ...state, day, budget, time, neighborhoods }
+  const withNewSim = { ...state, day, budget, time, neighborhoods, expiryNotices }
   for (const def of loadMilestones()) {
     if (milestones.includes(def.id)) continue
     if (milestoneCompleted(withNewSim, def, scenario)) {
