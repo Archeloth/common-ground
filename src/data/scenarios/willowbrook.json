@@ -4,8 +4,8 @@
   "start": {
     "budget": 15000,
     "time": 6,
-    "knowledge": 10,
-    "unlockedTech": ["energy_audits", "community_gardens", "safe_streets"]
+    "knowledge": 15,
+    "unlockedTech": ["energy_audits", "community_gardens", "safe_streets", "pollinator_meadows"]
   },
   "neighborhoods": [
     {

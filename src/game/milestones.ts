@@ -13,6 +13,7 @@ export type MilestoneCondition =
   | { type: 'projectIn'; neighborhood: string; project: string }
   | { type: 'projectCount'; project: string; min: number }
   | { type: 'slotsFilled'; min: number }
+  | { type: 'busLineCount'; min: number }
   | { type: 'townSatisfaction'; min: number }
   | { type: 'needsAverage'; need: NeedId; min: number }
 
@@ -83,7 +84,11 @@ export function loadMilestones(): MilestoneDef[] {
       if (condition.type === 'needsAverage' && !NEED_ORDER.includes(condition.need)) {
         fail(`milestone "${def.id}" references unknown need "${condition.need}"`)
       }
-      if (condition.type === 'projectCount' || condition.type === 'slotsFilled') {
+      if (
+        condition.type === 'projectCount' ||
+        condition.type === 'slotsFilled' ||
+        condition.type === 'busLineCount'
+      ) {
         if (!Number.isInteger(condition.min) || condition.min < 1) {
           fail(`milestone "${def.id}" counts must be positive integers`)
         }
@@ -133,6 +138,8 @@ export function milestoneCompleted(state: GameState, def: MilestoneDef, scenario
         }
         return total >= condition.min
       }
+      case 'busLineCount':
+        return state.busLines.length >= condition.min
       case 'townSatisfaction':
         return townSatisfaction(state, scenario) >= condition.min
       case 'needsAverage': {

@@ -37,7 +37,7 @@ describe('resident messages', () => {
 
   it('is fulfilled when the requested project runs in the neighborhood', () => {
     const def = messageForNeighborhood('old_town')
-    const fresh = initialState(scenario)
+    const fresh = { ...initialState(scenario), research: [...initialState(scenario).research, 'building_retrofits'] }
     expect(messageFulfilled(fresh, def)).toBe(false)
     const started = applyCommand(fresh, {
       type: 'startProject',

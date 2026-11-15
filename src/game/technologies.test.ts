@@ -8,17 +8,26 @@ describe('research tree', () => {
   const techs = loadTechnologies()
   const ids = techs.map((t) => t.id)
 
-  it('has exactly the 8 planned entries', () => {
+  it('has the 16 entries across all six branches', () => {
     expect(ids.sort()).toEqual([
       'building_retrofits',
       'community_gardens',
+      'community_learning',
       'composting',
       'energy_audits',
+      'energy_cooperatives',
       'heat_pumps',
       'local_food_hubs',
+      'pollinator_meadows',
       'public_transport',
+      'rain_gardens',
+      'repair_cafes',
       'safe_streets',
+      'separate_collection',
+      'shared_mobility',
+      'urban_trees',
     ])
+    expect(new Set(techs.map((tech) => tech.branch)).size).toBe(6)
   })
 
   it('has unique, non-empty ids, names, benefits and limits', () => {
@@ -51,10 +60,13 @@ describe('research tree', () => {
     }
   })
 
-  it('starts the three root chains unlocked with no prerequisites', () => {
-    const roots = ids.filter((id) => technologyById(techs, id).prerequisites.length === 0)
-    expect(roots.sort()).toEqual(['community_gardens', 'energy_audits', 'safe_streets'])
-    expect([...scenario.start.unlockedTech].sort()).toEqual(roots)
+  it('starts with every free root technology researched', () => {
+    const freeRoots = ids.filter((id) => {
+      const tech = technologyById(techs, id)
+      return tech.prerequisites.length === 0 && tech.cost === 0
+    })
+    expect(freeRoots.sort()).toEqual(['community_gardens', 'energy_audits', 'pollinator_meadows', 'safe_streets'])
+    expect([...scenario.start.unlockedTech].sort()).toEqual(freeRoots)
   })
 
   it('keeps the unlock graph acyclic (no cycles)', () => {

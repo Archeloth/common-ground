@@ -7,59 +7,130 @@
       "goal": "Town satisfaction 60",
       "explain": "Small, visible wins build trust: a community garden in Linden Flats, retrofits across three neighbourhoods, and a town that reaches satisfaction 60.",
       "conditions": [
-        { "type": "projectIn", "neighborhood": "linden_flats", "project": "community_garden" },
-        { "type": "projectCount", "project": "retrofit_program", "min": 3 },
-        { "type": "townSatisfaction", "min": 60 }
+        {
+          "type": "projectIn",
+          "neighborhood": "linden_flats",
+          "project": "community_garden"
+        },
+        {
+          "type": "projectCount",
+          "project": "retrofit_program",
+          "min": 3
+        },
+        {
+          "type": "townSatisfaction",
+          "min": 60
+        }
       ],
-      "reward": { "knowledge": 10 }
+      "reward": {
+        "knowledge": 10
+      }
     },
     {
       "id": "getting_around",
       "name": "Getting around",
       "chapter": 2,
       "goal": "Average mobility coverage 0.65",
-      "explain": "The plan's checklist adds bus lines and safe-street networks with later content; the measurable goal now is average mobility coverage 0.65 with six projects running.",
+      "explain": "Frequency and connections matter more than single projects: link two neighbourhoods with a bus line, build safe streets in three neighbourhoods and lift average mobility to 0.65.",
       "conditions": [
-        { "type": "needsAverage", "need": "mobility", "min": 0.65 },
-        { "type": "slotsFilled", "min": 6 }
+        {
+          "type": "busLineCount",
+          "min": 1
+        },
+        {
+          "type": "projectCount",
+          "project": "safe_streets",
+          "min": 3
+        },
+        {
+          "type": "needsAverage",
+          "need": "mobility",
+          "min": 0.65
+        }
       ],
-      "reward": { "knowledge": 15 }
+      "reward": {
+        "knowledge": 15
+      }
     },
     {
       "id": "greener_river",
       "name": "A greener river",
       "chapter": 3,
-      "goal": "Average green-space coverage 0.60",
-      "explain": "The plan's river-restoration tasks (rain gardens, wetlands, meadows) arrive with later content; the measurable goal is green space and a full town-wide project list.",
+      "goal": "Average green-space coverage 0.65",
+      "explain": "Natural buffers protect the river: restore Weir Bend with a rain garden, turn two lawns into meadows and lift average green space to 0.65.",
       "conditions": [
-        { "type": "needsAverage", "need": "green", "min": 0.6 },
-        { "type": "slotsFilled", "min": 10 }
+        {
+          "type": "projectIn",
+          "neighborhood": "weir_bend",
+          "project": "rain_garden"
+        },
+        {
+          "type": "projectCount",
+          "project": "pocket_meadow",
+          "min": 2
+        },
+        {
+          "type": "needsAverage",
+          "need": "green",
+          "min": 0.65
+        }
       ],
-      "reward": { "knowledge": 20 }
+      "reward": {
+        "knowledge": 20
+      }
     },
     {
       "id": "closing_loops",
       "name": "Closing loops",
       "chapter": 4,
       "goal": "Average waste coverage 0.70",
-      "explain": "Compost points and tool libraries join the projects later; the measurable goal now is waste coverage 0.70 across the town.",
+      "explain": "Preventing waste beats recycling it: run compost points and repair cafés in four neighbourhoods between them and lift average waste coverage to 0.70.",
       "conditions": [
-        { "type": "needsAverage", "need": "waste", "min": 0.7 },
-        { "type": "slotsFilled", "min": 14 }
+        {
+          "type": "projectCount",
+          "project": "compost_point",
+          "min": 2
+        },
+        {
+          "type": "projectCount",
+          "project": "repair_cafe",
+          "min": 2
+        },
+        {
+          "type": "needsAverage",
+          "need": "waste",
+          "min": 0.7
+        }
       ],
-      "reward": { "knowledge": 25 }
+      "reward": {
+        "knowledge": 25
+      }
     },
     {
       "id": "community_owned",
       "name": "Community-owned",
       "chapter": 5,
       "goal": "Energy 0.75 and satisfaction 70",
-      "explain": "The energy co-op and half-local-electricity checklist arrive later; the measurable goal now is clean energy and high satisfaction town-wide.",
+      "explain": "Ownership and participation are part of sustainability: form two community energy co-ops, cover three quarters of energy demand and reach town satisfaction 70.",
       "conditions": [
-        { "type": "needsAverage", "need": "energy", "min": 0.75 },
-        { "type": "townSatisfaction", "min": 70 }
+        {
+          "type": "projectCount",
+          "project": "energy_coop",
+          "min": 2
+        },
+        {
+          "type": "needsAverage",
+          "need": "energy",
+          "min": 0.75
+        },
+        {
+          "type": "townSatisfaction",
+          "min": 70
+        }
       ],
-      "reward": { "knowledge": 30 }
+      "reward": {
+        "knowledge": 30
+      }
     }
   ]
 }

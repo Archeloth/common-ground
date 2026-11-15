@@ -143,7 +143,7 @@ describe('tick', () => {
 
   it('completes the first milestone once: notices and pays knowledge exactly once', () => {
     const first = loadMilestones()[0]
-    let state = initialState(scenario)
+    let state: GameState = { ...initialState(scenario), research: [...initialState(scenario).research, 'building_retrofits'] }
     const start = (command: Command) => {
       const result = applyCommand(state, command)
       if (result.ok) state = result.state

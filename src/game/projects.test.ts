@@ -1,15 +1,28 @@
 import { describe, expect, it } from 'vitest'
 import { loadProjects } from './projects'
+import { loadTechnologies } from './technologies'
 import { NEIGHBORHOOD_KINDS } from './types'
 
 describe('projects catalog', () => {
   const projects = loadProjects()
 
-  it('has exactly the three planned projects', () => {
+  it('has the fifteen projects of the Milestone 8.5 catalog', () => {
     expect(projects.map((p) => p.id).sort()).toEqual([
+      'bike_car_share',
       'community_garden',
+      'compost_point',
+      'energy_coop',
+      'heat_pump_scheme',
+      'local_food_market',
+      'pocket_meadow',
+      'rain_garden',
+      'recycling_point',
+      'repair_cafe',
       'retrofit_program',
       'rooftop_solar',
+      'safe_streets',
+      'street_trees',
+      'workshop_series',
     ])
   })
 
@@ -28,14 +41,33 @@ describe('projects catalog', () => {
     }
   })
 
-  it('has at least one effect on a valid need with a non-zero change', () => {
+  it('does something: need effects, engagement or Knowledge, all valid', () => {
     const needs = new Set(['energy', 'food', 'mobility', 'green', 'waste', 'housing'])
     for (const p of projects) {
-      expect(p.effects.length).toBeGreaterThan(0)
+      expect(p.effects.length + p.engagement + p.knowledgePerMonth, p.id).toBeGreaterThan(0)
       for (const effect of p.effects) {
         expect(needs.has(effect.need)).toBe(true)
         expect(Number.isFinite(effect.change) && effect.change !== 0).toBe(true)
       }
+    }
+  })
+
+  it('is gated by research, and every researched tech yields something to build', () => {
+    const techIds = new Set(loadTechnologies().map((tech) => tech.id))
+    for (const p of projects) {
+      expect(p.requiresTech && techIds.has(p.requiresTech), p.id).toBe(true)
+    }
+    // Every tech except public transport (which unlocks bus lines, not a slot
+    // project) unlocks at least one project: research always pays off in play.
+    for (const id of techIds) {
+      if (id === 'public_transport') continue
+      expect(projects.some((p) => p.requiresTech === id), id).toBe(true)
+    }
+  })
+
+  it('raises every need through at least one project', () => {
+    for (const need of ['energy', 'food', 'mobility', 'green', 'waste', 'housing']) {
+      expect(projects.some((p) => p.effects.some((e) => e.need === need)), need).toBe(true)
     }
   })
 

@@ -7,6 +7,8 @@
       "cost": 400,
       "time": 2,
       "engagement": 5,
+      "requiresTech": "community_gardens",
+      "durationMonths": 36,
       "effects": [
         { "need": "food", "change": 0.12 },
         { "need": "green", "change": 0.08 }
@@ -20,6 +22,7 @@
       "cost": 900,
       "time": 1,
       "engagement": 0,
+      "requiresTech": "energy_audits",
       "effects": [
         { "need": "energy", "change": 0.25 }
       ],
@@ -28,15 +31,182 @@
     {
       "id": "retrofit_program",
       "name": "Retrofit program",
-      "explain": "Insulation, heat pumps and draught-proofing — cosier homes that use roughly a fifth less energy.",
+      "explain": "Insulation, better windows and draught-proofing — cosier homes that use roughly a fifth less energy.",
       "cost": 600,
       "time": 1,
       "engagement": 0,
+      "requiresTech": "building_retrofits",
       "effects": [
         { "need": "housing", "change": 0.15 },
         { "need": "energy", "change": 0.2 }
       ],
       "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+    },
+    {
+      "id": "heat_pump_scheme",
+      "name": "Heat-pump scheme",
+      "explain": "A bulk-buy scheme swaps gas boilers for heat pumps street by street — cleaner heat and steadier bills.",
+      "cost": 1100,
+      "time": 1,
+      "engagement": 0,
+      "requiresTech": "heat_pumps",
+      "effects": [
+        { "need": "energy", "change": 0.15 },
+        { "need": "housing", "change": 0.05 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+    },
+    {
+      "id": "energy_coop",
+      "name": "Community energy co-op",
+      "explain": "Residents pool savings to own local solar and wind together — clean power and a share in the town's energy.",
+      "cost": 1500,
+      "time": 2,
+      "engagement": 5,
+      "requiresTech": "energy_cooperatives",
+      "durationMonths": 48,
+      "effects": [
+        { "need": "energy", "change": 0.15 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland"]
+    },
+    {
+      "id": "compost_point",
+      "name": "Compost point",
+      "explain": "A neighbourhood compost bay turns kitchen scraps into soil for the gardens instead of rubbish.",
+      "cost": 300,
+      "time": 2,
+      "engagement": 0,
+      "requiresTech": "composting",
+      "durationMonths": 24,
+      "effects": [
+        { "need": "waste", "change": 0.15 },
+        { "need": "food", "change": 0.03 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+    },
+    {
+      "id": "local_food_market",
+      "name": "Local food market",
+      "explain": "A weekly market where nearby growers sell straight to residents — fresher food and less packaging.",
+      "cost": 500,
+      "time": 2,
+      "engagement": 3,
+      "requiresTech": "local_food_hubs",
+      "durationMonths": 36,
+      "effects": [
+        { "need": "food", "change": 0.08 },
+        { "need": "waste", "change": 0.04 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "retail_park", "farmland"]
+    },
+    {
+      "id": "safe_streets",
+      "name": "Safe streets",
+      "explain": "Protected cycle lanes, wider pavements and calmer traffic — short trips without a car feel easy.",
+      "cost": 700,
+      "time": 1,
+      "engagement": 0,
+      "requiresTech": "safe_streets",
+      "effects": [
+        { "need": "mobility", "change": 0.15 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+    },
+    {
+      "id": "bike_car_share",
+      "name": "Bike and car share",
+      "explain": "Shared bikes and a few shared cars parked nearby — fewer households need a car of their own.",
+      "cost": 800,
+      "time": 1,
+      "engagement": 0,
+      "requiresTech": "shared_mobility",
+      "effects": [
+        { "need": "mobility", "change": 0.12 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+    },
+    {
+      "id": "repair_cafe",
+      "name": "Repair café and tool library",
+      "explain": "Volunteers fix toasters and bikes over coffee, and lend out drills and ladders — less waste, more neighbours.",
+      "cost": 500,
+      "time": 3,
+      "engagement": 8,
+      "requiresTech": "repair_cafes",
+      "durationMonths": 24,
+      "effects": [
+        { "need": "waste", "change": 0.1 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+    },
+    {
+      "id": "recycling_point",
+      "name": "Recycling point",
+      "explain": "Clearly labelled bins for paper, glass, metal and plastic — more of the town's waste gets a second life.",
+      "cost": 600,
+      "time": 1,
+      "engagement": 0,
+      "requiresTech": "separate_collection",
+      "effects": [
+        { "need": "waste", "change": 0.12 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland"]
+    },
+    {
+      "id": "pocket_meadow",
+      "name": "Pocket meadow",
+      "explain": "A mown lawn left to grow wild with native flowers — buzzing with bees by the second summer.",
+      "cost": 300,
+      "time": 1,
+      "engagement": 2,
+      "requiresTech": "pollinator_meadows",
+      "durationMonths": 36,
+      "effects": [
+        { "need": "green", "change": 0.1 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"]
+    },
+    {
+      "id": "street_trees",
+      "name": "Street trees",
+      "explain": "Young trees along the main streets — shade in summer, greener views and cooler homes.",
+      "cost": 500,
+      "time": 1,
+      "engagement": 0,
+      "requiresTech": "urban_trees",
+      "effects": [
+        { "need": "green", "change": 0.12 },
+        { "need": "housing", "change": 0.03 }
+      ],
+      "allowedKinds": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park"]
+    },
+    {
+      "id": "rain_garden",
+      "name": "Rain garden and wetland",
+      "explain": "Planted hollows and a small wetland that soak up storm water before it floods the streets.",
+      "cost": 700,
+      "time": 2,
+      "engagement": 0,
+      "requiresTech": "rain_gardens",
+      "effects": [
+        { "need": "green", "change": 0.08 },
+        { "need": "housing", "change": 0.05 }
+      ],
+      "allowedKinds": ["riverside", "woodland"]
+    },
+    {
+      "id": "workshop_series",
+      "name": "Workshop series",
+      "explain": "Evening workshops at the school or library on energy, food and repair — the town learns together.",
+      "cost": 300,
+      "time": 1,
+      "engagement": 3,
+      "knowledgePerMonth": 2,
+      "requiresTech": "community_learning",
+      "durationMonths": 24,
+      "effects": [],
+      "allowedKinds": ["old_town", "apartments", "suburb"]
     }
   ]
 }

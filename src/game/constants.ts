@@ -49,3 +49,11 @@ export const FOOD_SHARE_EFFICIENCY = 0.7
 // (plan's starter-project table: "1,000 | 0 | Mobility +0.20 in both links").
 export const BUS_LINE_COST = 1000
 export const BUS_MOBILITY_BONUS = 0.2
+
+// --- Milestone 8.5: applied technologies -------------------------------------
+
+// A small monthly Knowledge trickle from the town's school and library (the
+// plan names them as Knowledge sources). Without it, a player who never runs
+// workshops could stall: milestones pay Knowledge only after research-gated
+// goals are met. Workshops add their own knowledgePerMonth on top.
+export const KNOWLEDGE_BASE_PER_MONTH = 1

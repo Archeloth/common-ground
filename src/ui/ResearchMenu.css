@@ -195,3 +195,10 @@
 .milestone-text strong {
   color: #2d3929;
 }
+/* Milestone 8.5: the projects a technology makes available. */
+.tech-unlocks {
+  margin: 0.25rem 0 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #3c6a3a;
+}

@@ -85,7 +85,7 @@ describe('validateGameState', () => {
     s.milestoneNotices = ['first_steps']
     // Loaders agree with the catalog (valid ids), so validation stays quiet.
     expect(validateGameState(s)).toEqual([])
-    expect(loadTechnologies().length).toBe(8)
+    expect(loadTechnologies().length).toBe(16)
     expect(loadMilestones().length).toBe(5)
   })
 })

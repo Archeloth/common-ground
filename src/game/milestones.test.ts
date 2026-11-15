@@ -46,7 +46,7 @@ describe('milestone conditions', () => {
   })
 
   it('counts projects town-wide and filled slots', () => {
-    let state = initialState(scenario)
+    let state: GameState = { ...initialState(scenario), research: [...initialState(scenario).research, 'building_retrofits'] }
     const start = (command: Command): void => {
       const result = applyCommand(state, command)
       if (result.ok) state = result.state
@@ -93,7 +93,7 @@ describe('milestone conditions', () => {
   })
 
   it('the first milestone completes after a scripted playthrough (exit test)', () => {
-    let state = initialState(scenario)
+    let state: GameState = { ...initialState(scenario), research: [...initialState(scenario).research, 'building_retrofits'] }
     const start = (command: Command): void => {
       const result = applyCommand(state, command)
       if (result.ok) state = result.state

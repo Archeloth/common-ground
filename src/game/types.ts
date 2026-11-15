@@ -105,6 +105,9 @@ export interface ProjectDef {
   // capital work. When it runs out the project stops giving effects; the slot
   // stays occupied until the player removes it.
   durationMonths?: number
+  // Knowledge paid each month while the project runs (Milestone 8.5): the
+  // workshop series is the town's steady Knowledge source.
+  knowledgePerMonth: number
 }
 
 // Player commands against the simulation state. Types follow the plan core

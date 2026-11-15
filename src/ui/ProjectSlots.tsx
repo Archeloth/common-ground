@@ -11,7 +11,17 @@ function effectPreview(project: ProjectDef): string {
     (effect) => `+${Math.round(effect.change * 100)}% ${t(`need.${effect.need}`)}`,
   )
   if (project.engagement > 0) parts.push(`+${project.engagement} ${t('panel.engagement')}`)
+  if (project.knowledgePerMonth > 0) {
+    parts.push(t('project.knowledgePerMonth', { value: project.knowledgePerMonth }))
+  }
   return parts.join(' · ')
+}
+
+// "lasts 3 years" for volunteer-run projects, "permanent" for infrastructure.
+function lifetimeText(project: ProjectDef): string {
+  const months = project.durationMonths
+  if (months === undefined) return t('project.permanent')
+  return months % 12 === 0 ? t('project.lasts', { years: months / 12 }) : t('project.lastsMonths', { months })
 }
 
 function pickerReason(project: ProjectDef, reason: Reason): string {
@@ -34,6 +44,11 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
   const slots =
     state.projects[neighborhood.id] ?? Array.from({ length: neighborhood.slots }, () => null)
   const freeCount = slots.filter((slot) => slot === null).length
+  // The picker lists what can be built here; projects that still need research
+  // are summarised in one line, so the list stays short as the tree grows.
+  const fitsHere = projects.filter((p) => p.allowedKinds.includes(neighborhood.kind))
+  const offered = fitsHere.filter((p) => !p.requiresTech || state.research.includes(p.requiresTech))
+  const locked = fitsHere.filter((p) => p.requiresTech && !state.research.includes(p.requiresTech))
 
   const filled: Array<{ slot: number; projectId: string }> = []
   slots.forEach((projectId, index) => {
@@ -64,7 +79,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
       {freeCount > 0 ? (
         <div className="project-picker">
           <p className="project-picker-title">{t('panel.freeSlots', { count: freeCount })}</p>
-          {projects.map((project) => {
+          {offered.map((project) => {
             const result = applyCommand(state, {
               type: 'startProject',
               neighborhood: neighborhood.id,
@@ -77,7 +92,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                   <span className="project-name">{project.name}</span>
                   <span className="project-meta">
                     {t('project.cost', { value: project.cost })} ·{' '}
-                    {t('project.months', { value: project.time })}
+                    {t('project.months', { value: project.time })} · {lifetimeText(project)}
                   </span>
                   <span className="project-effects">{effectPreview(project)}</span>
                   <span className="project-explain">{project.explain}</span>
@@ -104,6 +119,11 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
               </div>
             )
           })}
+          {locked.length > 0 && (
+            <p className="project-locked">
+              {t('project.lockedMore', { names: locked.map((p) => p.name).join(', ') })}
+            </p>
+          )}
         </div>
       ) : (
         <p className="project-full">{t('panel.allSlotsFull')}</p>

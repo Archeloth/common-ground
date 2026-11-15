@@ -11,9 +11,18 @@ const MAX_DAYS = 36 * 30 // the plan's chapter 1 should be reachable within ~3 y
 // they differ in build order, which is exactly what the Milestone 7 exit test
 // wants — "two different playthroughs reach the same goal by different routes".
 
-function makeAct(order: Array<[string, string]>) {
+function makeAct(order: Array<[string, string]>, research: string[] = ['building_retrofits'], busLines: Array<[string, string]> = []) {
   let cursor = 0
   return (state: GameState): Command | null => {
+    // Research first whenever it is affordable: projects are gated by it.
+    for (const tech of research) {
+      const command: Command = { type: 'research', tech }
+      if (applyCommand(state, command).ok) return command
+    }
+    for (const [from, to] of busLines) {
+      const command: Command = { type: 'startBusLine', from, to }
+      if (applyCommand(state, command).ok) return command
+    }
     for (let i = 0; i < order.length; i++) {
       const index = (cursor + i) % order.length
       const [neighborhood, project] = order[index]
@@ -23,7 +32,7 @@ function makeAct(order: Array<[string, string]>) {
         return command
       }
     }
-    // Community time is the scarce resource: spend idle months on town meetings.
+    // Volunteers are the scarce resource: spend idle months on town meetings.
     for (const n of scenario.neighborhoods) {
       const command: Command = { type: 'townMeeting', neighborhood: n.id }
       if (applyCommand(state, command).ok) return command
@@ -56,9 +65,13 @@ function routeB() {
   return makeAct([...retrofitFirst, lindenGarden, ...rest, ...moreGardens])
 }
 
-function play(act: (state: GameState) => Command | null): GameState {
+function play(
+  act: (state: GameState) => Command | null,
+  goal = 'first_steps',
+  maxDays = MAX_DAYS,
+): GameState {
   let state = initialState(scenario)
-  for (let day = 0; day < MAX_DAYS; day++) {
+  for (let day = 0; day < maxDays; day++) {
     if (day % 30 === 0) {
       // A few actions at the start of each month, while resources allow.
       for (let attempt = 0; attempt < 6; attempt++) {
@@ -70,7 +83,7 @@ function play(act: (state: GameState) => Command | null): GameState {
       }
     }
     state = tick(state)
-    if (state.milestones.includes('first_steps')) return state
+    if (state.milestones.includes(goal)) return state
   }
   return state
 }
@@ -98,7 +111,13 @@ describe('Milestone 7 exit test: two playthroughs, one goal', () => {
           state = tick(state)
           continue
         }
-        const command = act(state)
+        let command = act(state)
+        while (command !== null && command.type === 'research') {
+          const researched = applyCommand(state, command)
+          if (!researched.ok) break
+          state = researched.state
+          command = act(state)
+        }
         if (command !== null && command.type === 'startProject') {
           const result = applyCommand(state, command)
           if (result.ok) {
@@ -116,5 +135,30 @@ describe('Milestone 7 exit test: two playthroughs, one goal', () => {
     expect(a[0]).toMatch(/community_garden/)
     expect(b[0]).toMatch(/retrofit_program/)
     expect(a).not.toEqual(b)
+  })
+})
+
+// Milestone 8.5: with safe streets, bus lines and shared mobility in the
+// catalog, chapter 2 ("Getting around") is reachable by a mobility-first bot.
+describe('chapter 2 is reachable with the new mobility content', () => {
+  it('a mobility-first route completes "Getting around"', () => {
+    const streets = scenario.neighborhoods.map((n) => [n.id, 'safe_streets'] as [string, string])
+    const shares = scenario.neighborhoods.map((n) => [n.id, 'bike_car_share'] as [string, string])
+    const gardens = scenario.neighborhoods.map((n) => [n.id, 'community_garden'] as [string, string])
+    const retrofits = ['old_town', 'station_quarter', 'linden_flats', 'meadow_rise'].map(
+      (id) => [id, 'retrofit_program'] as [string, string],
+    )
+    const act = makeAct(
+      [['linden_flats', 'community_garden'], ...retrofits, ...streets, ...shares, ...gardens],
+      ['building_retrofits', 'public_transport', 'shared_mobility', 'community_learning'],
+      [
+        ['southgate_retail', 'mill_yard'],
+        ['maple_heights', 'old_town'],
+        ['clay_hill', 'linden_flats'],
+      ],
+    )
+    const state = play(act, 'getting_around', 6 * 12 * 30)
+    expect(state.milestones).toContain('first_steps')
+    expect(state.milestones).toContain('getting_around')
   })
 })

@@ -4,11 +4,13 @@ import type { TechDef } from '../game/technologies'
 import { applyCommand } from '../game/state'
 import { loadTechnologies } from '../game/technologies'
 import { loadMilestones } from '../game/milestones'
+import { loadProjects } from '../game/projects'
 import { t } from './i18n'
 import './ResearchMenu.css'
 
 const technologies = loadTechnologies()
 const milestoneCatalog = loadMilestones()
+const projectCatalog = loadProjects()
 
 interface ResearchMenuProps {
   state: GameState
@@ -28,6 +30,7 @@ function TechCard({
   const result = applyCommand(state, { type: 'research', tech: tech.id })
   const failure: Reason | null = result.ok ? null : result.reason
   const statusClass = researched ? 'researched' : failure === null ? 'ready' : 'locked'
+  const unlocksProjects = projectCatalog.filter((p) => p.requiresTech === tech.id).map((p) => p.name)
 
   return (
     <div className={`tech-card ${statusClass}`}>
@@ -39,6 +42,9 @@ function TechCard({
       </div>
       <p className="tech-benefit">{tech.benefit}</p>
       <p className="tech-limit">{tech.limit}</p>
+      {unlocksProjects.length > 0 && (
+        <p className="tech-unlocks">{t('research.unlocksProjects', { names: unlocksProjects.join(', ') })}</p>
+      )}
       <div className="tech-foot">
         <span className="tech-cost">{t('research.cost', { value: tech.cost })}</span>
         {researched ? (

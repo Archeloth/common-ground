@@ -84,7 +84,7 @@ export function projectTimeCost(projectTime: number, engagement: number): number
 
 // Question order matters for predictability (and is pinned by the tests):
 // unknown ids first, then capacity (duplicate / no free slot), then
-// eligibility (kind), then resources (budget, time).
+// eligibility (kind, then research), then resources (budget, time).
 export function applyCommand(state: GameState, command: Command): CommandResult {
   const scenario = loadScenario()
 
@@ -99,6 +99,9 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     const freeIndex = slots.indexOf(null)
     if (freeIndex === -1) return refusal('no_free_slot')
     if (!project.allowedKinds.includes(neighborhood.kind)) return refusal('not_allowed_in_kind')
+    if (project.requiresTech && !state.research.includes(project.requiresTech)) {
+      return refusal('tech_not_researched')
+    }
     if (state.budget < project.cost) return refusal('insufficient_budget')
     const timeCost = projectTimeCost(project.time, engagementOf(state, neighborhood))
     if (state.time < timeCost) return refusal('insufficient_time')

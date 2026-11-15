@@ -130,3 +130,11 @@
   font-size: 0.82rem;
   color: #6a7564;
 }
+
+/* Milestone 8.5: one quiet line for projects that still need research. */
+.project-locked {
+  margin: 0.4rem 0 0;
+  font-size: 0.74rem;
+  font-style: italic;
+  color: #6a7564;
+}

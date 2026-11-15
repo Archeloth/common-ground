@@ -6,6 +6,7 @@ import { loadMilestones } from './milestones'
 import type { MilestoneCondition, MilestoneDef } from './milestones'
 import { messageCatalog, messageFulfilled } from './messages'
 import { applyCommand } from './state'
+import { loadTechnologies, technologyById } from './technologies'
 import { currentTutorialStep } from './tutorial'
 
 // The "what should I do next?" hint (Milestone 8, plan item 2): a pure
@@ -54,6 +55,10 @@ export function nextAction(state: GameState): NextAction | null {
   for (const def of messageCatalog()) {
     if (state.messages[def.neighborhood] === 'done') continue
     if (messageFulfilled(state, def)) continue
+    // Only point at requests the player can act on right now (a request for
+    // a project that still needs research waits until it is researched).
+    const command = { type: 'startProject', neighborhood: def.neighborhood, project: def.request.project } as const
+    if (!applyCommand(state, command).ok) continue
     const neighborhood = neighborhoodById(scenario, def.neighborhood)
     return {
       kind: 'message',
@@ -80,6 +85,8 @@ function suggestionForCondition(
   switch (condition.type) {
     case 'projectIn': {
       if ((state.projects[condition.neighborhood] ?? []).includes(condition.project)) return null
+      const research = researchFirst(state, projects, def, condition.project)
+      if (research !== undefined) return research
       const neighborhood = neighborhoodById(scenario, condition.neighborhood)
       return {
         kind: 'milestone',
@@ -99,6 +106,8 @@ function suggestionForCondition(
         for (const id of slots) if (id === condition.project) total++
       }
       if (total >= condition.min) return null
+      const research = researchFirst(state, projects, def, condition.project)
+      if (research !== undefined) return research
       const where = scenario.neighborhoods.find((n) =>
         applyCommand(state, { type: 'startProject', neighborhood: n.id, project: condition.project }).ok,
       )
@@ -153,9 +162,48 @@ function suggestionForCondition(
         projectId: project.id,
       }
     }
+    case 'busLineCount': {
+      if (state.busLines.length >= condition.min) return null
+      for (const n of scenario.neighborhoods) {
+        for (const other of n.neighbors) {
+          if (applyCommand(state, { type: 'startBusLine', from: n.id, to: other }).ok) {
+            return {
+              kind: 'milestone',
+              textKey: 'guide.busLine',
+              params: { goal: def.name, from: n.name, to: neighborhoodById(scenario, other).name },
+              neighborhoodId: n.id,
+            }
+          }
+        }
+      }
+      return null
+    }
     case 'townSatisfaction':
       // Not directly actionable as a single next step; other conditions guide.
       return null
+  }
+}
+
+// When a goal's project still needs research: a hint to research it (when
+// affordable now) or null (nothing to do yet). undefined = no research needed.
+function researchFirst(
+  state: GameState,
+  projects: readonly ProjectDef[],
+  def: MilestoneDef,
+  projectId: string,
+): NextAction | null | undefined {
+  const project = projectById(projects, projectId)
+  if (!project.requiresTech || state.research.includes(project.requiresTech)) return undefined
+  if (!applyCommand(state, { type: 'research', tech: project.requiresTech }).ok) return null
+  return {
+    kind: 'milestone',
+    textKey: 'guide.research',
+    params: {
+      goal: def.name,
+      tech: technologyById(loadTechnologies(), project.requiresTech).name,
+      project: project.name,
+    },
+    projectId,
   }
 }
 

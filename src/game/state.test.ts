@@ -231,7 +231,7 @@ describe('engagement time discount', () => {
   })
 
   it('subtracts the discounted cost, not the list cost', () => {
-    const s = initialState(scenario)
+    const s = { ...initialState(scenario), research: [...initialState(scenario).research, 'building_retrofits'] }
     const engaged = { ...s, engagement: { ...s.engagement, old_town: 50 } }
     const result = applyCommand(engaged, {
       type: 'startProject',

@@ -9,8 +9,14 @@ import type { GameState } from './types'
 const scenario = loadScenario()
 
 // A finished tutorial, so the guide looks at the open goals instead.
-function pastTutorial() {
+function pastTutorial(): GameState {
   return { ...initialState(scenario), tutorialStep: TUTORIAL_DONE }
+}
+
+// The same, with Building retrofits already researched.
+function researched(): GameState {
+  const s = pastTutorial()
+  return { ...s, research: [...s.research, 'building_retrofits'] }
 }
 
 function allMessagesDone(): GameState['messages'] {
@@ -35,8 +41,20 @@ describe('nextAction (what should I do next?)', function () {
     expect(action?.projectId).toBe('community_garden')
   })
 
+  it('asks to research Building retrofits when the goal needs a retrofit', function () {
+    const garden = applyCommand(pastTutorial(), {
+      type: 'startProject',
+      neighborhood: 'linden_flats',
+      project: 'community_garden',
+    })
+    if (!garden.ok) throw new Error('garden refused')
+    const action = nextAction(garden.state)
+    expect(action?.textKey).toBe('guide.research')
+    expect(action?.projectId).toBe('retrofit_program')
+  })
+
   it('asks for another retrofit once the Linden Flats garden is built', function () {
-    let state = pastTutorial()
+    let state = researched()
     const garden = applyCommand(state, {
       type: 'startProject',
       neighborhood: 'linden_flats',
@@ -53,7 +71,7 @@ describe('nextAction (what should I do next?)', function () {
     const messages = allMessagesDone()
     messages.old_town = 'open' // Old Town still asks for a retrofit programme
     const state = {
-      ...pastTutorial(),
+      ...researched(),
       milestones: allMilestonesDone(),
       messages,
     }
@@ -65,7 +83,7 @@ describe('nextAction (what should I do next?)', function () {
 
   it('falls back to the biggest need gap with a reachable project', function () {
     const state = {
-      ...pastTutorial(),
+      ...researched(),
       milestones: allMilestonesDone(),
       messages: allMessagesDone(),
     }
