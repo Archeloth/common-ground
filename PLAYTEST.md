@@ -42,3 +42,16 @@ Collate the notes and act on them:
   (the top bar) next iteration.
 - Tune the tutorial pacing by editing the step conditions in
   `src/game/tutorial.ts`.
+## Round 2 (Milestone 8.5) - check the feedback fixes
+
+Use the same session script. Watch these in particular:
+
+- Did the tester read the Lexicon welcome page, and press Start playing or Play?
+- Could they say what Volunteers are, without help?
+- Did they open the Town overview, and did it help them choose what to do?
+- Did hovering a district tell them enough to pick one?
+- Did research feel worth it (did they build what it unlocked)?
+- When a project ran its course, did they notice the bubble, and did they renew it?
+- Did they read the date as a year, month and day?
+- Did any panel stay open when they expected it to close?
+- Did they notice that bus lines only cross the river at the bridges?

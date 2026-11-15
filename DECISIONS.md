@@ -197,3 +197,53 @@ games begin at step 0. Same migration-table pattern as before.
 and the success criteria (at least 3 of 5 testers reach "First steps" and say
 they would keep playing). The automated suites now cover the tutorial walk, the
 guidance priorities and the v3-to-v4 migration instead.
+## 15 Nov 2026 - Milestone 8.5 decisions (first playtest feedback)
+
+**Every technology unlocks something to build.** The playtest showed research
+rarely changed what you could do: only three slot projects existed, and
+nothing raised mobility or waste, so chapters 2-4 were nearly unreachable.
+The tree now covers all six plan branches (16 entries), and every tech except
+public transport (bus lines) gates at least one project through `requiresTech`.
+The refusal `tech_not_researched` sits after the kind check and before
+resources. The project picker lists only what can be built in that
+neighbourhood now and summarises the rest in one line.
+
+**Knowledge needs a steady source.** With 16 techs, milestone rewards alone
+could deadlock a player: milestones pay Knowledge only after research-gated
+goals are met. The school and library add +1 Knowledge a month, and each
+Workshop series adds +2 (the plan names schools and libraries as Knowledge
+sources). A balance probe that follows the goals reached chapters 1-3; the
+pacing of chapters 3-5 is for the next playtest.
+
+**Volunteer projects expire; infrastructure does not.** Gardens, compost,
+markets, repair cafés, meadows, co-ops and workshops last 24-48 months. A lapsed
+project keeps its slot but stops giving effects, engagement and Knowledge, and
+no longer counts toward goals or requests. Renewal costs only Volunteers (no
+Budget), opens in the last three months, and the new lifetime runs on from the
+old end day, so early renewal is never punished. This keeps the plan's
+non-punitive tone and gives Volunteers a long-term use. Saves v4 -> v5 give
+running volunteer projects a full lifetime from the day of the save.
+
+**"Community time" is shown as "Volunteers".** The old chip read "6 mo", which
+players took for months. Only the UI text changed; the state field is still
+`time`, so saves and tests did not churn.
+
+**The river rule is a content check, not a command rule.** Bus lines already
+follow neighbour links, and only the two bridge pairs are neighbours across the
+water. The scenario validator now proves it: any neighbour link whose segment
+crosses the river polyline must be a bridge. The map draws the bridges and
+routes bus lines across them.
+
+**Always open paused.** New towns start at speed 0, and every boot, load and
+import is forced to pause, so reading the Lexicon never costs progress. A fresh
+town opens the Lexicon on its welcome page.
+
+**One toolbar, one open drawer.** Town, Research and Save are drawers in a
+single toolbar; `useDismissable` closes the open one on an outside pointerdown
+(capture phase, so a map drag counts) or Escape. The top bar's "+x/mo" figures
+come from `economy.ts`, which `tick()` also uses for the monthly settlement, so
+the UI cannot disagree with the rules.
+
+**Known gap: Budget piles up.** The plan's ~3% monthly upkeep was never built,
+so mid-game Budget grows without limit (a balance bot ended ten years with
+hundreds of thousands unspent). That belongs in Milestone 9 balancing.

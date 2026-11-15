@@ -9,26 +9,35 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 8 - tutorial and first playtest.** New games open with a scripted
-first fifteen minutes: three problem neighbourhoods pulse on the map, a card
-walks you through opening a panel, starting a community garden in School Green,
-watching the bars rise, researching Building retrofits and running a retrofit
-programme. Action steps complete themselves the moment you do them; the intro
-step waits for "Continue". A "What next?" button at the bottom-right reads the
-open goals (tutorial step, milestones, resident requests, need gaps) and can fly
-you straight to the neighbourhood it recommends.
+**Milestone 8.5 - first playtest feedback.** The first playtest was fun but
+turned up ten points, all addressed:
 
-The Milestone 7 systems keep working: town meetings and dynamic engagement, bus
-links, food sharing and resident requests, the research tree, five chapter
-milestones, the three-slot autosave and live need bars. Saves are versioned (v4)
-and validated before use; a broken save never crashes the town. The M7 exit test
-(two bot playthroughs to "First steps") still passes. The M8 exit test is a
-human playtest - see PLAYTEST.md for the session script and success criteria
-(at least 3 of 5 testers reach "First steps" and say they would keep playing).
+- **More to build.** 16 technologies across all six branches of the plan
+  unlock 15 research-gated projects (heat pumps, energy co-ops, compost
+  points, markets, safe streets, bike share, repair cafés, recycling, meadows,
+  street trees, rain gardens, workshops). Chapters 2-5 now use real tasks.
+- **Project lifetimes.** Volunteer-run projects last two to four years. When
+  one lapses, a bubble pops up on its district and an hourglass marks it on
+  the map; renewing costs only Volunteers. Infrastructure is permanent.
+- **Volunteers** replace the unclear "Community time".
+- **A paused start and a Lexicon.** Every town opens paused, and a fresh town
+  opens the Lexicon (15 entries explaining every mechanic) on a welcome page.
+- **Easier overview.** One toolbar (Town, Research, Save, Lexicon) whose
+  drawers close when you click away; a **Town** overview with town-wide stats,
+  chapter progress and a neighbourhood ranking; neighbourhood panel tabs
+  (Overview, Projects, Community); satisfaction stats on hover; and resources
+  showing their monthly change.
+- **Calendar and bridges.** Time reads "Year 2 · March 12". The river has two
+  visible bridges, and bus lines cross only there.
 
-Controls: **drag** to pan - **scroll / pinch** to zoom - **hover** to inspect -
-**click** to select - **Esc** to close. **Save** and **Research** menus sit at
-the top-left; **What next?** at the bottom-right.
+The Milestone 8 systems keep working: the scripted tutorial, "What next?",
+town meetings, bus links, food sharing, resident requests, five chapters and
+the three-slot autosave. Saves are versioned (v5) and validated before use.
+See PLAYTEST.md for the round-2 checklist.
+
+Controls: **drag** to pan - **scroll / pinch** to zoom - **hover** for a
+neighbourhood's stats - **click** to open it - **Esc** closes panels and
+drawers. The toolbar sits at the top-left, **What next?** at the bottom-right.
 
 ## Stack and decisions
 
@@ -46,7 +55,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (rng, blobs, geometry, camera, content data, commands, tick, store, milestones, research, messages, tutorial, guidance, saves, state validation, two-route playthroughs, determinism, invariants)
+yarn test      # Vitest unit tests (rng, blobs, geometry, camera, calendar, content data, commands, tick, economy, project lifetimes, store, milestones, research, messages, tutorial, guidance, lexicon, saves, state validation, bot playthroughs, determinism, invariants)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```
