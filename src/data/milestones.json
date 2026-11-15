@@ -4,8 +4,8 @@
       "id": "first_steps",
       "name": "First steps",
       "chapter": 1,
-      "goal": "Town satisfaction 60",
-      "explain": "Small, visible wins build trust: a community garden in Linden Flats, retrofits across three neighbourhoods, and a town that reaches satisfaction 60.",
+      "goal": "Town satisfaction 64",
+      "explain": "Small, visible wins build trust: a community garden in Linden Flats, retrofits across three neighbourhoods, and a town that reaches satisfaction 64.",
       "conditions": [
         {
           "type": "projectIn",
@@ -19,7 +19,7 @@
         },
         {
           "type": "townSatisfaction",
-          "min": 60
+          "min": 64
         }
       ],
       "reward": {

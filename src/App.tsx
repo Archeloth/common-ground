@@ -294,7 +294,7 @@ function App() {
         <TutorialCard state={state} onNext={() => dispatch({ type: 'tutorialNext' })} />
         <GuideButton state={state} onShow={onSelectionChange} />
         {(notice || reason) && (
-          <div className="reason-banner" role="alert">
+          <div className={`reason-banner${notice ? ' info' : ''}`} role={notice ? 'status' : 'alert'}>
             <span>{notice ?? (reason ? t(`reason.${reason}`) : '')}</span>
             <button
               type="button"

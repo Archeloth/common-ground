@@ -52,7 +52,17 @@ interface RawTech {
   sources?: Array<{ title?: string }>
 }
 
+// Content is static, so it is parsed and validated once and then shared
+// (callers must not mutate the result). Milestone 8.6 review: this used to
+// re-validate on every call, from tick(), applyCommand() and each render.
+let cachedLoadTechnologies: TechDef[] | null = null
+
 export function loadTechnologies(): TechDef[] {
+  cachedLoadTechnologies ??= buildLoadTechnologies()
+  return cachedLoadTechnologies
+}
+
+function buildLoadTechnologies(): TechDef[] {
   const raw = technologiesCatalog as unknown as { technologies?: RawTech[] }
   const techs: TechDef[] = (raw.technologies ?? []).map((t, index) => ({
     id: t.id ?? `#${index}`,

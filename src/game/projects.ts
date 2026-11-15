@@ -32,7 +32,17 @@ interface RawProject {
 // The projects catalog is content (data/projects.json), not code. loadProjects
 // validates it loudly so a typo fails at startup with the offending id — the
 // same pattern as loadScenario/loadKinds (plan: content is data, fail loudly).
+// Content is static, so it is parsed and validated once and then shared
+// (callers must not mutate the result). Milestone 8.6 review: this used to
+// re-validate on every call, from tick(), applyCommand() and each render.
+let cachedLoadProjects: ProjectDef[] | null = null
+
 export function loadProjects(): ProjectDef[] {
+  cachedLoadProjects ??= buildLoadProjects()
+  return cachedLoadProjects
+}
+
+function buildLoadProjects(): ProjectDef[] {
   const raw = projectsCatalog as unknown as { projects?: RawProject[] }
   const projects: ProjectDef[] = (raw.projects ?? []).map((p, index) => ({
     id: p.id ?? `#${index}`,

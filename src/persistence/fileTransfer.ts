@@ -13,7 +13,9 @@ export function downloadSaveFile(save: SaveFile, filename = SAVE_FILENAME): void
   link.href = url
   link.download = filename
   link.click()
-  URL.revokeObjectURL(url)
+  // Revoking synchronously can cancel the download in some browsers; give
+  // the click a moment to start it first.
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
 export function readSaveFile(file: File): Promise<string> {

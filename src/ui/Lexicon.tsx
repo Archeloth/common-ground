@@ -21,10 +21,12 @@ export default function Lexicon({ entry, onSelect, onClose, onStart }: LexiconPr
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key !== 'Escape' || e.defaultPrevented) return
+      e.preventDefault() // topmost layer: nothing underneath reacts
+      onClose()
     }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    window.addEventListener('keydown', onKeyDown, true)
+    return () => window.removeEventListener('keydown', onKeyDown, true)
   }, [onClose])
 
   // A new entry starts at its top.

@@ -42,7 +42,17 @@ interface RawMilestone {
   reward?: { knowledge?: number }
 }
 
+// Content is static, so it is parsed and validated once and then shared
+// (callers must not mutate the result). Milestone 8.6 review: this used to
+// re-validate on every call, from tick(), applyCommand() and each render.
+let cachedLoadMilestones: MilestoneDef[] | null = null
+
 export function loadMilestones(): MilestoneDef[] {
+  cachedLoadMilestones ??= buildLoadMilestones()
+  return cachedLoadMilestones
+}
+
+function buildLoadMilestones(): MilestoneDef[] {
   const raw = milestonesCatalog as unknown as { milestones?: RawMilestone[] }
   const milestones: MilestoneDef[] = (raw.milestones ?? []).map((m, index) => ({
     id: m.id ?? `#${index}`,

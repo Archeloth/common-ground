@@ -13,14 +13,16 @@ export function useDismissable(ref: RefObject<HTMLElement | null>, active: boole
       if (root && event.target instanceof Node && !root.contains(event.target)) onClose()
     }
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key !== 'Escape' || event.defaultPrevented) return
+      event.preventDefault() // closes only this layer, not the panel below
+      onClose()
     }
     // Capture phase, so a click that starts a canvas drag still closes it.
     document.addEventListener('pointerdown', onPointerDown, true)
-    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keydown', onKeyDown, true)
     return () => {
       document.removeEventListener('pointerdown', onPointerDown, true)
-      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keydown', onKeyDown, true)
     }
   }, [ref, active, onClose])
 }

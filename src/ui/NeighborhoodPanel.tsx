@@ -3,6 +3,8 @@ import type { Command, GameState, NeighborhoodDef } from '../game/types'
 import { kindById, loadKinds } from '../game/kinds'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { satisfactionOf } from '../game/satisfaction'
+import { NEED_ORDER } from '../game/needs'
+import { TOWN_MEETING_ENGAGEMENT, TOWN_MEETING_TIME } from '../game/constants'
 import { applyCommand } from '../game/state'
 import { messageForNeighborhood } from '../game/messages'
 import type { MessageDef } from '../game/messages'
@@ -15,8 +17,6 @@ import './NeighborhoodPanel.css'
 const kinds = loadKinds()
 const scenario = loadScenario()
 
-// Display order for the six need bars (the plan names them in this order).
-const NEED_ORDER = ['energy', 'food', 'mobility', 'green', 'waste', 'housing'] as const
 
 type PanelTab = 'overview' | 'projects' | 'community'
 const TABS: readonly PanelTab[] = ['overview', 'projects', 'community']
@@ -181,7 +181,7 @@ export default function NeighborhoodPanel({
           </button>
           <p className="panel-action-hint">
             {meeting.ok
-              ? t('panel.townMeetingHint', { engagement: 10, time: 1 })
+              ? t('panel.townMeetingHint', { engagement: TOWN_MEETING_ENGAGEMENT, time: TOWN_MEETING_TIME })
               : t(`reason.${meeting.reason}`)}
           </p>
         </div>

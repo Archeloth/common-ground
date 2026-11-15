@@ -18,7 +18,8 @@ interface GuideButtonProps {
 // straight to the neighbourhood the hint is about.
 export default function GuideButton({ state, onShow }: GuideButtonProps) {
   const [open, setOpen] = useState(false)
-  const action = useMemo(() => nextAction(state), [state])
+  // Only work it out while the popover is open (Milestone 8.6 review).
+  const action = useMemo(() => (open ? nextAction(state) : null), [open, state])
   const showTarget = action?.neighborhoodId ?? null
 
   const params = useMemo(function buildParams() {

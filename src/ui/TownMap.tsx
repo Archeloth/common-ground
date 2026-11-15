@@ -220,7 +220,8 @@ export default function TownMap({
   // Esc closes the panel (the plan's controls: Esc to cancel/escape).
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onSelectionChange(null)
+      // An overlay above (lexicon, drawer) handles Esc first and marks it.
+      if (e.key === 'Escape' && !e.defaultPrevented) onSelectionChange(null)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
@@ -338,7 +339,6 @@ export default function TownMap({
       }
     }
 
-    canvas.addEventListener('wheel', onWheel)
     canvas.addEventListener('pointerdown', onPointerDown)
     canvas.addEventListener('pointermove', onPointerMove)
     canvas.addEventListener('pointerup', onPointerUp)

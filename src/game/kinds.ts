@@ -17,7 +17,17 @@ function fail(what: string): never {
 // type in types.ts is derived from NEIGHBORHOOD_KINDS, so a new kind forces an
 // entry here and the tests keep the two sides equal (plan: content is data,
 // and a typo fails loudly with the offending id).
+// Content is static, so it is parsed and validated once and then shared
+// (callers must not mutate the result). Milestone 8.6 review: this used to
+// re-validate on every call, from tick(), applyCommand() and each render.
+let cachedLoadKinds: KindDef[] | null = null
+
 export function loadKinds(): KindDef[] {
+  cachedLoadKinds ??= buildLoadKinds()
+  return cachedLoadKinds
+}
+
+function buildLoadKinds(): KindDef[] {
   const raw = kindsCatalog as unknown as {
     kinds: Array<{ id: string; name?: string; description?: string; defaultSlots?: number }>
   }

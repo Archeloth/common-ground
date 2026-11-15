@@ -21,7 +21,7 @@ function effectPreview(project: ProjectDef): string {
 
 // "1 volunteer" / "2 volunteers" for a Volunteer cost.
 function volunteersText(cost: number): string {
-  return cost === 1 ? t('project.volunteer') : t('project.months', { value: cost })
+  return cost === 1 ? t('project.volunteer') : t('project.volunteers', { value: cost })
 }
 
 function renewLabel(cost: number): string {
