@@ -2,13 +2,11 @@ import type { GameState, Reason } from '../game/types'
 import type { TechDef } from '../game/technologies'
 import { applyCommand } from '../game/state'
 import { loadTechnologies } from '../game/technologies'
-import { loadMilestones } from '../game/milestones'
 import { loadProjects } from '../game/projects'
 import { t } from './i18n'
 import './ResearchMenu.css'
 
 const technologies = loadTechnologies()
-const milestoneCatalog = loadMilestones()
 const projectCatalog = loadProjects()
 
 interface ResearchMenuProps {
@@ -64,8 +62,8 @@ function TechCard({
   )
 }
 
-// Research + milestones panel (Milestone 6): education cards for the research
-// tree and the five chapter goals. The cards ask the real validation
+// Research drawer (Milestone 6): education cards for the research tree. The
+// chapter goals moved to the GoalTracker in Milestone 8.6. The cards ask the real validation
 // (applyCommand) for "can this be researched now?" so the UI cannot disagree
 // with the rules.
 export default function ResearchMenu({ state, onResearch }: ResearchMenuProps) {
@@ -87,23 +85,6 @@ export default function ResearchMenu({ state, onResearch }: ResearchMenuProps) {
         ))}
       </section>
 
-      <section className="research-section">
-        <h3>{t('research.goalsTitle')}</h3>
-        <ul className="milestone-list">
-          {milestoneCatalog.map((def) => {
-            const done = state.milestones.includes(def.id)
-            return (
-              <li key={def.id} className={`milestone-row${done ? ' done' : ''}`}>
-                <span className="milestone-check">{done ? '✓' : `${def.chapter}.`}</span>
-                <span className="milestone-text">
-                  <strong>{def.name}</strong>
-                  {done ? ` (${t('milestones.done')})` : ` — ${def.goal}`}
-                </span>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
     </div>
   )
 }

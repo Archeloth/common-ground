@@ -66,34 +66,10 @@
   color: #53604c;
 }
 
-.town-chapter-explain {
-  margin: 0 0 0.45rem;
-  font-size: 0.8rem;
-  color: #4a5c44;
-}
 
-.town-tasks {
-  display: grid;
-  gap: 0.25rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 0.84rem;
-}
 
-.town-tasks li {
-  display: flex;
-  gap: 0.45rem;
-}
 
-.town-tasks li.met {
-  color: #3c6a3a;
-}
 
-.town-task-check {
-  width: 1rem;
-  font-weight: 700;
-}
 
 .town-ranking {
   display: grid;

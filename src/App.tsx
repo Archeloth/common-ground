@@ -7,6 +7,7 @@ import ResearchMenu from './ui/ResearchMenu'
 import Toolbar from './ui/Toolbar'
 import type { DrawerId } from './ui/Toolbar'
 import TownPanel from './ui/TownPanel'
+import GoalTracker from './ui/GoalTracker'
 import { loadScenario, neighborhoodById } from './game/scenario'
 import { createGameStore } from './game/store'
 import { initialState } from './game/state'
@@ -253,6 +254,7 @@ function App() {
           onDismiss={handleDismissExpiry}
           state={state}
         />
+        <GoalTracker state={state} />
         <Toolbar
           open={drawer}
           onOpen={setDrawer}

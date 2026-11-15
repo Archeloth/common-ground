@@ -132,35 +132,10 @@
   color: #a2451a;
 }
 
-.milestone-list {
-  display: grid;
-  gap: 0.35rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 
-.milestone-row {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  font-size: 0.82rem;
-  color: #3f4c38;
-}
 
-.milestone-row.done {
-  color: #2d6a3f;
-}
 
-.milestone-check {
-  min-width: 1.3rem;
-  text-align: right;
-  font-weight: 600;
-}
 
-.milestone-text strong {
-  color: #2d3929;
-}
 /* Milestone 8.5: the projects a technology makes available. */
 .tech-unlocks {
   margin: 0.25rem 0 0;

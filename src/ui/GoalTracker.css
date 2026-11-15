@@ -1,0 +1,101 @@
+.goal-tracker {
+  position: absolute;
+  top: 3.6rem; /* just under the toolbar; an open drawer covers it */
+  left: 0.75rem;
+  z-index: 4;
+  width: min(19rem, calc(100vw - 1.5rem));
+  padding: 0.55rem 0.7rem 0.5rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.93);
+  box-shadow: 0 2px 10px rgba(31, 43, 28, 0.16);
+  font-size: 0.82rem;
+}
+
+.goal-tracker.mode-collapsed {
+  padding-bottom: 0.55rem;
+}
+
+.goal-heading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.4rem;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.goal-chevron {
+  grid-row: span 2;
+  align-self: center;
+  color: #53604c;
+}
+
+.goal-kicker {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #53604c;
+}
+
+.goal-name {
+  font-weight: 700;
+  color: #1f2b1c;
+}
+
+.goal-tasks,
+.goal-chapters {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.45rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.goal-tasks li,
+.goal-chapters > li {
+  display: flex;
+  gap: 0.4rem;
+  color: #2d3929;
+}
+
+.goal-tasks li.met {
+  color: #3c6a3a;
+}
+
+.goal-tasks.nested {
+  margin-top: 0.25rem;
+}
+
+.goal-chapters > li.done {
+  color: #6a7564;
+}
+
+.goal-chapters > li.current {
+  font-weight: 500;
+}
+
+.goal-check {
+  flex-shrink: 0;
+  width: 1rem;
+  font-weight: 700;
+}
+
+.goal-more {
+  margin-top: 0.4rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #3f6a3a;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.goal-more:hover {
+  text-decoration: underline;
+}

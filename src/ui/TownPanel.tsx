@@ -1,12 +1,9 @@
 import type { GameState, NeedId } from '../game/types'
 import { loadScenario } from '../game/scenario'
-import { conditionProgress, loadMilestones, townNeedAverage, townSatisfaction } from '../game/milestones'
-import type { MilestoneCondition } from '../game/milestones'
-import { loadProjects, projectById } from '../game/projects'
+import { loadMilestones, townNeedAverage, townSatisfaction } from '../game/milestones'
 import { loadTechnologies } from '../game/technologies'
 import { allExpired, countActive } from '../game/expiry'
 import { NEED_ORDER } from '../game/needs'
-import { neighborhoodById } from '../game/scenario'
 import NeedBar from './NeedBar'
 import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
@@ -14,42 +11,12 @@ import './TownPanel.css'
 
 const scenario = loadScenario()
 const milestones = loadMilestones()
-const projects = loadProjects()
 const techCount = loadTechnologies().length
 const totalResidents = scenario.neighborhoods.reduce((sum, n) => sum + n.residents, 0)
 
 interface TownPanelProps {
   state: GameState
   onSelect: (neighborhoodId: string) => void
-}
-
-function taskText(state: GameState, condition: MilestoneCondition): string {
-  const progress = conditionProgress(state, condition, scenario)
-  switch (condition.type) {
-    case 'projectIn':
-      return t('town.task.projectIn', {
-        project: projectById(projects, condition.project).name,
-        neighborhood: neighborhoodById(scenario, condition.neighborhood).name,
-      })
-    case 'projectCount':
-      return t('town.task.projectCount', {
-        project: projectById(projects, condition.project).name,
-        current: progress.current,
-        target: progress.target,
-      })
-    case 'slotsFilled':
-      return t('town.task.slots', { current: progress.current, target: progress.target })
-    case 'busLineCount':
-      return t('town.task.bus', { current: progress.current, target: progress.target })
-    case 'townSatisfaction':
-      return t('town.task.satisfaction', { current: Math.round(progress.current), target: progress.target })
-    case 'needsAverage':
-      return t('town.task.need', {
-        need: t(`need.${condition.need}`),
-        current: Math.round(progress.current * 100),
-        target: Math.round(progress.target * 100),
-      })
-  }
 }
 
 function weakestNeed(state: GameState, id: string): { need: NeedId; value: number } {
@@ -63,14 +30,13 @@ function weakestNeed(state: GameState, id: string): { need: NeedId; value: numbe
 }
 
 // The Town overview drawer (Milestone 8.5 playtest feedback: "city overall
-// stats visible somewhere"): headline numbers, the current chapter with each
-// task's progress, town-wide need averages and every neighbourhood ranked by
-// satisfaction (worst first, click to open).
+// stats visible somewhere"): headline numbers, town-wide need averages and
+// every neighbourhood ranked by satisfaction (worst first, click to open).
+// Chapter goals live in the always-visible GoalTracker (Milestone 8.6).
 export default function TownPanel({ state, onSelect }: TownPanelProps) {
   const satisfaction = townSatisfaction(state, scenario)
   const tier = satisfactionTier(satisfaction)
   const lapsed = allExpired(state, scenario).length
-  const chapter = milestones.find((m) => !state.milestones.includes(m.id))
   const ranked = [...scenario.neighborhoods].sort(
     (a, b) => (state.neighborhoods[a.id]?.satisfaction ?? 0) - (state.neighborhoods[b.id]?.satisfaction ?? 0),
   )
@@ -115,29 +81,6 @@ export default function TownPanel({ state, onSelect }: TownPanelProps) {
           </dd>
         </div>
       </dl>
-
-      <section className="town-section">
-        <h4>{chapter ? t('town.chapter', { chapter: chapter.chapter, name: chapter.name }) : t('town.allDone')}</h4>
-        {chapter && (
-          <>
-            <p className="town-chapter-explain">{chapter.explain}</p>
-            <ul className="town-tasks">
-              {chapter.conditions.map((condition, index) => {
-                const met = conditionProgress(state, condition, scenario).met
-                return (
-                  <li key={index} className={met ? 'met' : ''}>
-                    <span className="town-task-check" aria-hidden="true">
-                      {met ? '✓' : '○'}
-                    </span>
-                    <span className="sr-only">{met ? t('town.taskDone') : t('town.taskOpen')}</span>
-                    {taskText(state, condition)}
-                  </li>
-                )
-              })}
-            </ul>
-          </>
-        )}
-      </section>
 
       <section className="town-section">
         <h4>{t('town.needs')}</h4>
