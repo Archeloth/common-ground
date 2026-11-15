@@ -8,8 +8,9 @@ interface LexiconProps {
   entry: LexiconEntryId
   onSelect: (entry: LexiconEntryId) => void
   onClose: () => void
-  // Shown on the welcome page: closes the lexicon and starts the clock.
-  onStart: () => void
+  // Shown on the welcome page in a game: closes the lexicon and starts the
+  // clock. Omitted in the main menu.
+  onStart?: () => void
 }
 
 // The in-game lexicon (Milestone 8.5 playtest feedback: "a separate panel to
@@ -67,7 +68,7 @@ export default function Lexicon({ entry, onSelect, onClose, onStart }: LexiconPr
             {paragraphs.map((text, index) => (
               <p key={index}>{text}</p>
             ))}
-            {entry === 'welcome' && (
+            {entry === 'welcome' && onStart && (
               <button type="button" className="lexicon-start" onClick={onStart}>
                 {t('lexicon.start')}
               </button>

@@ -1,0 +1,274 @@
+.main-menu {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  overflow: hidden;
+  background: #ccd6b8;
+}
+
+/* A quiet echo of the town map behind the card: soft blobs and a river. */
+.menu-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.menu-blob {
+  position: absolute;
+  width: 15rem;
+  height: 9rem;
+  border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+  box-shadow: 0 6px 0 rgba(31, 43, 28, 0.18);
+  opacity: 0.75;
+  animation: menu-float 9s ease-in-out infinite;
+}
+
+.menu-blob.b1 { left: 6%; top: 8%; background: #a8bd84; }
+.menu-blob.b2 { right: 8%; top: 12%; background: #c98f6b; animation-delay: -2s; }
+.menu-blob.b3 { left: 12%; bottom: 10%; background: #6fb2a6; animation-delay: -4s; }
+.menu-blob.b4 { right: 14%; bottom: 8%; background: #c6bd6d; animation-delay: -6s; }
+.menu-blob.b5 { left: 42%; top: 2%; width: 11rem; height: 7rem; background: #9aaab3; animation-delay: -3s; }
+
+.menu-river {
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  top: 52%;
+  height: 4.5rem;
+  border-radius: 999px;
+  background: #7fa3c4;
+  box-shadow: 0 0 0 0.4rem #a7b98e;
+  transform: rotate(-2deg);
+  opacity: 0.7;
+}
+
+@keyframes menu-float {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+:root[data-motion='reduced'] .menu-blob {
+  animation: none;
+}
+
+.menu-card {
+  position: relative;
+  width: min(26rem, 100%);
+  padding: 1.6rem 1.6rem 1.2rem;
+  border-radius: 1.2rem;
+  background: rgba(251, 252, 247, 0.96);
+  box-shadow: 0 14px 40px rgba(31, 43, 28, 0.28);
+}
+
+.menu-title {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+  color: #26321f;
+}
+
+.menu-tagline {
+  margin: 0.3rem 0 1.2rem;
+  color: #53604c;
+}
+
+.menu-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.6rem;
+  background: #f7e3d6;
+  color: #6b2a10;
+  font-size: 0.85rem;
+}
+
+.menu-notice button {
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.menu-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.menu-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(31, 43, 28, 0.15);
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #26321f;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-button:hover:not(:disabled) {
+  background: #eef2e6;
+}
+
+.menu-button small {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #53604c;
+}
+
+.menu-button.primary {
+  border-color: #3f6a3a;
+  background: #3f6a3a;
+  color: #fff;
+}
+
+.menu-button.primary small {
+  color: #d6e8cc;
+}
+
+.menu-button.primary:hover:not(:disabled) {
+  background: #345a30;
+}
+
+.menu-button:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.menu-panel h2 {
+  margin: 0 0 0.7rem;
+  font-size: 1.1rem;
+}
+
+.menu-slots {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(31, 43, 28, 0.15);
+  border-radius: 0.6rem;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-slot:hover:not(:disabled) {
+  background: #eef2e6;
+}
+
+.menu-slot:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.menu-slot small {
+  color: #53604c;
+}
+
+.menu-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.9rem;
+}
+
+.menu-link {
+  padding: 0.3rem 0;
+  border: none;
+  background: transparent;
+  color: #3f6a3a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menu-link:hover {
+  text-decoration: underline;
+}
+
+.menu-about {
+  margin: 1.2rem 0 0;
+  font-size: 0.74rem;
+  color: #6a7564;
+}
+
+/* Settings */
+.settings fieldset {
+  margin: 0 0 0.8rem;
+  padding: 0.6rem 0.8rem 0.4rem;
+  border: 1px solid rgba(31, 43, 28, 0.15);
+  border-radius: 0.7rem;
+}
+
+.settings legend {
+  padding: 0 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #53604c;
+}
+
+.settings-note {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  color: #6a7564;
+}
+
+.setting-row {
+  display: grid;
+  grid-template-columns: 1fr 7rem 2.6rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-size: 0.88rem;
+}
+
+.setting-row output {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: #53604c;
+}
+
+.setting-row.toggle {
+  grid-template-columns: 1fr auto;
+}
+
+.setting-row.toggle span {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-row small {
+  font-size: 0.74rem;
+  color: #6a7564;
+}
+
+.setting-row input[type='checkbox'] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: #3f6a3a;
+}
+
+.setting-row input[type='range'] {
+  accent-color: #3f6a3a;
+}

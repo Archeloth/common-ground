@@ -62,3 +62,17 @@ body {
 .tier-dot.tier-good {
   background: #4f8f57;
 }
+
+/* Settings (Milestone 8.6): larger text scales the whole rem-based UI; reduced
+   motion stills every CSS animation (the canvas reads the same setting). */
+:root[data-text='large'] {
+  font-size: 112.5%;
+}
+
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

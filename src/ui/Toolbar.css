@@ -53,3 +53,11 @@
 .toolbar-drawer.drawer-saves {
   width: min(19rem, calc(100vw - 1.5rem));
 }
+
+/* The way back to the main menu sits apart from the drawers. */
+.toolbar-menu {
+  margin-left: 0.2rem;
+  border-left: 1px solid rgba(31, 43, 28, 0.15);
+  border-radius: 0 0.55rem 0.55rem 0;
+  color: #53604c;
+}

@@ -30,6 +30,7 @@ interface TownMapProps {
   onRenew: (bubble: ExpiryBubble) => void
   onDismiss: (key: string) => void
   state: GameState // read only by the hover chip
+  reducedMotion: boolean // still rings, no continuous redraw
 }
 
 // Canvas view of the town. The camera and interaction state live in refs so
@@ -45,6 +46,7 @@ export default function TownMap({
   onRenew,
   onDismiss,
   state,
+  reducedMotion,
 }: TownMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -58,6 +60,7 @@ export default function TownMap({
   const pinchRef = useRef<{ dist: number; x: number; y: number } | null>(null)
   const busLinesRef = useRef<Array<[string, string]>>([])
   const pulseIdsRef = useRef<string[]>([])
+  const reducedMotionRef = useRef(reducedMotion)
   const expiredIdsRef = useRef<string[]>([])
   // Expiry bubbles are DOM nodes pinned to world positions; the draw loop
   // moves them with the camera so they follow pans and zooms without React.
@@ -159,7 +162,8 @@ export default function TownMap({
     }
 
     // Milestone 8: pulsing rings point at the tutorial's target neighbourhoods.
-    const now = performance.now()
+    // A fixed phase under reduced motion: a calm, still ring.
+    const now = reducedMotionRef.current ? 250 : performance.now()
     for (const id of pulseIdsRef.current) {
       const n = neighborhoodById(scenario, id)
       drawPulseRing(ctx, cam, n.shape, n.shape.radius, now)
@@ -197,6 +201,11 @@ export default function TownMap({
     selectedIdRef.current = selectedId
     dirtyRef.current = true
   }, [selectedId])
+
+  useEffect(() => {
+    reducedMotionRef.current = reducedMotion
+    dirtyRef.current = true
+  }, [reducedMotion])
 
   // Tutorial pulse targets come from App; mirror them the same way.
   useEffect(function syncPulseIds() {
@@ -236,7 +245,7 @@ export default function TownMap({
         dirtyRef.current = false
       }
       // Keep the pulse rings breathing while the tutorial highlights targets.
-      if (pulseIdsRef.current.length !== 0) dirtyRef.current = true
+      if (pulseIdsRef.current.length !== 0 && !reducedMotionRef.current) dirtyRef.current = true
       frame = requestAnimationFrame(loop)
     }
     frame = requestAnimationFrame(loop)

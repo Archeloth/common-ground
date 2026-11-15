@@ -11,7 +11,6 @@ interface SaveMenuProps {
   onLoad: (key: string) => void
   onExport: () => void
   onImport: (file: File) => void
-  onNewGame: () => void
 }
 
 function formatSavedAt(savedAt: string): string {
@@ -25,8 +24,8 @@ function metaLine(meta: SlotMeta): string {
 }
 
 // Save/load drawer body (Milestone 5; opened from the toolbar since 8.5): the autosave row, three manual slots, .json
-// export/import (the no-server safety net) and a new-game reset.
-export default function SaveMenu({ meta, onSave, onLoad, onExport, onImport, onNewGame }: SaveMenuProps) {
+// export/import (the no-server safety net). New game lives in the main menu (Milestone 8.6).
+export default function SaveMenu({ meta, onSave, onLoad, onExport, onImport }: SaveMenuProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const manualSlots = SLOT_KEYS.filter((key) => key !== 'auto')
   const autoMeta = meta.auto
@@ -80,17 +79,6 @@ export default function SaveMenu({ meta, onSave, onLoad, onExport, onImport, onN
         />
       </div>
 
-      <div className="save-menu-row">
-        <button
-          type="button"
-          className="save-action save-action-danger"
-          onClick={() => {
-            if (window.confirm(t('saves.newGameConfirm'))) onNewGame()
-          }}
-        >
-          {t('saves.newGame')}
-        </button>
-      </div>
     </div>
   )
 }

@@ -12,13 +12,14 @@ interface ToolbarProps {
   open: DrawerId | null
   onOpen: (drawer: DrawerId | null) => void
   onLexicon: () => void
+  onMenu: () => void
   drawers: Record<DrawerId, ReactNode>
 }
 
 // One toolbar for the map's menus (Milestone 8.5: "easier to overview UI").
 // Only one drawer is open at a time, and a click anywhere outside it - or
 // Escape - closes it.
-export default function Toolbar({ open, onOpen, onLexicon, drawers }: ToolbarProps) {
+export default function Toolbar({ open, onOpen, onLexicon, onMenu, drawers }: ToolbarProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const close = useCallback(() => onOpen(null), [onOpen])
   useDismissable(rootRef, open !== null, close)
@@ -46,6 +47,9 @@ export default function Toolbar({ open, onOpen, onLexicon, drawers }: ToolbarPro
           }}
         >
           {t('toolbar.lexicon')}
+        </button>
+        <button type="button" className="toolbar-button toolbar-menu" onClick={onMenu}>
+          {t('toolbar.menu')}
         </button>
       </div>
       {open && <div className={`toolbar-drawer drawer-${open}`}>{drawers[open]}</div>}
