@@ -247,3 +247,33 @@ the UI cannot disagree with the rules.
 **Known gap: Budget piles up.** The plan's ~3% monthly upkeep was never built,
 so mid-game Budget grows without limit (a balance bot ended ten years with
 hundreds of thousands unspent). That belongs in Milestone 9 balancing.
+
+## 15 Nov 2026 - Milestone 8.6 decisions (main menu, goals, review)
+
+**Code review findings, fixed.** The content loaders (`loadProjects`,
+`loadTechnologies`, `loadMilestones`, `loadKinds`) re-parsed and re-validated
+JSON on every call, from `tick()`, `applyCommand()` and each render. They are
+now cached like `loadScenario`: a tick fell from ~0.49 ms to ~0.05 ms, and the
+test suite runs ~3x faster. Other fixes: chapter 1's satisfaction goal was free
+(the town starts at exactly 60.00, so the goal is now 64); one Esc closed the
+lexicon *and* the panel beneath it (overlays now handle Esc in the capture phase
+and mark it); confirmations used the red error banner; the map registered its
+wheel listener twice; save export revoked its blob URL before the download
+could start; "What next?" recomputed its hint every tick even when closed.
+
+**Re-render cost was measured, not assumed.** A full `nextAction` costs well
+under a millisecond, so a store-selector rewrite would have been churn without
+benefit. The cheaper fix was to compute guidance only while its popover is open.
+
+**Goals live in one place.** The always-visible GoalTracker replaced both the
+milestone list in Research and the chapter section in the Town overview.
+Expanded or collapsed is a per-viewer convenience in localStorage.
+
+**Settings are device preferences, not save data.** They live in localStorage
+(every access guarded) and apply through `<html data-motion data-text>`, so CSS
+and the canvas react the same way. The audio sliders are stored now and wired
+to an `audio.ts` facade, so Milestone 9 only adds the sounds.
+
+**The menu protects the autosave.** The store holds a blank town until the
+player chooses Continue, New game or Load, so autosave only runs while a
+session is active. Returning to the menu flushes the autosave first.

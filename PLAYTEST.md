@@ -55,3 +55,6 @@ Use the same session script. Watch these in particular:
 - Did they read the date as a year, month and day?
 - Did any panel stay open when they expected it to close?
 - Did they notice that bus lines only cross the river at the bridges?
+- Did they find Continue and the Menu button, and trust that their town was kept?
+- Did they look at the goal tracker without being prompted?
+- Did the speed buttons read as one control? Did anyone try Space?

@@ -9,6 +9,15 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
+**Milestone 8.6 - main menu, goals and a code review.** The game opens on a
+main menu (Continue, New game, Load, Settings, How to play), and a Menu button
+brings you back while playing. Settings cover sound levels (sound itself
+arrives in Milestone 9), reduced motion, larger text, and pausing while panels
+are open. Chapter goals sit in an always-visible tracker at the top left. The
+speed buttons are one icon group with keyboard shortcuts. A review pass made
+the simulation about 10x cheaper per tick and fixed several smaller issues
+(see DECISIONS.md).
+
 **Milestone 8.5 - first playtest feedback.** The first playtest was fun but
 turned up ten points, all addressed:
 
@@ -36,8 +45,10 @@ the three-slot autosave. Saves are versioned (v5) and validated before use.
 See PLAYTEST.md for the round-2 checklist.
 
 Controls: **drag** to pan - **scroll / pinch** to zoom - **hover** for a
-neighbourhood's stats - **click** to open it - **Esc** closes panels and
-drawers. The toolbar sits at the top-left, **What next?** at the bottom-right.
+neighbourhood's stats - **click** to open it - **Esc** closes the topmost
+panel - **Space** pauses and resumes - **1 / 2 / 3** pick normal, fast and
+fastest. The toolbar and goal tracker sit at the top-left, **What next?** at the
+bottom-right, and **Menu** returns to the main menu (your town is saved first).
 
 ## Stack and decisions
 
