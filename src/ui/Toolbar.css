@@ -42,13 +42,40 @@
 
 .toolbar-drawer {
   animation: rise-in 220ms var(--ease-out) both;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   width: min(26rem, calc(100vw - 1.5rem));
   max-height: 72vh;
+  border-radius: 0.8rem;
+  background: #fbfcf7; /* opaque, like the panel */
+  box-shadow: 0 4px 18px rgba(31, 43, 28, 0.22);
+}
+
+.drawer-body {
   overflow-y: auto;
   padding: 0.9rem;
-  border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow: 0 4px 18px rgba(31, 43, 28, 0.22);
+}
+
+/* The drawer stays open while the map is used; this is the way to close it. */
+.drawer-close {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.drawer-close:hover {
+  background: #e1e8d4;
 }
 
 .toolbar-drawer.drawer-saves {

@@ -6,7 +6,7 @@
 const MESSAGES: Record<string, string> = {
   'app.title': 'Common Ground',
   'app.helpTouch': 'Drag to move - pinch to zoom - tap a neighbourhood to see it and open it',
-  'app.help': 'Drag to pan - scroll to zoom - hover a neighbourhood for its stats - click to open it - Esc closes',
+  'app.help': 'Drag to pan - scroll to zoom - hover a neighbourhood for its stats - click to open it - Esc closes a panel',
   'chip.subtitle': '{kind} - {residents} residents',
   'panel.close': 'Close panel',
   'panel.residents': 'Residents',
@@ -184,6 +184,7 @@ const MESSAGES: Record<string, string> = {
   'speed.tooltip': '{label} - key {key}',
   'topbar.pausedHint': 'Paused - press Play when you are ready',
   'toolbar.label': 'Menus',
+  'toolbar.close': 'Close',
   'map.label': 'Map of Willowbrook',
   'toolbar.town': 'Town',
   'toolbar.research': 'Research',

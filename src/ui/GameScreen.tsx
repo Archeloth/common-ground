@@ -239,7 +239,8 @@ export default function GameScreen({
               <TownPanel
                 state={state}
                 onSelect={(id) => {
-                  setDrawer(null)
+                  // On phones the drawer and the bottom sheet would overlap.
+                  if (window.matchMedia('(max-width: 700px)').matches) setDrawer(null)
                   showDistrict(id)
                 }}
               />

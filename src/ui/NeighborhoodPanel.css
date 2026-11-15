@@ -8,7 +8,9 @@
   overflow-y: auto;
   padding: 1rem 1.1rem;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.94);
+  /* Opaque: the map behind is animated every frame; seen through a
+     translucent panel it read as flicker when switching districts. */
+  background: #fbfcf7;
   box-shadow: 0 4px 18px rgba(31, 43, 28, 0.22);
 }
 

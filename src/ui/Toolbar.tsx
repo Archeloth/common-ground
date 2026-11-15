@@ -1,6 +1,6 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 import type { ReactNode } from 'react'
-import { useDismissable } from './useDismissable'
+import { useEscapeToClose } from './useEscapeToClose'
 import { t } from './i18n'
 import './Toolbar.css'
 
@@ -17,15 +17,14 @@ interface ToolbarProps {
 }
 
 // One toolbar for the map's menus (Milestone 8.5: "easier to overview UI").
-// Only one drawer is open at a time, and a click anywhere outside it - or
-// Escape - closes it.
+// Only one drawer is open at a time. It stays open while the player pans and
+// clicks around the map, and closes with its button, its x, or Escape.
 export default function Toolbar({ open, onOpen, onLexicon, onMenu, drawers }: ToolbarProps) {
-  const rootRef = useRef<HTMLDivElement>(null)
   const close = useCallback(() => onOpen(null), [onOpen])
-  useDismissable(rootRef, open !== null, close)
+  useEscapeToClose(open !== null, close)
 
   return (
-    <div className="toolbar" ref={rootRef}>
+    <div className="toolbar">
       <div className="toolbar-buttons" role="toolbar" aria-label={t('toolbar.label')}>
         {DRAWERS.map((id) => (
           <button
@@ -53,7 +52,14 @@ export default function Toolbar({ open, onOpen, onLexicon, onMenu, drawers }: To
           {t('toolbar.menu')}
         </button>
       </div>
-      {open && <div className={`toolbar-drawer drawer-${open}`}>{drawers[open]}</div>}
+      {open && (
+        <div className={`toolbar-drawer drawer-${open}`} role="region" aria-label={t(`toolbar.${open}`)}>
+          <button type="button" className="drawer-close" data-sound="close" onClick={close} aria-label={t('toolbar.close')}>
+            ×
+          </button>
+          <div className="drawer-body">{drawers[open]}</div>
+        </div>
+      )}
     </div>
   )
 }

@@ -6,7 +6,7 @@
   width: min(19rem, calc(100vw - 1.5rem));
   padding: 0.55rem 0.7rem 0.5rem;
   border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.93);
+  background: #fbfcf7; /* opaque, like the panel */
   box-shadow: 0 2px 10px rgba(31, 43, 28, 0.16);
   font-size: 0.82rem;
 }
