@@ -169,3 +169,31 @@ and a retrofit-first strategy that both complete the "First steps" milestone —
 same goal, different build order, which is the plan's exit test in a
 deterministic, CI-friendly form. Save format bumped to v3 with a migration from
 v2 (seeds engagement/messages, empty bus list).
+## 15 Nov 2026 - Milestone 8 decisions
+
+**The tutorial is data-ish, not a cutscene.** `src/game/tutorial.ts` holds five
+steps as conditions on state: open a panel, start a community garden in School
+Green, watch its food bar pass 0.83, research Building retrofits, run a retrofit
+programme. The intro step advances only through the player's "Continue" button
+(the `tutorialNext` command); action steps auto-complete in `tick()` the moment
+their condition is met, so the card never lies and replays stay deterministic.
+Texts live in `i18n.ts`; the map highlights each step's target neighbourhoods
+with pulsing rings (canvas animation, render-only, so the simulation stays
+pure). Pacing is tuned by editing the step conditions.
+
+**"What should I do next?" is a pure function.** `src/game/guidance.ts` picks
+the best open goal: the tutorial step first, then the first unfulfilled
+condition of the first uncompleted milestone (actionable conditions only), then
+an open resident request, then the biggest town-wide need gap. It only suggests
+starts `applyCommand` would accept, so the hint never sends the player into a
+refusal banner. The UI is a small bottom-right button that can fly the player to
+the neighbourhood in question.
+
+**Save format v3 to v4.** `tutorialStep` joined the GameState. Migrated saves
+start the tutorial finished (their player already knows how to play); fresh
+games begin at step 0. Same migration-table pattern as before.
+
+**The M8 exit test is a human playtest.** PLAYTEST.md carries the session script
+and the success criteria (at least 3 of 5 testers reach "First steps" and say
+they would keep playing). The automated suites now cover the tutorial walk, the
+guidance priorities and the v3-to-v4 migration instead.

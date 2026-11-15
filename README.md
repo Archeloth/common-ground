@@ -9,30 +9,26 @@ neighborhoods are soft blobs you watch improve as you start grassroots projects.
 
 ## Current status
 
-**Milestone 7 — organizer mechanics and links.** Engagement is now a real,
-per-neighborhood resource: **town meetings** (in each blob's panel) cost 1
-Community time and raise engagement by 10, running projects (gardens +5/month)
-nudge it up, and high engagement regenerates more Community time and **discounts
-project Community time**. Bus links (`public_transport` research, 1,000 budget)
-connect adjacent neighbourhoods, add +0.20 mobility to both, and render as
-dashed lines on the map. Food surplus flows from food-rich neighbourhoods to
-their neighbours at 70% efficiency, and every neighbourhood has one **resident
-request** with a small reward (start the project they ask for).
+**Milestone 8 - tutorial and first playtest.** New games open with a scripted
+first fifteen minutes: three problem neighbourhoods pulse on the map, a card
+walks you through opening a panel, starting a community garden in School Green,
+watching the bars rise, researching Building retrofits and running a retrofit
+programme. Action steps complete themselves the moment you do them; the intro
+step waits for "Continue". A "What next?" button at the bottom-right reads the
+open goals (tutorial step, milestones, resident requests, need gaps) and can fly
+you straight to the neighbourhood it recommends.
 
-The five chapter milestones, research tree (education cards with confidence
-tags), three-slot autosave system, live need bars and plain-language reasons
-all keep working. Saves are versioned (v3) and validated before use; a broken
-save never crashes the town. The top bar shows Budget, Community time,
-Knowledge, the date and speed (pause · 1× · 2× · 4×); every visible string goes
-through one `t("key")` function.
+The Milestone 7 systems keep working: town meetings and dynamic engagement, bus
+links, food sharing and resident requests, the research tree, five chapter
+milestones, the three-slot autosave and live need bars. Saves are versioned (v4)
+and validated before use; a broken save never crashes the town. The M7 exit test
+(two bot playthroughs to "First steps") still passes. The M8 exit test is a
+human playtest - see PLAYTEST.md for the session script and success criteria
+(at least 3 of 5 testers reach "First steps" and say they would keep playing).
 
-The Milestone 7 exit test is automated: two scripted bot playthroughs (food-first
-and retrofit-first) both complete the "First steps" milestone by different
-routes.
-
-Controls: **drag** to pan · **scroll / pinch** to zoom · **hover** to inspect ·
-**click** to select · **Esc** to close. **Save** and **Research** menus sit at
-the top-left.
+Controls: **drag** to pan - **scroll / pinch** to zoom - **hover** to inspect -
+**click** to select - **Esc** to close. **Save** and **Research** menus sit at
+the top-left; **What next?** at the bottom-right.
 
 ## Stack and decisions
 
@@ -50,7 +46,7 @@ Requires Node.js (current LTS) and Yarn 1.22+.
 yarn install   # first time only
 yarn dev       # dev server with hot reload
 yarn lint      # ESLint
-yarn test      # Vitest unit tests (rng, blobs, geometry, camera, content data, commands, tick, store, milestones, research, messages, saves, state validation, two-route playthroughs, determinism, invariants)
+yarn test      # Vitest unit tests (rng, blobs, geometry, camera, content data, commands, tick, store, milestones, research, messages, tutorial, guidance, saves, state validation, two-route playthroughs, determinism, invariants)
 yarn build     # type-check + production build into dist/
 yarn preview   # serve the production build locally
 ```
@@ -63,5 +59,5 @@ repository name first.
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE). Contributions are welcome; see
+MIT - see [`LICENSE`](LICENSE). Contributions are welcome; see
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
