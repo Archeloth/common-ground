@@ -1,22 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { loadScenario, neighborhoodById, scenarioBounds } from '../game/scenario'
+import { bridgeBetween, loadScenario, neighborhoodById, scenarioBounds } from '../game/scenario'
 import { kindById, loadKinds } from '../game/kinds'
 import { blobPoints } from '../game/blob'
 import type { Point } from '../game/geometry'
 import { pointInPolygon } from '../game/geometry'
 import type { Camera } from './render/camera'
 import { cameraThatFits, panBy, screenToWorld, worldToScreen, zoomAt } from './render/camera'
-import { buildPath2D, drawBusLine, drawPulseRing, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
+import { buildPath2D, drawBridge, drawBusLine, drawPulseRing, drawRaisedBlob, drawRiver, HOVER_LIFT } from './render/draw'
 import { COLORS, KIND_COLORS, shade } from './render/colors'
 import { t } from './i18n'
 import './TownMap.css'
 
 // Pointer travel below this counts as a click, above it as a drag-pan.
 const DRAG_THRESHOLD_PX = 4
-// The river runs between the second and third rows of the 4x4 Willowbrook
-// layout; hand-tuned against the scenario shapes.
-const RIVER_Y = 340
-const RIVER_HALF_DEPTH = 34
 
 // Scenario content is static data (not save state), so load it once at module
 // level. No ref means reads during render are lint-clean.
@@ -87,17 +83,22 @@ export default function TownMap({ selectedId, onSelectionChange, busLines, pulse
     const cssWidth = canvas.width / dpr
     const cssHeight = canvas.height / dpr
     const cam = cameraRef.current
-    const bounds = scenarioBounds(scenario)
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.fillStyle = COLORS.ground
     ctx.fillRect(0, 0, cssWidth, cssHeight)
 
-    drawRiver(ctx, cam, bounds.minX, bounds.minX + bounds.width, RIVER_Y, RIVER_HALF_DEPTH)
+    drawRiver(ctx, cam, scenario.river.points, scenario.river.halfDepth)
+    // Milestone 8.5: the two fixed bridges, the only river crossings.
+    for (const bridge of scenario.bridges) drawBridge(ctx, cam, bridge.point, scenario.river.halfDepth)
 
-    // Milestone 7: dashed bus links between the blob centres.
+    // Milestone 7: dashed bus links between the blob centres (via the bridge
+    // when the link crosses the river).
     for (const [a, b] of busLinesRef.current) {
-      drawBusLine(ctx, cam, neighborhoodById(scenario, a).shape, neighborhoodById(scenario, b).shape)
+      const from = neighborhoodById(scenario, a).shape
+      const to = neighborhoodById(scenario, b).shape
+      const bridge = bridgeBetween(scenario, a, b)
+      drawBusLine(ctx, cam, bridge ? [from, bridge.point, to] : [from, to])
     }
 
     for (const n of scenario.neighborhoods) {

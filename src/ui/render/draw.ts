@@ -43,43 +43,82 @@ export function drawRaisedBlob(
   ctx.restore()
 }
 
-// The river runs as a wide, gently curving stroke across the world. Drawn as a
-// stroked quadratic curve so it reads as water, not a stripe (placeholder art).
+// The river is a wide stroke through the scenario's polyline, smoothed with
+// quadratic curves through the segment midpoints so it reads as water.
 export function drawRiver(
   ctx: CanvasRenderingContext2D,
   cam: Camera,
-  leftWorld: number,
-  rightWorld: number,
-  riverY: number,
+  points: readonly Point[],
   halfDepth: number,
 ): void {
-  const start = worldToScreen(cam, leftWorld, riverY)
-  const end = worldToScreen(cam, rightWorld, riverY)
-  const mid = worldToScreen(cam, (leftWorld + rightWorld) / 2, riverY + halfDepth * 0.25)
-
+  const pts = points.map((p) => worldToScreen(cam, p.x, p.y))
+  if (pts.length < 2) return
+  ctx.save()
   ctx.beginPath()
-  ctx.moveTo(start.x, start.y)
-  ctx.quadraticCurveTo(mid.x, mid.y, end.x, end.y)
+  ctx.moveTo(pts[0].x, pts[0].y)
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i].x + pts[i + 1].x) / 2
+    const my = (pts[i].y + pts[i + 1].y) / 2
+    ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my)
+  }
+  ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y)
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  ctx.strokeStyle = COLORS.riverBank
+  ctx.lineWidth = (halfDepth * 2 + 10) * cam.zoom
+  ctx.stroke()
   ctx.strokeStyle = COLORS.river
   ctx.lineWidth = halfDepth * 2 * cam.zoom
-  ctx.lineCap = 'round'
   ctx.stroke()
+  ctx.restore()
 }
 
-// A dashed line between two neighbourhood blob centres (Milestone 7 bus links).
+// A fixed bridge across the river (Milestone 8.5): a plank deck with two rails,
+// running north-south over the water at the scenario's bridge point.
+export function drawBridge(ctx: CanvasRenderingContext2D, cam: Camera, at: Point, halfDepth: number): void {
+  const c = worldToScreen(cam, at.x, at.y)
+  const width = 30 * cam.zoom
+  const length = (halfDepth * 2 + 22) * cam.zoom
+  const x = c.x - width / 2
+  const y = c.y - length / 2
+  ctx.save()
+  ctx.fillStyle = COLORS.bridgeShadow
+  ctx.fillRect(x + 2 * cam.zoom, y + 3 * cam.zoom, width, length)
+  ctx.fillStyle = COLORS.bridgeDeck
+  ctx.fillRect(x, y, width, length)
+  ctx.strokeStyle = COLORS.bridgeRail
+  ctx.lineWidth = Math.max(1.5, 3 * cam.zoom)
+  ctx.beginPath()
+  ctx.moveTo(x, y)
+  ctx.lineTo(x, y + length)
+  ctx.moveTo(x + width, y)
+  ctx.lineTo(x + width, y + length)
+  ctx.stroke()
+  // Planks: a few thin cross lines so the deck reads as a bridge.
+  ctx.lineWidth = Math.max(0.5, 1 * cam.zoom)
+  ctx.globalAlpha = 0.45
+  for (let py = y + 8 * cam.zoom; py < y + length; py += 8 * cam.zoom) {
+    ctx.beginPath()
+    ctx.moveTo(x, py)
+    ctx.lineTo(x + width, py)
+    ctx.stroke()
+  }
+  ctx.restore()
+}
+
+// A dashed bus line through world points (Milestone 7 bus links): blob centre
+// to blob centre, via the bridge when the link crosses the river.
 export function drawBusLine(
   ctx: CanvasRenderingContext2D,
   cam: Camera,
-  from: Point,
-  to: Point,
+  route: readonly Point[],
   color = COLORS.bus,
 ): void {
-  const a = worldToScreen(cam, from.x, from.y)
-  const b = worldToScreen(cam, to.x, to.y)
+  const pts = route.map((p) => worldToScreen(cam, p.x, p.y))
   ctx.save()
   ctx.beginPath()
-  ctx.moveTo(a.x, a.y)
-  ctx.lineTo(b.x, b.y)
+  pts.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)))
+  ctx.lineJoin = 'round'
   ctx.strokeStyle = color
   ctx.lineWidth = Math.max(3, 5 * cam.zoom)
   ctx.lineCap = 'round'

@@ -66,8 +66,8 @@ export default function NeighborhoodPanel({
   const engagement = state.engagement[neighborhood.id] ?? neighborhood.engagement
   const neighbors = neighborhood.neighbors.map((id) => neighborhoodById(scenario, id))
   const bridgePartners = scenario.bridges
-    .filter(([from, to]) => from === neighborhood.id || to === neighborhood.id)
-    .map(([from, to]) => (from === neighborhood.id ? to : from))
+    .filter(({ from, to }) => from === neighborhood.id || to === neighborhood.id)
+    .map(({ from, to }) => (from === neighborhood.id ? to : from))
 
   // Milestone 7: organizer controls — town meeting, resident request, bus links.
   const meeting = applyCommand(state, { type: 'townMeeting', neighborhood: neighborhood.id })

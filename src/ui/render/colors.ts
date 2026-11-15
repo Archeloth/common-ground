@@ -8,6 +8,9 @@ export const COLORS = {
   ground: '#ccd6b8',
   river: '#7fa3c4',
   riverBank: '#a7b98e',
+  bridgeDeck: '#b48a5e', // fixed river bridges (Milestone 8.5)
+  bridgeRail: '#6e5136',
+  bridgeShadow: 'rgba(31, 43, 28, 0.25)',
   selectedStroke: '#1f2b1c',
   labelBackground: 'rgba(255, 255, 255, 0.92)',
   bus: '#46618f', // dashed bus-line strokes (Milestone 7)

@@ -1,6 +1,6 @@
 // Plain JSON-friendly data types shared by the simulation and the UI.
 //
-// No classes, Maps or Sets — just arrays and records, so a save can be
+// No classes, Maps or Sets - just arrays and records, so a save can be
 // JSON.stringify later (development plan, coding standards item 6).
 // Content ids use snake_case ("community_garden"), components PascalCase.
 
@@ -32,12 +32,24 @@ export interface Needs {
   housing: number
 }
 
-// Hand-picked shape of a neighborhood's blob (plan: "pick each seed by eye").
+// Hand-picked shape of a neighborhood blob (plan: "pick each seed by eye").
 export interface Shape {
   x: number
   y: number
   radius: number
   seed: number
+}
+
+// A plain 2D world point (river polyline, bridge positions).
+export interface WorldPoint {
+  x: number
+  y: number
+}
+
+export interface BridgeDef {
+  from: string
+  to: string
+  point: WorldPoint
 }
 
 export interface NeighborhoodDef {
@@ -62,7 +74,10 @@ export interface ScenarioDef {
     unlockedTech: string[]
   }
   neighborhoods: NeighborhoodDef[]
-  bridges: [string, string][]
+  // The river is content too (Milestone 8.5): a polyline to draw and to test
+  // bus-line crossings against, plus the two fixed bridges that span it.
+  river: { points: WorldPoint[]; halfDepth: number }
+  bridges: BridgeDef[]
 }
 
 // ---------------------------------------------------------------------------
@@ -83,9 +98,16 @@ export interface ProjectDef {
   engagement: number // engagement delta (usually positive)
   effects: ProjectEffect[]
   allowedKinds: NeighborhoodKind[] // which kinds may host this project
+  // Research gate (Milestone 8.5): the technology that must be researched
+  // before this project can start (e.g. retrofit_program needs building_retrofits).
+  requiresTech?: string
+  // Project lifetime in months (Milestone 8.5): undefined means permanent
+  // capital work. When it runs out the project stops giving effects; the slot
+  // stays occupied until the player removes it.
+  durationMonths?: number
 }
 
-// Player commands against the simulation state. Types follow the plan's core
+// Player commands against the simulation state. Types follow the plan core
 // command pattern (startProject/removeProject/setSpeed) so replays, undo and
 // tutorial scripting stay simple.
 export type Speed = 0 | 1 | 2 | 4
@@ -118,6 +140,7 @@ export type Reason =
   | 'insufficient_knowledge'
   | 'bus_line_exists'
   | 'not_adjacent'
+  | 'tech_not_researched'
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; reason: Reason }
 
@@ -145,11 +168,11 @@ export interface GameState {
   knowledge: number // earned from milestones now; schools/libraries arrive later
   day: number // one tick = one in-game day
   speed: Speed
-  // neighborhoodId -> project id per slot (null = empty slot)
-  projects: Record<string, Array<string | null>>
-  // neighborhoodId -> dynamic per-neighborhood simulation values
-  neighborhoods: Record<string, NeighborhoodSimState>
-  // Researched technology ids (Milestone 6), seeded from the scenario's
+  // neighborhoodId: project id per slot (null = empty slot)
+  projects: { [id: string]: (string | null)[] }
+  // neighborhoodId: dynamic per-neighborhood simulation values
+  neighborhoods: { [id: string]: NeighborhoodSimState }
+  // Researched technology ids (Milestone 6), seeded from the scenario
   // start.unlockedTech; research costs knowledge.
   research: string[]
   // Completed milestone ids (Milestone 6), one per chapter.
@@ -159,13 +182,14 @@ export interface GameState {
   // Dynamic engagement per neighborhood (Milestone 7): rises with town
   // meetings and running projects, keeps the monthly Community-time regen
   // alive and discounts project Community-time costs.
-  engagement: Record<string, number>
+  engagement: { [id: string]: number }
   // Bus links between adjacent neighborhoods (Milestone 7): each pair adds
-  // BUS_MOBILITY_BONUS to both endpoints' mobility target.
-  busLines: Array<[string, string]>
+  // BUS_MOBILITY_BONUS to both endpoints' mobility target. Only bridge pairs
+  // are adjacent across the river, so lines cross only at the fixed bridges.
+  busLines: [string, string][]
   // Resident message status per neighborhood (Milestone 7): 'open' until the
   // request is fulfilled, then 'done' (the reward is paid once).
-  messages: Record<string, MessageStatus>
+  messages: { [id: string]: MessageStatus }
   // Index into the tutorial steps (Milestone 8); TUTORIAL_DONE when finished.
   // The intro step advances with the tutorialNext command, action steps with
   // tick() once their condition is met.
@@ -173,4 +197,3 @@ export interface GameState {
 }
 
 export type MessageStatus = 'open' | 'done'
-

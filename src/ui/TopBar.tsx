@@ -1,5 +1,5 @@
 import { t } from './i18n'
-import { TICKS_PER_MONTH } from '../game/constants'
+import { formatGameDate } from './dates'
 import type { GameState, Speed } from '../game/types'
 import './TopBar.css'
 
@@ -13,15 +13,12 @@ interface TopBarProps {
 // Top bar: resources, the in-game date and the speed controls (Milestone 4).
 // Pure view over the store snapshot — all strings flow through t().
 export default function TopBar({ state, onSpeed }: TopBarProps) {
-  const month = Math.floor((state.day - 1) / TICKS_PER_MONTH) + 1
-  const dayOfMonth = ((state.day - 1) % TICKS_PER_MONTH) + 1
-
   return (
     <header className="app-header">
       <h1>{t('app.title')}</h1>
       <span className="app-status">{t('app.status')}</span>
       <span className="topbar-date">
-        {t('topbar.month', { month })} · {t('topbar.day', { day: dayOfMonth })}
+        {formatGameDate(state.day)}
       </span>
       <div className="resource-chips">
         <span className="resource-chip">

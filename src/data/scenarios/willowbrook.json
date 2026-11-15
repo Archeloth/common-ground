@@ -185,9 +185,17 @@
       "neighbors": ["station_quarter", "southgate_retail"]
     }
   ],
+  "river": {
+    "points": [
+      { "x": 60, "y": 340 },
+      { "x": 560, "y": 352 },
+      { "x": 1040, "y": 336 }
+    ],
+    "halfDepth": 34
+  },
   "bridges": [
-    ["old_town", "riverside"],
-    ["linden_flats", "station_quarter"]
+    { "from": "old_town", "to": "riverside", "point": { "x": 170, "y": 340 } },
+    { "from": "linden_flats", "to": "station_quarter", "point": { "x": 930, "y": 339 } }
   ]
 }
 

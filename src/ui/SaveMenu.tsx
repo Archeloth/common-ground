@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { SLOT_KEYS } from '../persistence/slots'
 import type { SlotMeta } from '../persistence/slots'
 import { t } from './i18n'
+import { formatGameDate } from './dates'
 import './SaveMenu.css'
 
 interface SaveMenuProps {
@@ -20,7 +21,7 @@ function formatSavedAt(savedAt: string): string {
 }
 
 function metaLine(meta: SlotMeta): string {
-  return t('saves.lastSavedMeta', { day: meta.day, time: formatSavedAt(meta.savedAt) })
+  return t('saves.lastSavedMeta', { date: formatGameDate(meta.day), time: formatSavedAt(meta.savedAt) })
 }
 
 // Save/load menu (Milestone 5): the autosave row, three manual slots, .json

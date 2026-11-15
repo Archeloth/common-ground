@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { loadScenario, scenarioBounds, neighborhoodById } from './scenario'
+import { bridgeBetween, loadScenario, scenarioBounds, neighborhoodById, validateScenario } from './scenario'
+import type { ScenarioDef } from './types'
 import { BLOB_Y_SQUASH } from './blob'
 
 const scenario = loadScenario()
@@ -64,7 +65,7 @@ describe('willowbrook scenario content', () => {
 
   it('has bridges whose endpoints exist and are neighbors', () => {
     expect(scenario.bridges).toHaveLength(2)
-    for (const [from, to] of scenario.bridges) {
+    for (const { from, to } of scenario.bridges) {
       expect(() => neighborhoodById(scenario, from)).not.toThrow()
       expect(() => neighborhoodById(scenario, to)).not.toThrow()
       expect(neighborhoodById(scenario, from).neighbors).toContain(to)
@@ -75,7 +76,7 @@ describe('willowbrook scenario content', () => {
   it('has bridges crossing the river (one per side of the map)', () => {
     // The fixed layout: Old Town (north-west) <-> Riverside (south-west) and
     // Linden Flats (north-east) <-> Station Quarter (south-east).
-    const spans = scenario.bridges.map(([from, to]) => {
+    const spans = scenario.bridges.map(({ from, to }) => {
       const a = neighborhoodById(scenario, from)
       const b = neighborhoodById(scenario, to)
       return { a, b, north: Math.min(a.shape.y, b.shape.y), south: Math.max(a.shape.y, b.shape.y) }
@@ -96,6 +97,29 @@ describe('willowbrook scenario content', () => {
         expect(dist, `${a.id} vs ${b.id}`).toBeGreaterThanOrEqual(a.shape.radius + b.shape.radius)
       }
     }
+  })
+})
+
+describe('river crossings (bus lines cross only at bridges)', () => {
+  it('finds the bridge for a bridged pair in either order', () => {
+    expect(bridgeBetween(scenario, 'old_town', 'riverside')?.point).toBeDefined()
+    expect(bridgeBetween(scenario, 'station_quarter', 'linden_flats')?.point).toBeDefined()
+    expect(bridgeBetween(scenario, 'old_town', 'maple_heights')).toBeNull()
+  })
+
+  it('refuses a scenario where neighbours across the river have no bridge', () => {
+    const broken: ScenarioDef = structuredClone(scenario)
+    const orchard = broken.neighborhoods.find((n) => n.id === 'orchard_lane')!
+    const weir = broken.neighborhoods.find((n) => n.id === 'weir_bend')!
+    orchard.neighbors.push('weir_bend')
+    weir.neighbors.push('orchard_lane')
+    expect(() => validateScenario(broken)).toThrow(/across the river need a bridge/)
+  })
+
+  it('refuses a river with fewer than two points', () => {
+    const broken: ScenarioDef = structuredClone(scenario)
+    broken.river.points = [{ x: 0, y: 0 }]
+    expect(() => validateScenario(broken)).toThrow(/river/)
   })
 })
 

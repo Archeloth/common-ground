@@ -1,4 +1,5 @@
-import type { ScenarioDef, NeighborhoodDef } from './types'
+import type { BridgeDef, ScenarioDef, NeighborhoodDef } from './types'
+import { segmentHitsPolyline } from './geometry'
 import { BLOB_Y_SQUASH } from './blob'
 import willowbrook from '../data/scenarios/willowbrook.json'
 
@@ -45,7 +46,17 @@ export function validateScenario(s: ScenarioDef): void {
     }
   }
 
-  for (const [from, to] of s.bridges) {
+  // The river (Milestone 8.5) is content: a polyline of at least two finite
+  // points, plus fixed bridges that sit on it between two neighbours.
+  if (!s.river || s.river.points.length < 2) fail('the river needs at least two points')
+  for (const p of s.river.points) {
+    if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) fail('river points must be finite')
+  }
+  if (!(s.river.halfDepth > 0)) fail('river.halfDepth must be positive')
+
+  const bridgeKeys = new Set<string>()
+  for (const bridge of s.bridges) {
+    const { from, to, point } = bridge
     if (!seenIds.has(from) || !seenIds.has(to)) fail('bridge endpoint does not exist', `${from} -> ${to}`)
     if (from === to) fail('a bridge cannot link a neighborhood to itself', from)
     const a = neighborhoodById(s, from)
@@ -53,7 +64,31 @@ export function validateScenario(s: ScenarioDef): void {
     if (!a.neighbors.includes(to) || !b.neighbors.includes(from)) {
       fail('bridge endpoints must list each other as neighbors', `${from} <-> ${to}`)
     }
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) fail('bridge needs a finite point', `${from} <-> ${to}`)
+    bridgeKeys.add(pairKey(from, to))
   }
+
+  // Buses may only cross the river at a bridge. Adjacency is what bus lines
+  // follow, so every neighbour link that crosses the water must be a bridge.
+  for (const n of s.neighborhoods) {
+    for (const neighborId of n.neighbors) {
+      if (n.id > neighborId) continue
+      const other = neighborhoodById(s, neighborId)
+      const crosses = segmentHitsPolyline(n.shape, other.shape, s.river.points)
+      if (crosses && !bridgeKeys.has(pairKey(n.id, neighborId))) {
+        fail('neighbors across the river need a bridge', `${n.id} <-> ${neighborId}`)
+      }
+    }
+  }
+}
+
+function pairKey(a: string, b: string): string {
+  return a < b ? `${a}|${b}` : `${b}|${a}`
+}
+
+// The bridge between two neighbourhoods, if their link crosses the river.
+export function bridgeBetween(s: ScenarioDef, a: string, b: string): BridgeDef | null {
+  return s.bridges.find((br) => (br.from === a && br.to === b) || (br.from === b && br.to === a)) ?? null
 }
 
 // The scenario is hand-tuned content; validating it on every load is cheap
