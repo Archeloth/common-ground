@@ -550,6 +550,40 @@ Ten milestones (0 to 9), each ending in something you can play and a clear exit 
 
 **After release:** fix the top three complaints each week before adding anything new. Then add scenarios and seed-based freeplay, and invite contributors to add technologies and translations, which are the easiest ways to help an open-source game.
 
+### Roadmap after Milestone 9
+
+Done during Milestone 9 polish, from playtest feedback: undo for the last
+action, construction time, a town history chart, seasons (visual), background
+music with separate volume sliders, and a cooldown on town meetings.
+
+The bigger ideas, roughly in the order they would pay off. Each keeps the
+pillars: gentle, honest, never punishing.
+
+1. **Gentle weather events.** A heatwave, a flood or a dry summer every year or
+   two, announced a month ahead. Resilient projects (street trees, rain
+   gardens, retrofits) visibly soften them; nothing is ever destroyed. Builds
+   on the seasons that are already drawn.
+2. **Citizen stories.** Five to ten recurring residents with short notes whose
+   lives change as their district improves (the cyclist, the allotment
+   grandmother, the shop owner).
+3. **Wildlife journal.** Species appear as green space and biodiversity rise
+   (bees, hedgehogs, swifts, otters), each with a short real-world note, and are
+   collected in a journal.
+4. **Before/after slider and photo mode.** Compare the town now with day one,
+   hide the interface, and save the picture.
+5. **More scenarios and seeded freeplay.** A coastal town, a mountain village,
+   and a random-seed mode, all from the same content files.
+6. **Translations.** Every string already goes through `t()`; add a language
+   picker and invite contributors.
+7. **Colour-blind palettes.** An alternative need palette (validated like the
+   current one) and optional patterns on the need bars.
+8. **Day and night.** A slow light cycle with lit windows at night; retrofitted
+   homes glow warmest.
+9. **Optional gentle challenges.** Seeded weekly goals with no streaks and no
+   penalties.
+10. **Install for offline play (PWA).** A manifest and a service worker so the
+    game opens without a connection.
+
 ## Testing and balancing
 
 Two different jobs: proving the code is correct, and tuning the game until it is fun. Because the simulation is pure, the first is cheap.

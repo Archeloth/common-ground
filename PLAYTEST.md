@@ -81,3 +81,16 @@ session script as round 1; turn the sound on.
 - Did testers notice upkeep (the per-month figure, the red chip) before it surprised them?
 - Did anyone hit the volunteer cap? Did "keep them busy" make sense?
 - Did testers find workshops when research felt slow (the What next? hint)?
+
+## Round 4 - music, undo, construction, history and seasons
+
+- Does the music feel calm over a long session? Did anyone turn it down or off,
+  and was the Music slider easy to find?
+- Is any sound still annoying after twenty minutes? Which one?
+- Did testers discover undo (the toast, or Z)? Did they use it to fix a misclick?
+- Do build times feel like anticipation or like waiting? Was the scaffolding
+  clear ("being built, ready on ...")?
+- Did anyone open the history chart? Could they say how their town changed?
+- Did anyone notice the seasons? Did the snowy start (a new game opens in
+  January) read as cosy or as gloomy?
+- Did the 60-day meeting cooldown ever feel like a wall?

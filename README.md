@@ -32,8 +32,13 @@ sixteen little districts grow greener, livelier and happier.
   deeper research costs more, so money, volunteers and Knowledge all matter.
 - **Five chapters** with an always-visible goal tracker, a gentle tutorial, a
   "What next?" helper and an in-game **Lexicon** that explains every mechanic.
-- **Sound**: soft interface sounds, and generated wind and birdsong that get
-  livelier as your town gets greener.
+- **Sound**: a gentle looping music track, soft interface sounds, and generated
+  birdsong that gets livelier as your town gets greener. Master, Music,
+  Interface and Game volumes are separate.
+- **A living calendar**: projects take days to build (scaffolding and a crane
+  show it), the seasons change the town's colours (snow in winter), and the
+  Town overview charts how satisfaction, money and every need changed month by
+  month.
 - **Comfortable to play**: pause any time (Space), reduced-motion and large-text
   settings, keyboard shortcuts, and a phone layout with bottom sheets.
 - **Never lose your town**: autosave every minute and on close, three save
@@ -49,7 +54,8 @@ tab, and press **Play** (or **Space**) to let time pass.
 Controls: **drag** to pan - **scroll / pinch** to zoom - **hover** for a
 neighbourhood's stats (tap on touch screens) - **click** to open it - **Esc**
 closes the topmost panel - **Space** pauses and resumes - **1 / 2 / 3** pick
-normal, fast and fastest. Menus stay open while you pan; close them with their
+normal, fast and fastest - **Z** (or **Ctrl+Z**) undoes your last action for a
+few seconds. Menus stay open while you pan; close them with their
 button, the **×** or **Esc**. **Menu** returns to the main menu (your town is saved
 first).
 

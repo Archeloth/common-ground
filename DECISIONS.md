@@ -378,3 +378,70 @@ But the panel was 94% opaque over a map that animates every frame, so the
 moving birds, bus, rings and selection outline showed through. The panel,
 drawers and goal tracker are now opaque, and need bars are keyed per district
 so they no longer ease from the previous district's values.
+
+## 15 Nov 2026 - Playtest round: camera, sound, music and four improvements
+
+**The camera jump.** Clicking a district after panning sent the camera back to
+the centre. The map's resize handler re-framed the whole town on *every*
+container resize, and the panel's slide-in animation could briefly overflow the
+page and resize the map. Now the town is fitted only on the first size; later
+resizes keep the zoom and the point at the centre of the view. The app and the
+stage also clip overflow, so entrance animations cannot create scrollbars.
+
+**Kinder sounds.** The "ring" (message.wav) played for town meetings and for
+fulfilled requests, which happen often. It now plays only when a chapter is
+completed. Requests use a higher-pitched drop, meetings a soft click, expiry a
+cut, and refusals a low click. Each sound has a category (interface or game) and
+an optional pitch.
+
+**Music and four volume sliders.** "Peaceful Village" loops as the background
+(CC BY; the author, link and licence version are still to be filled in, see
+LICENSES.md). It streams from one `<audio>` element (preload none, started on
+the first click), fades over 1.5 s, and is quieter while paused. The generated
+birds stay on top; the generated wind is kept only as a fallback if the music
+fails to load. Volumes are Master, Music, Interface and Game; an old
+"effects" setting is migrated into both Interface and Game. The MP3 is 7.4 MB
+because there was no encoder available to shrink it; re-encoding it to about
+96 kbps is an easy later win.
+
+**Town meetings have a cooldown** (save v6). One meeting per district every 60
+days. A meeting spends one volunteer for +10 engagement, and without a limit it
+could be repeated to max engagement in a few clicks. The refusal explains
+itself ("Next meeting in 23 days").
+
+**Undo the last action.** One step, for 8 seconds of real time: start, remove
+or renew a project, research, a bus line or a town meeting. It restores a full
+snapshot from before the action (so it is always consistent) but keeps the
+current speed. The trade-off: the few in-game days since the action are rewound
+too. That is harmless in a cosy game and much simpler than reversing each
+command. Z or Ctrl+Z, or the toast's button.
+
+**Construction time** (save v7). Projects take 7 to 45 days to build
+(`buildDays` in projects.json). Effects, upkeep, Knowledge, milestones and
+requests all wait for completion; the lifetime of a volunteer project starts
+when it is finished. Scaffolding and a crane show on the plot with a progress
+ring, and the pop-in and "+12% Food" labels happen on completion. Chapters now
+spread to about year 4 in the bot runs, and money is still never stuck.
+
+**Town history** (save v8). One point per month (satisfaction, budget and the
+town-average of each need), capped at 240 points (20 years) so saves stay small.
+The chart follows the dataviz rules: satisfaction and budget are separate
+charts (never two scales on one), and the six needs are small multiples on a
+shared 0-100% scale. Hover shows a tooltip, there is a table view and a
+plain-language summary.
+
+**Need colours were validated, not eyeballed.** The palette validator passes
+every adjacent pair for colour-blind separation. Two things it flagged shaped
+the design: energy-yellow and housing-pink are below 3:1 contrast on white, so
+values are always written in ink with the colour only as a dot or tint; and
+violet against blue fails the all-pairs check, so the needs are never drawn as
+six lines on one chart.
+
+**Seasons are visual only.** They follow the calendar months (winter is
+December to February, so a new game opens in snow). They tint the ground,
+change leaf and field colours, put snow on roofs and trees in winter, and thin
+out the wildlife and birdsong. The simulation ignores them, so nothing about
+balance changes; weather events are on the roadmap.
+
+**Saves went from v5 to v8 in three steps** (meeting cooldown, construction,
+history), one migration each, so every step is tested on its own.
