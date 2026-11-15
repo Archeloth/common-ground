@@ -88,28 +88,49 @@ export function createGameStore(initial?: GameState): GameStore {
     if (running) rafId = requestAnimationFrame(frame)
   }
 
-  function onVisibilityChange(): void {
-    // Freeze a hidden tab (plan performance section) and pick up where it left.
-    if (typeof document !== 'undefined' && document.hidden) stop()
-    else start()
-  }
+  // Two separate lifetimes:
+  // - `started`: the owner called start() and has not called stop(). The
+  //   visibility listener lives exactly this long.
+  // - `running`: the animation-frame loop is ticking right now. A hidden tab
+  //   halts it (plan performance section: a background tab uses nothing) and
+  //   showing the tab again resumes it.
+  // They used to be one: hiding the tab called stop(), which also removed the
+  // listener, so after the first tab switch the clock never came back and
+  // every game stayed on day 1 (Milestone 9 bug report).
+  let started = false
 
-  function start(): void {
+  function runLoop(): void {
     if (running || typeof requestAnimationFrame === 'undefined') return
     running = true
-    last = -1
+    last = -1 // the first frame after a pause only re-initialises the clock
     rafId = requestAnimationFrame(frame)
-    if (typeof document !== 'undefined') {
-      document.addEventListener('visibilitychange', onVisibilityChange)
-    }
   }
 
-  function stop(): void {
+  function haltLoop(): void {
     running = false
     if (typeof cancelAnimationFrame !== 'undefined' && rafId !== null) {
       cancelAnimationFrame(rafId)
     }
     rafId = null
+  }
+
+  function onVisibilityChange(): void {
+    if (typeof document !== 'undefined' && document.hidden) haltLoop()
+    else if (started) runLoop()
+  }
+
+  function start(): void {
+    if (started) return
+    started = true
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', onVisibilityChange)
+    }
+    runLoop()
+  }
+
+  function stop(): void {
+    started = false
+    haltLoop()
     if (typeof document !== 'undefined') {
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }

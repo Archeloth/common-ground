@@ -126,3 +126,61 @@ describe('game store', () => {
     expect(store.getState().day).toBe(43)
   })
 })
+// Regression (Milestone 9 bug report): after switching to another tab and
+// back, the clock never resumed and every game stayed on day 1, because hiding
+// the tab removed the very listener that should restart the loop.
+describe('game store and tab visibility', () => {
+  function fakePage() {
+    const page = new EventTarget() as EventTarget & { hidden: boolean }
+    page.hidden = false
+    const frames = new Map<number, (now: number) => void>()
+    let nextId = 1
+    vi.stubGlobal('document', page)
+    vi.stubGlobal('requestAnimationFrame', (cb: (now: number) => void) => {
+      frames.set(nextId, cb)
+      return nextId++
+    })
+    vi.stubGlobal('cancelAnimationFrame', (id: number) => frames.delete(id))
+    const runFrames = (now: number) => {
+      const pending = [...frames.values()]
+      frames.clear()
+      for (const cb of pending) cb(now)
+    }
+    const setHidden = (hidden: boolean) => {
+      page.hidden = hidden
+      page.dispatchEvent(new Event('visibilitychange'))
+    }
+    return { runFrames, setHidden, pendingFrames: () => frames.size }
+  }
+
+  it('resumes ticking when the tab becomes visible again', () => {
+    const page = fakePage()
+    try {
+      const store = createGameStore({ ...initialState(scenario), speed: 1 })
+      store.start()
+      page.setHidden(true)
+      page.setHidden(false)
+      // Drive four seconds of frames; the clock must still run.
+      for (let t = 0; t <= 4000; t += 250) page.runFrames(t)
+      expect(store.getState().day).toBeGreaterThanOrEqual(4)
+      store.stop()
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('stays frozen while hidden, and stop() really stops it', () => {
+    const page = fakePage()
+    try {
+      const store = createGameStore({ ...initialState(scenario), speed: 1 })
+      store.start()
+      page.setHidden(true)
+      expect(page.pendingFrames()).toBe(0) // the loop was halted
+      store.stop()
+      page.setHidden(false)
+      expect(page.pendingFrames()).toBe(0) // a stopped store does not restart
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+})
