@@ -6,16 +6,13 @@ import { loadMilestones, milestoneCompleted } from './milestones'
 import { messageCatalog, messageFulfilled, applyMessageReward } from './messages'
 import { advanceTutorial } from './tutorial'
 import { activeProjectIds, expiryNoticeKey } from './expiry'
+import { monthlyIncome } from './economy'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import { clamp, clamp01, moveNeedsToward, needTargets, round } from './needs'
 import {
-  BUDGET_PER_RESIDENT_PER_MONTH,
   BUS_MOBILITY_BONUS,
-  COMMUNITY_TIME_BASE_PER_MONTH,
-  COMMUNITY_TIME_ENGAGEMENT_FACTOR,
   ENGAGEMENT_MAX,
   FOOD_SHARE_EFFICIENCY,
-  KNOWLEDGE_BASE_PER_MONTH,
   NEED_DRIFT_PER_TICK,
   SATISFACTION_SMOOTH_PER_TICK,
   TICKS_PER_MONTH,
@@ -55,29 +52,12 @@ function engagementBonusOf(state: GameState, neighborhoodId: string): number {
   return bonus
 }
 
-// Knowledge paid each month by the projects running anywhere in town
-// (Milestone 8.5: the workshop series).
-function knowledgeIncome(state: GameState): number {
-  const projects = loadProjects()
-  let total = 0
-  for (const neighborhoodId of Object.keys(state.projects)) {
-    for (const id of activeProjectIds(state, neighborhoodId)) total += projectById(projects, id).knowledgePerMonth
-  }
-  return total
-}
-
 // Mobility target bonus from bus lines touching the neighborhood.
 function busBonusOf(state: GameState, neighborhoodId: string): number {
   return state.busLines.reduce(
     (sum, [a, b]) => (a === neighborhoodId || b === neighborhoodId ? sum + BUS_MOBILITY_BONUS : sum),
     0,
   )
-}
-
-function averageEngagement(state: GameState, scenario: ReturnType<typeof loadScenario>): number {
-  let sum = 0
-  for (const n of scenario.neighborhoods) sum += state.engagement[n.id] ?? n.engagement
-  return sum / scenario.neighborhoods.length
 }
 
 // Unclamped food supply ratio in demand multiples (so surplus past 1 is visible).
@@ -144,13 +124,11 @@ export function tick(state: GameState): GameState {
   let knowledge = state.knowledge
   // Elapsed days = day - 1 (day starts at 1), so the 30th elapsed day settles.
   if (day > 1 && (day - 1) % TICKS_PER_MONTH === 0) {
-    const residents = scenario.neighborhoods.reduce((sum, n) => sum + n.residents, 0)
-    budget = Math.round(budget + residents * BUDGET_PER_RESIDENT_PER_MONTH)
-    const avgEngagement = averageEngagement(state, scenario)
-    time =
-      time +
-      COMMUNITY_TIME_BASE_PER_MONTH +
-      Math.round((avgEngagement / 100) * COMMUNITY_TIME_ENGAGEMENT_FACTOR)
+    // The amounts come from economy.ts, which the top bar shows as "+x/mo".
+    const income = monthlyIncome(state, scenario)
+    budget += income.budget
+    time += income.time
+    knowledge += income.knowledge
 
     // Running projects raise engagement each month they run (garden +5).
     const nextEngagement: Record<string, number> = { ...engagement }
@@ -159,7 +137,6 @@ export function tick(state: GameState): GameState {
       nextEngagement[n.id] = Math.min(ENGAGEMENT_MAX, current + engagementBonusOf(state, n.id))
     }
     engagement = nextEngagement
-    knowledge += KNOWLEDGE_BASE_PER_MONTH + knowledgeIncome(state)
   }
 
   // Resident messages (Milestone 7): an open request that is met pays once.

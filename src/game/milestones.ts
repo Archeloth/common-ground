@@ -121,27 +121,45 @@ export function townSatisfaction(state: GameState, scenario: ScenarioDef): numbe
 }
 
 export function milestoneCompleted(state: GameState, def: MilestoneDef, scenario: ScenarioDef): boolean {
-  return def.conditions.every((condition) => {
-    switch (condition.type) {
-      // Running projects only (Milestone 8.5): a lapsed project counts again
-      // once it is renewed.
-      case 'projectIn':
-        return activeProjectIds(state, condition.neighborhood).includes(condition.project)
-      case 'projectCount':
-        return countActive(state, condition.project) >= condition.min
-      case 'slotsFilled':
-        return countActive(state) >= condition.min
-      case 'busLineCount':
-        return state.busLines.length >= condition.min
-      case 'townSatisfaction':
-        return townSatisfaction(state, scenario) >= condition.min
-      case 'needsAverage': {
-        let sum = 0
-        for (const n of scenario.neighborhoods) {
-          sum += state.neighborhoods[n.id]?.needs[condition.need] ?? 0
-        }
-        return sum / scenario.neighborhoods.length >= condition.min
-      }
-    }
-  })
+  return def.conditions.every((condition) => conditionProgress(state, condition, scenario).met)
+}
+
+// Average coverage of one need across the town (milestone goals, Town view).
+export function townNeedAverage(state: GameState, scenario: ScenarioDef, need: NeedId): number {
+  let sum = 0
+  for (const n of scenario.neighborhoods) sum += state.neighborhoods[n.id]?.needs[need] ?? 0
+  return sum / scenario.neighborhoods.length
+}
+
+// One condition's progress (Milestone 8.5: the Town overview lists each task
+// with how far along it is). `current` and `target` share the condition's
+// unit: counts, satisfaction points or need coverage 0..1.
+export interface ConditionProgress {
+  met: boolean
+  current: number
+  target: number
+}
+
+export function conditionProgress(
+  state: GameState,
+  condition: MilestoneCondition,
+  scenario: ScenarioDef,
+): ConditionProgress {
+  const done = (current: number, target: number): ConditionProgress => ({ met: current >= target, current, target })
+  // Running projects only (Milestone 8.5): a lapsed project counts again once
+  // it is renewed.
+  switch (condition.type) {
+    case 'projectIn':
+      return done(activeProjectIds(state, condition.neighborhood).includes(condition.project) ? 1 : 0, 1)
+    case 'projectCount':
+      return done(countActive(state, condition.project), condition.min)
+    case 'slotsFilled':
+      return done(countActive(state), condition.min)
+    case 'busLineCount':
+      return done(state.busLines.length, condition.min)
+    case 'townSatisfaction':
+      return done(townSatisfaction(state, scenario), condition.min)
+    case 'needsAverage':
+      return done(townNeedAverage(state, scenario, condition.need), condition.min)
+  }
 }

@@ -1,40 +1,6 @@
-.research-menu {
-  position: absolute;
-  top: 0.75rem;
-  left: 7rem;
-  z-index: 4;
-}
-
-.research-menu-toggle {
-  padding: 0.4rem 0.9rem;
-  border: 1px solid rgba(31, 43, 28, 0.18);
-  border-radius: 0.6rem;
-  background: rgba(255, 255, 255, 0.9);
-  color: #2d3929;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(31, 43, 28, 0.15);
-}
-
-.research-menu-toggle:hover {
-  background: #eef2e6;
-}
-
 .research-panel {
-  position: absolute;
-  top: calc(100% + 0.4rem);
-  left: 0;
-  z-index: 4;
   display: grid;
   gap: 1rem;
-  width: 26rem;
-  max-height: 72vh;
-  overflow-y: auto;
-  padding: 0.9rem;
-  border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow: 0 4px 18px rgba(31, 43, 28, 0.22);
 }
 
 .research-section h3 {

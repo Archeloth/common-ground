@@ -4,6 +4,9 @@ import TownMap from './ui/TownMap'
 import NeighborhoodPanel from './ui/NeighborhoodPanel'
 import SaveMenu from './ui/SaveMenu'
 import ResearchMenu from './ui/ResearchMenu'
+import Toolbar from './ui/Toolbar'
+import type { DrawerId } from './ui/Toolbar'
+import TownPanel from './ui/TownPanel'
 import { loadScenario, neighborhoodById } from './game/scenario'
 import { createGameStore } from './game/store'
 import { initialState } from './game/state'
@@ -49,6 +52,7 @@ function App() {
   const [reason, setReason] = useState<Reason | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [lexicon, setLexicon] = useState<LexiconEntryId | null>(null)
+  const [drawer, setDrawer] = useState<DrawerId | null>(null)
   const [meta, setMeta] = useState<Record<string, SlotMeta | null>>({
     auto: null,
     s1: null,
@@ -220,6 +224,7 @@ function App() {
   }, [dispatch])
 
   const closeLexicon = useCallback(() => setLexicon(null), [])
+  const openLexicon = useCallback(() => setLexicon('welcome'), [])
   const startPlaying = useCallback(() => {
     setLexicon(null)
     dispatch({ type: 'setSpeed', speed: 1 })
@@ -237,15 +242,6 @@ function App() {
         onLexicon={setLexicon}
       />
       <div className="stage">
-        <SaveMenu
-          meta={meta}
-          onSave={handleSave}
-          onLoad={handleLoad}
-          onExport={handleExport}
-          onImport={handleImport}
-          onNewGame={handleNewGame}
-        />
-        <ResearchMenu state={state} onResearch={onResearch} />
         <TownMap
           selectedId={selectedId}
           onSelectionChange={onSelectionChange}
@@ -255,6 +251,34 @@ function App() {
           bubbles={bubbles}
           onRenew={handleRenew}
           onDismiss={handleDismissExpiry}
+          state={state}
+        />
+        <Toolbar
+          open={drawer}
+          onOpen={setDrawer}
+          onLexicon={openLexicon}
+          drawers={{
+            town: (
+              <TownPanel
+                state={state}
+                onSelect={(id) => {
+                  setDrawer(null)
+                  onSelectionChange(id)
+                }}
+              />
+            ),
+            research: <ResearchMenu state={state} onResearch={onResearch} />,
+            saves: (
+              <SaveMenu
+                meta={meta}
+                onSave={handleSave}
+                onLoad={handleLoad}
+                onExport={handleExport}
+                onImport={handleImport}
+                onNewGame={handleNewGame}
+              />
+            ),
+          }}
         />
         {selected && (
           <NeighborhoodPanel

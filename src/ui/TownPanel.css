@@ -1,0 +1,139 @@
+.town-panel {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.town-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.town-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.town-stat {
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.6rem;
+  background: #eef2e6;
+}
+
+.town-stat dt {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #53604c;
+}
+
+.town-stat dd {
+  margin: 0.1rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.town-stat-note {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #53604c;
+}
+
+.town-stat-note.warn {
+  color: #a2451a;
+}
+
+.town-stat.tier-low {
+  background: #f7e3d6;
+}
+
+.town-stat.tier-fair {
+  background: #f6efd9;
+}
+
+.town-stat.tier-good {
+  background: #dfeedb;
+}
+
+.town-section h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #53604c;
+}
+
+.town-chapter-explain {
+  margin: 0 0 0.45rem;
+  font-size: 0.8rem;
+  color: #4a5c44;
+}
+
+.town-tasks {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.84rem;
+}
+
+.town-tasks li {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.town-tasks li.met {
+  color: #3c6a3a;
+}
+
+.town-task-check {
+  width: 1rem;
+  font-weight: 700;
+}
+
+.town-ranking {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.town-ranking button {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: none;
+  border-radius: 0.45rem;
+  background: transparent;
+  font-size: 0.84rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.town-ranking button:hover {
+  background: #eef2e6;
+}
+
+.town-rank-name {
+  font-weight: 600;
+}
+
+.town-rank-weak {
+  font-size: 0.74rem;
+  color: #6a7564;
+}
+
+.town-rank-sat {
+  min-width: 1.6rem;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

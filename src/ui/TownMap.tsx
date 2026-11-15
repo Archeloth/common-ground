@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { bridgeBetween, loadScenario, neighborhoodById, scenarioBounds } from '../game/scenario'
-import { kindById, loadKinds } from '../game/kinds'
 import { blobPoints } from '../game/blob'
 import type { Point } from '../game/geometry'
 import { pointInPolygon } from '../game/geometry'
@@ -10,6 +9,8 @@ import { buildPath2D, drawBadge, drawBridge, drawBusLine, drawPulseRing, drawRai
 import { COLORS, KIND_COLORS, shade } from './render/colors'
 import { t } from './i18n'
 import type { ExpiryBubble } from './expiryBubbles'
+import HoverChip from './HoverChip'
+import type { GameState } from '../game/types'
 import './TownMap.css'
 
 // Pointer travel below this counts as a click, above it as a drag-pan.
@@ -18,7 +19,6 @@ const DRAG_THRESHOLD_PX = 4
 // Scenario content is static data (not save state), so load it once at module
 // level. No ref means reads during render are lint-clean.
 const scenario = loadScenario()
-const kinds = loadKinds()
 
 interface TownMapProps {
   selectedId: string | null
@@ -29,6 +29,7 @@ interface TownMapProps {
   bubbles: ExpiryBubble[] // expiry popups pinned above their district
   onRenew: (bubble: ExpiryBubble) => void
   onDismiss: (key: string) => void
+  state: GameState // read only by the hover chip
 }
 
 // Canvas view of the town. The camera and interaction state live in refs so
@@ -43,6 +44,7 @@ export default function TownMap({
   bubbles,
   onRenew,
   onDismiss,
+  state,
 }: TownMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -138,13 +140,22 @@ export default function TownMap({
       drawBadge(ctx, cam, n.shape, n.shape.radius, '⌛')
     }
 
-    // Pin each expiry bubble just above its district.
+    // Pin each expiry bubble just above its district - or below it when there
+    // is no room above (top row) - and keep it inside the map horizontally.
+    const margin = 8
     for (const [key, el] of bubbleElsRef.current) {
       const id = bubbleAnchorsRef.current.get(key)
       if (!id) continue
       const n = neighborhoodById(scenario, id)
-      const at = worldToScreen(cam, n.shape.x, n.shape.y - n.shape.radius * 0.55)
-      el.style.transform = `translate(${Math.round(at.x)}px, ${Math.round(at.y)}px) translate(-50%, -100%)`
+      const above = worldToScreen(cam, n.shape.x, n.shape.y - n.shape.radius * 0.55)
+      const below = worldToScreen(cam, n.shape.x, n.shape.y + n.shape.radius * 0.45)
+      const width = el.offsetWidth
+      const height = el.offsetHeight
+      const flip = above.y - height < margin
+      const x = Math.min(Math.max(above.x, width / 2 + margin), cssWidth - width / 2 - margin)
+      const top = flip ? below.y : above.y - height
+      el.classList.toggle('below', flip)
+      el.style.transform = `translate(${Math.round(x - width / 2)}px, ${Math.round(top)}px)`
     }
 
     // Milestone 8: pulsing rings point at the tutorial's target neighbourhoods.
@@ -373,17 +384,7 @@ export default function TownMap({
           </div>
         </div>
       ))}
-      {label && (
-        <div className="neighborhood-chip" role="status">
-          <strong>{label.name}</strong>
-          <span>
-            {t('chip.subtitle', {
-              kind: kindById(kinds, label.kind).name,
-              residents: label.residents.toLocaleString('en-GB'),
-            })}
-          </span>
-        </div>
-      )}
+      {label && <HoverChip neighborhood={label} state={state} />}
     </div>
   )
 }

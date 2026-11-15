@@ -98,3 +98,58 @@
   background: #b9c2b1;
   cursor: not-allowed;
 }
+
+/* Milestone 8.5: satisfaction stats on hover. */
+.chip-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: #2d3929 !important;
+}
+
+.chip-sep {
+  color: #8a9683;
+}
+
+.chip-weakest {
+  font-size: 0.76rem;
+}
+
+.chip-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 1.4rem;
+  margin-top: 0.15rem;
+}
+
+.chip-bar {
+  position: relative;
+  width: 0.55rem;
+  height: 100%;
+  border-radius: 2px;
+  background: #e4e9dc;
+  overflow: hidden;
+}
+
+.chip-bar-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #5f8f4f;
+}
+
+.chip-lapsed {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #a2451a !important;
+}
+
+/* Flipped below its district (no room above): the arrow points up. */
+.expiry-bubble.below::after {
+  top: -8px;
+  bottom: auto;
+  transform: translateX(-50%) rotate(225deg);
+}

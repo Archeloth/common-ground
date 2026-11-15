@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { GameState, Reason } from '../game/types'
 import type { TechDef } from '../game/technologies'
 import { applyCommand } from '../game/state'
@@ -70,55 +69,41 @@ function TechCard({
 // (applyCommand) for "can this be researched now?" so the UI cannot disagree
 // with the rules.
 export default function ResearchMenu({ state, onResearch }: ResearchMenuProps) {
-  const [open, setOpen] = useState(false)
   const branches = [...new Set(technologies.map((t) => t.branch))]
 
   return (
-    <div className="research-menu">
-      <button
-        type="button"
-        className="research-menu-toggle"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-      >
-        {t('research.title')}
-      </button>
+    <div className="research-panel">
+      <section className="research-section">
+        <h3>{t('research.panelTitle')}</h3>
+        {branches.map((branch) => (
+          <div key={branch} className="tech-branch">
+            <h4>{t(`research.branch.${branch}`)}</h4>
+            {technologies
+              .filter((tech) => tech.branch === branch)
+              .map((tech) => (
+                <TechCard key={tech.id} tech={tech} state={state} onResearch={onResearch} />
+              ))}
+          </div>
+        ))}
+      </section>
 
-      {open && (
-        <div className="research-panel">
-          <section className="research-section">
-            <h3>{t('research.panelTitle')}</h3>
-            {branches.map((branch) => (
-              <div key={branch} className="tech-branch">
-                <h4>{t(`research.branch.${branch}`)}</h4>
-                {technologies
-                  .filter((tech) => tech.branch === branch)
-                  .map((tech) => (
-                    <TechCard key={tech.id} tech={tech} state={state} onResearch={onResearch} />
-                  ))}
-              </div>
-            ))}
-          </section>
-
-          <section className="research-section">
-            <h3>{t('research.goalsTitle')}</h3>
-            <ul className="milestone-list">
-              {milestoneCatalog.map((def) => {
-                const done = state.milestones.includes(def.id)
-                return (
-                  <li key={def.id} className={`milestone-row${done ? ' done' : ''}`}>
-                    <span className="milestone-check">{done ? '✓' : `${def.chapter}.`}</span>
-                    <span className="milestone-text">
-                      <strong>{def.name}</strong>
-                      {done ? ` (${t('milestones.done')})` : ` — ${def.goal}`}
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        </div>
-      )}
+      <section className="research-section">
+        <h3>{t('research.goalsTitle')}</h3>
+        <ul className="milestone-list">
+          {milestoneCatalog.map((def) => {
+            const done = state.milestones.includes(def.id)
+            return (
+              <li key={def.id} className={`milestone-row${done ? ' done' : ''}`}>
+                <span className="milestone-check">{done ? '✓' : `${def.chapter}.`}</span>
+                <span className="milestone-text">
+                  <strong>{def.name}</strong>
+                  {done ? ` (${t('milestones.done')})` : ` — ${def.goal}`}
+                </span>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
     </div>
   )
 }

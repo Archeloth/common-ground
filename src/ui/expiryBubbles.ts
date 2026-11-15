@@ -33,7 +33,7 @@ export function expiryBubbles(state: GameState, scenario: ScenarioDef): ExpiryBu
       neighborhoodId: neighborhood.id,
       slot: parsed.slot,
       text: t('expiry.bubble', { project: project.name, neighborhood: neighborhood.name }),
-      renewLabel: t('project.renew', { cost }),
+      renewLabel: cost === 1 ? t('project.renewOne') : t('project.renew', { cost }),
       canRenew: applyCommand(state, { type: 'renewProject', neighborhood: neighborhood.id, slot: parsed.slot }).ok,
     })
   }

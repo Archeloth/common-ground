@@ -7,6 +7,8 @@ import { applyCommand } from '../game/state'
 import { messageForNeighborhood } from '../game/messages'
 import type { MessageDef } from '../game/messages'
 import ProjectSlots from './ProjectSlots'
+import NeedBar from './NeedBar'
+import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import './NeighborhoodPanel.css'
 
@@ -16,18 +18,8 @@ const scenario = loadScenario()
 // Display order for the six need bars (the plan names them in this order).
 const NEED_ORDER = ['energy', 'food', 'mobility', 'green', 'waste', 'housing'] as const
 
-function NeedBar({ label, value }: { label: string; value: number }) {
-  const percent = Math.round(value * 100)
-  return (
-    <div className="need-bar">
-      <span className="need-label">{label}</span>
-      <div className="need-track">
-        <div className="need-fill" style={{ width: `${percent}%` }} />
-      </div>
-      <span className="need-value">{percent}%</span>
-    </div>
-  )
-}
+type PanelTab = 'overview' | 'projects' | 'community'
+const TABS: readonly PanelTab[] = ['overview', 'projects', 'community']
 
 interface NeighborhoodPanelProps {
   neighborhood: NeighborhoodDef
@@ -45,9 +37,9 @@ function rewardText(def: MessageDef): string {
   return t('panel.rewardKnowledge', { value: def.reward.knowledge ?? 0 })
 }
 
-// Side panel for a selected neighborhood: kind, residents, slots, engagement,
-// the six need bars and a placeholder satisfaction (Milestone 2 exit test:
-// click any blob and read sensible, different values).
+// Side panel for a selected neighborhood (Milestone 2, tabs since 8.5):
+// Overview (facts, need bars, what holds satisfaction back), Projects (slots
+// and the picker) and Community (town meeting, resident request, bus links).
 export default function NeighborhoodPanel({
   neighborhood,
   state,
@@ -77,6 +69,10 @@ export default function NeighborhoodPanel({
   const linked = new Set(linesHere.flat())
   const candidates = neighbors.filter((n) => !linked.has(n.id))
   const [chosenBusTarget, setChosenBusTarget] = useState('')
+  // Milestone 8.5: three tabs instead of one long scroll. The tab survives a
+  // change of neighbourhood, so comparing projects between districts is quick.
+  const [tab, setTab] = useState<PanelTab>('overview')
+  const tier = satisfactionTier(satisfaction)
   const busTarget = chosenBusTarget && candidates.some((n) => n.id === chosenBusTarget)
     ? chosenBusTarget
     : (candidates[0]?.id ?? '')
@@ -98,136 +94,166 @@ export default function NeighborhoodPanel({
 
       <p className="panel-description">{kind.description}</p>
 
-      <dl className="panel-facts">
-        <div className="fact">
-          <dt>{t('panel.residents')}</dt>
-          <dd>{neighborhood.residents.toLocaleString('en-GB')}</dd>
-        </div>
-        <div className="fact">
-          <dt>{t('panel.engagement')}</dt>
-          <dd>{Math.round(engagement)}/100</dd>
-        </div>
-        <div className="fact">
-          <dt>{t('panel.slots')}</dt>
-          <dd>{neighborhood.slots}</dd>
-        </div>
-        <div className="fact">
-          <dt>{t('panel.satisfaction')}</dt>
-          <dd>{Math.round(satisfaction)}/100</dd>
-        </div>
-      </dl>
-
-      <div className="panel-actions">
-        <button
-          type="button"
-          className="town-meeting"
-          disabled={!meeting.ok}
-          onClick={() => onTownMeeting(neighborhood.id)}
-        >
-          {t('panel.townMeeting')}
-        </button>
-        <p className="panel-action-hint">
-          {meeting.ok
-            ? t('panel.townMeetingHint', { engagement: 10, time: 1 })
-            : t(`reason.${meeting.reason}`)}
-        </p>
+      <div className="panel-tabs" role="tablist" aria-label={t('panel.tabs')}>
+        {TABS.map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={tab === id}
+            className={`panel-tab${tab === id ? ' active' : ''}`}
+            onClick={() => setTab(id)}
+          >
+            {t(`panel.tab.${id}`)}
+          </button>
+        ))}
       </div>
 
-      <section className="panel-section">
-        <h3>{t('panel.needs')}</h3>
-        <div className="needs-grid">
-          {NEED_ORDER.map((need) => (
-            <NeedBar key={need} label={t(`need.${need}`)} value={needs[need]} />
-          ))}
-        </div>
-      </section>
-
-      <section className="panel-section">
-        <h3>{t('panel.reasons')}</h3>
-        {sim && sim.reasons.length > 0 ? (
-          <ol className="panel-reasons">
-            {sim.reasons.map((entry) => (
-              <li key={entry.need}>
-                {t('reason.gap', {
-                  need: t(`need.${entry.need}`),
-                  pct: Math.round(entry.coverage * 100),
-                })}
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <p className="panel-reasons-empty">{t('panel.reasonsEmpty')}</p>
-        )}
-      </section>
-
-      <ProjectSlots neighborhood={neighborhood} state={state} onStart={onStart} onRemove={onRemove} />
-
-      <section className="panel-section">
-        <h3>{t('panel.message')}</h3>
-        <p className="panel-message">{message.text}</p>
-        <p className={`panel-message-reward${messageDone ? ' done' : ''}`}>
-          {messageDone ? t('panel.messageDone') : rewardText(message)}
-        </p>
-      </section>
-
-      <section className="panel-section">
-        <h3>{t('panel.busLines')}</h3>
-        {linesHere.length > 0 && (
-          <ul className="panel-neighbors">
-            {linesHere.map(([a, b]) => {
-              const other = a === neighborhood.id ? b : a
-              const n = neighborhoodById(scenario, other)
-              return (
-                <li key={other}>
-                  {n.name}
-                  <span className="bridge-tag">🚌</span>
-                </li>
-              )
-            })}
-          </ul>
-        )}
-        {candidates.length > 0 ? (
-          <div className="bus-start">
-            <select
-              value={busTarget}
-              onChange={(event) => setChosenBusTarget(event.target.value)}
-              aria-label={t('panel.busLineStart')}
-            >
-              {candidates.map((n) => (
-                <option key={n.id} value={n.id}>
-                  {n.name}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              className="save-action"
-              disabled={!busMeeting?.ok}
-              onClick={() => onStartBusLine(neighborhood.id, busTarget)}
-            >
-              {t('panel.busLineStart')}
-            </button>
-            {busMeeting && !busMeeting.ok && (
-              <p className="tech-blocked">{t(`reason.${busMeeting.reason}`)}</p>
-            )}
+      {tab === 'overview' && (
+        <div role="tabpanel">
+        <dl className="panel-facts">
+          <div className="fact">
+            <dt>{t('panel.residents')}</dt>
+            <dd>{neighborhood.residents.toLocaleString('en-GB')}</dd>
           </div>
-        ) : (
-          <p className="panel-reasons-empty">{t('panel.busNone')}</p>
-        )}
-      </section>
+          <div className="fact">
+            <dt>{t('panel.engagement')}</dt>
+            <dd>{Math.round(engagement)}/100</dd>
+          </div>
+          <div className="fact">
+            <dt>{t('panel.slots')}</dt>
+            <dd>{neighborhood.slots}</dd>
+          </div>
+          <div className="fact">
+            <dt>{t('panel.satisfaction')}</dt>
+            <dd>
+              <span className={`tier-dot tier-${tier}`} aria-hidden="true" /> {Math.round(satisfaction)}/100{' '}
+              <span className="panel-tier">{t(`tier.${tier}`)}</span>
+            </dd>
+          </div>
+        </dl>
 
-      {neighbors.length > 0 && (
         <section className="panel-section">
-          <h3>{t('panel.nearby')}</h3>
-          <ul className="panel-neighbors">
-            {neighbors.map((n) => (
-              <li key={n.id}>
-                {n.name}
-                {bridgePartners.includes(n.id) && <span className="bridge-tag">{t('panel.bridgeTo')}</span>}
-              </li>
+          <h3>{t('panel.needs')}</h3>
+          <div className="needs-grid">
+            {NEED_ORDER.map((need) => (
+              <NeedBar key={need} label={t(`need.${need}`)} value={needs[need]} />
             ))}
-          </ul>
+          </div>
         </section>
+
+        <section className="panel-section">
+          <h3>{t('panel.reasons')}</h3>
+          {sim && sim.reasons.length > 0 ? (
+            <ol className="panel-reasons">
+              {sim.reasons.map((entry) => (
+                <li key={entry.need}>
+                  {t('reason.gap', {
+                    need: t(`need.${entry.need}`),
+                    pct: Math.round(entry.coverage * 100),
+                  })}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="panel-reasons-empty">{t('panel.reasonsEmpty')}</p>
+          )}
+        </section>
+        </div>
+      )}
+
+      {tab === 'projects' && (
+        <div role="tabpanel">
+        <ProjectSlots neighborhood={neighborhood} state={state} onStart={onStart} onRemove={onRemove} />
+        </div>
+      )}
+
+      {tab === 'community' && (
+        <div role="tabpanel">
+        <div className="panel-actions">
+          <button
+            type="button"
+            className="town-meeting"
+            disabled={!meeting.ok}
+            onClick={() => onTownMeeting(neighborhood.id)}
+          >
+            {t('panel.townMeeting')}
+          </button>
+          <p className="panel-action-hint">
+            {meeting.ok
+              ? t('panel.townMeetingHint', { engagement: 10, time: 1 })
+              : t(`reason.${meeting.reason}`)}
+          </p>
+        </div>
+
+        <section className="panel-section">
+          <h3>{t('panel.message')}</h3>
+          <p className="panel-message">{message.text}</p>
+          <p className={`panel-message-reward${messageDone ? ' done' : ''}`}>
+            {messageDone ? t('panel.messageDone') : rewardText(message)}
+          </p>
+        </section>
+
+        <section className="panel-section">
+          <h3>{t('panel.busLines')}</h3>
+          {linesHere.length > 0 && (
+            <ul className="panel-neighbors">
+              {linesHere.map(([a, b]) => {
+                const other = a === neighborhood.id ? b : a
+                const n = neighborhoodById(scenario, other)
+                return (
+                  <li key={other}>
+                    {n.name}
+                    <span className="bridge-tag">🚌</span>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+          {candidates.length > 0 ? (
+            <div className="bus-start">
+              <select
+                value={busTarget}
+                onChange={(event) => setChosenBusTarget(event.target.value)}
+                aria-label={t('panel.busLineStart')}
+              >
+                {candidates.map((n) => (
+                  <option key={n.id} value={n.id}>
+                    {n.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="save-action"
+                disabled={!busMeeting?.ok}
+                onClick={() => onStartBusLine(neighborhood.id, busTarget)}
+              >
+                {t('panel.busLineStart')}
+              </button>
+              {busMeeting && !busMeeting.ok && (
+                <p className="tech-blocked">{t(`reason.${busMeeting.reason}`)}</p>
+              )}
+            </div>
+          ) : (
+            <p className="panel-reasons-empty">{t('panel.busNone')}</p>
+          )}
+        </section>
+
+        {neighbors.length > 0 && (
+          <section className="panel-section">
+            <h3>{t('panel.nearby')}</h3>
+            <ul className="panel-neighbors">
+              {neighbors.map((n) => (
+                <li key={n.id}>
+                  {n.name}
+                  {bridgePartners.includes(n.id) && <span className="bridge-tag">{t('panel.bridgeTo')}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        </div>
       )}
     </aside>
   )

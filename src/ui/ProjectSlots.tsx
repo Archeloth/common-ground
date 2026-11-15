@@ -19,6 +19,15 @@ function effectPreview(project: ProjectDef): string {
   return parts.join(' · ')
 }
 
+// "1 volunteer" / "2 volunteers" for a Volunteer cost.
+function volunteersText(cost: number): string {
+  return cost === 1 ? t('project.volunteer') : t('project.months', { value: cost })
+}
+
+function renewLabel(cost: number): string {
+  return cost === 1 ? t('project.renewOne') : t('project.renew', { cost })
+}
+
 // "lasts 3 years" for volunteer-run projects, "permanent" for infrastructure.
 function lifetimeText(project: ProjectDef): string {
   const months = project.durationMonths
@@ -51,7 +60,9 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
   // The picker lists what can be built here; projects that still need research
   // are summarised in one line, so the list stays short as the tree grows.
   const fitsHere = projects.filter((p) => p.allowedKinds.includes(neighborhood.kind))
-  const offered = fitsHere.filter((p) => !p.requiresTech || state.research.includes(p.requiresTech))
+  const offered = fitsHere.filter(
+    (p) => (!p.requiresTech || state.research.includes(p.requiresTech)) && !slots.includes(p.id),
+  )
   const locked = fitsHere.filter((p) => p.requiresTech && !state.research.includes(p.requiresTech))
 
   const engagement = state.engagement[neighborhood.id] ?? neighborhood.engagement
@@ -95,9 +106,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                     title={renew.ok ? undefined : t(`reason.${renew.reason}`)}
                     onClick={() => onStart({ type: 'renewProject', neighborhood: neighborhood.id, slot })}
                   >
-                    {t('project.renew', {
-                      cost: projectTimeCost(projectById(projects, projectId).time, engagement),
-                    })}
+                    {renewLabel(projectTimeCost(projectById(projects, projectId).time, engagement))}
                   </button>
                 )}
                 <button
@@ -129,7 +138,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
                   <span className="project-name">{project.name}</span>
                   <span className="project-meta">
                     {t('project.cost', { value: project.cost })} ·{' '}
-                    {t('project.months', { value: projectTimeCost(project.time, engagement) })} · {lifetimeText(project)}
+                    {volunteersText(projectTimeCost(project.time, engagement))} · {lifetimeText(project)}
                   </span>
                   <span className="project-effects">{effectPreview(project)}</span>
                   <span className="project-explain">{project.explain}</span>

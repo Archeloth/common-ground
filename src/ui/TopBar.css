@@ -31,12 +31,23 @@
   border-color: #3f523a;
   color: #f2f6e7;
 }
-/* Milestone 8.5: chips open their lexicon entry; Play pulses while paused. */
+/* Milestone 8.5: the clock group, and chips that open their lexicon entry. */
+.topbar-clock {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.2rem 0.3rem 0.2rem 0.7rem;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.7);
+}
+
 button.resource-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
   border: none;
   font: inherit;
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.8rem;
   cursor: help;
 }
 
@@ -44,19 +55,15 @@ button.resource-chip:hover {
   background: #4f6649;
 }
 
-.lexicon-toggle {
-  padding: 0.25rem 0.7rem;
-  border: 1px solid #3f523a;
-  border-radius: 999px;
-  background: transparent;
-  color: #3f523a;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
+.resource-label {
+  font-weight: 500;
+  opacity: 0.85;
 }
 
-.lexicon-toggle:hover {
-  background: #e4ead9;
+.resource-income {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #c9e4b4;
 }
 
 .speed-button.nudge {
@@ -77,5 +84,17 @@ button.resource-chip:hover {
   .speed-button.nudge {
     animation: none;
     outline: 2px solid #3f6a3a;
+  }
+}
+
+/* Narrow screens: the header wraps and the chip labels hide (icons stay). */
+@media (max-width: 760px) {
+  .app-header {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .resource-label {
+    display: none;
   }
 }
