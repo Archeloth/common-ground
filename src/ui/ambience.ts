@@ -1,5 +1,8 @@
 import { audioContext, audioLevels } from './audio'
 import { getSettings } from './settings'
+import type { Season } from '../game/calendar'
+
+const SEASON_BIRDS: Record<Season, number> = { spring: 0.8, summer: 1, autumn: 1.6, winter: 3.5 }
 
 // Generated ambience (Milestone 9): synthesised birdsong made with Web Audio
 // (no files, no licences), singing on top of the background music. Birds sing
@@ -24,6 +27,8 @@ let running: Running | null = null
 let green = 0.5
 let isPaused = false
 let windWanted = false
+// Birds sing less in autumn and rarely in winter (Milestone 9 seasons).
+let seasonFactor = 1
 
 function targetLevel(): number {
   return BASE_LEVEL * audioLevels(getSettings()).music * (isPaused ? PAUSED_FACTOR : 1)
@@ -68,7 +73,7 @@ function scheduleBirds(): void {
   const ctx = audioContext()
   if (!state || !ctx) return
   // A bare town: a bird every ~12 s; a green one: every ~2.5 s.
-  const mean = 12000 - 9500 * Math.min(1, Math.max(0, green))
+  const mean = (12000 - 9500 * Math.min(1, Math.max(0, green))) * seasonFactor
   const wait = mean * (0.5 + Math.random())
   state.birdTimer = window.setTimeout(() => {
     if (!running) return
@@ -124,7 +129,8 @@ export function stopAmbience(): void {
 }
 
 // Re-read the volume settings and the town's mood (fades smoothly).
-export function refreshAmbience(mood?: { green?: number; paused?: boolean }): void {
+export function refreshAmbience(mood?: { green?: number; paused?: boolean; season?: Season }): void {
+  if (mood?.season !== undefined) seasonFactor = SEASON_BIRDS[mood.season]
   if (mood?.green !== undefined) green = mood.green
   if (mood?.paused !== undefined) isPaused = mood.paused
   const ctx = audioContext()

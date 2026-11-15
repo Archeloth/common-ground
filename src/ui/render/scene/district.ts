@@ -11,10 +11,13 @@ import { drawConstruction, drawDecoration } from '../sprites/decorations'
 import type { VisualId } from '../sprites/decorations'
 import { SPRITE_SCALE, mix } from '../sprites/kit'
 import { layoutFor } from './layout'
+import type { SeasonLook } from './season'
+import { SEASON_LOOKS, applySeason, seasonalGround } from './season'
+import { seasonOfDay } from '../../../game/calendar'
 
 // What a district looks like right now (Milestone 9), and a cached picture of
 // it. The picture is redrawn only when its look changes (projects, lapses,
-// satisfaction band, parked cars) or the zoom moves to another bucket, so a
+// satisfaction band, parked cars, season) or the zoom moves to another bucket, so a
 // frame is mostly sixteen image copies plus the small living layer.
 
 export interface SlotLook {
@@ -30,6 +33,7 @@ export interface DistrictLook {
   satisfaction: number
   needs: Needs
   carsShown: number
+  season: SeasonLook
   key: string // changes exactly when the cached picture must change
 }
 
@@ -68,8 +72,9 @@ export function districtLook(state: GameState, n: NeighborhoodDef): DistrictLook
   const slotKey = slots
     .map((s) => (s ? `${s.building !== null ? 'build' : s.visual}${s.expired ? '~' : ''}` : '-'))
     .join(',')
-  const key = `${slotKey}|${overlays.solar ? 1 : 0}${overlays.retrofit ? 1 : 0}${overlays.heatPump ? 1 : 0}|${band}|${carsShown}`
-  return { slots, overlays, satisfaction, needs, carsShown, key }
+  const season = SEASON_LOOKS[seasonOfDay(state.day)]
+  const key = `${slotKey}|${overlays.solar ? 1 : 0}${overlays.retrofit ? 1 : 0}${overlays.heatPump ? 1 : 0}|${band}|${carsShown}|${season.season}`
+  return { slots, overlays, satisfaction, needs, carsShown, season, key }
 }
 
 // The district's ground colour: dusty when unhappy, vivid when content.
@@ -123,7 +128,8 @@ export function renderDistrict(
 
   const outline = blobPoints(n.shape.seed, n.shape.x, n.shape.y, n.shape.radius)
   const path = buildPath2D(outline.map((p) => ({ x: toX(p.x), y: toY(p.y) })))
-  const top = groundColour(n, look.satisfaction)
+  applySeason(look.season)
+  const top = seasonalGround(groundColour(n, look.satisfaction), look.season)
   drawRaisedBlob(ctx, path, top, shade(top, -25), 0, Math.round(RAISED_DEPTH_CSS * dpr))
   // A soft inner highlight so the island looks rounded.
   ctx.save()

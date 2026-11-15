@@ -1,6 +1,7 @@
 import type { Ctx } from './kit'
-import { PALETTE, ROOFS, WALLS, circle, fillOutlined, groundShadow, pick, roundRect } from './kit'
+import { PALETTE, ROOFS, WALLS, circle, fillOutlined, groundShadow, mix, pick, roundRect } from './kit'
 import type { Building, Greenery, Plot } from '../scene/layout'
+import { snowOnPath } from '../scene/season'
 
 // Buildings and greenery for the districts (Milestone 9). Every sprite is drawn
 // around its ground point (x, y in screen pixels) at scale s. The overlay
@@ -81,6 +82,7 @@ function house(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays):
   ctx.closePath()
   ctx.lineJoin = 'round'
   fillOutlined(ctx, roof, s)
+  snowOnPath(ctx, top - 7 * s, top - 2.6 * s)
   if (o.solar) solarPanel(ctx, x + 0.8 * s, top - 4.8 * s, 4.6 * s, 3.6 * s, -2.6 * s, s)
   roundRect(ctx, x - 1.4 * s, y - 4.6 * s, 2.8 * s, 4.6 * s, 0.8 * s)
   ctx.fillStyle = PALETTE.door
@@ -108,6 +110,7 @@ function terrace(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays
     ctx.closePath()
     ctx.lineJoin = 'round'
     fillOutlined(ctx, o.retrofit ? PALETTE.roofCosy : pick(ROOFS, (v * 3) % 1), s)
+    snowOnPath(ctx, top - 5 * s, top - 1.8 * s)
     if (o.solar && i !== 1) solarPanel(ctx, ux + unit * 0.45, top - 3 * s, 2.4 * s, 2.2 * s, -1.4 * s, s)
     windowPane(ctx, ux + 1.2 * s, top + 1.8 * s, 1.9 * s, 2.2 * s, o.retrofit, s)
     windowPane(ctx, ux + unit - 3.1 * s, top + 1.8 * s, 1.9 * s, 2.2 * s, o.retrofit, s)
@@ -134,6 +137,7 @@ function block(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays):
   ctx.lineTo(left + w + 0.6 * s, top + 0.6 * s)
   ctx.closePath()
   fillOutlined(ctx, o.retrofit ? PALETTE.roofCosy : PALETTE.roofSlate, s)
+  snowOnPath(ctx, top - 3 * s, top + 1 * s)
   if (o.solar) {
     for (let i = 0; i < 3; i++) solarPanel(ctx, left + 1.6 * s + i * 4.4 * s, top - 1.8 * s, 3.6 * s, 1.8 * s, 0.6 * s, s)
   }
@@ -172,6 +176,7 @@ function shed(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays): 
     ctx.lineTo(tx + tw, top + 0.4 * s)
     ctx.closePath()
     fillOutlined(ctx, o.retrofit ? PALETTE.roofCosy : '#8f99a8', s)
+    snowOnPath(ctx, top - 6 * s, top - 2.4 * s)
     if (o.solar) solarPanel(ctx, tx + tw * 0.15, top - 3.4 * s, tw * 0.55, 2.6 * s, tw * 0.25, s)
   }
   roundRect(ctx, x - 4 * s, y - 6 * s, 8 * s, 6 * s, 0.8 * s)
@@ -199,6 +204,7 @@ function store(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays):
   ctx.lineTo(left + w + 0.6 * s, top + 0.6 * s)
   ctx.closePath()
   fillOutlined(ctx, o.retrofit ? PALETTE.roofCosy : '#9aa6b5', s)
+  snowOnPath(ctx, top - 3 * s, top + 1 * s)
   if (o.solar) {
     for (let i = 0; i < 5; i++) solarPanel(ctx, left + 1.6 * s + i * 5 * s, top - 1.6 * s, 4 * s, 1.5 * s, 0.6 * s, s)
   }
@@ -229,6 +235,7 @@ function barn(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays): 
   ctx.closePath()
   ctx.lineJoin = 'round'
   fillOutlined(ctx, o.retrofit ? PALETTE.roofCosy : '#7b5a4a', s)
+  snowOnPath(ctx, top - 7 * s, top - 3.6 * s)
   if (o.solar) solarPanel(ctx, x + 0.6 * s, top - 4.6 * s, 4.4 * s, 3.4 * s, -2 * s, s)
   roundRect(ctx, x - 3 * s, y - 6.5 * s, 6 * s, 6.5 * s, 0.5 * s)
   fillOutlined(ctx, PALETTE.wallCream, s, 0.4)
@@ -267,6 +274,7 @@ export function tree(ctx: Ctx, x: number, y: number, s: number, variant: number,
   ctx.arc(x + 2.4 * k, y - 6.5 * k, 3.2 * k, 0, Math.PI * 2)
   ctx.arc(x, y - 9.5 * k, 3.8 * k, 0, Math.PI * 2)
   fillOutlined(ctx, green, s, 0.5)
+  snowOnPath(ctx, y - 14 * k, y - 10.8 * k)
   // A small highlight makes the canopy look round and soft.
   circle(ctx, x - 1.2 * k, y - 10.6 * k, 1.3 * k)
   ctx.fillStyle = 'rgba(255,255,255,0.28)'
@@ -289,6 +297,7 @@ function conifer(ctx: Ctx, x: number, y: number, s: number, variant: number): vo
     ctx.closePath()
     ctx.lineJoin = 'round'
     fillOutlined(ctx, i === 2 ? '#4f9466' : PALETTE.conifer, s, 0.5)
+    snowOnPath(ctx, base - 5.6 * s * tall, base - 3.6 * s * tall)
   }
 }
 
@@ -319,7 +328,8 @@ function field(ctx: Ctx, x: number, y: number, s: number, variant: number): void
   ctx.fillStyle = variant > 0.5 ? PALETTE.wheat : PALETTE.crop
   ctx.fill()
   ctx.clip()
-  ctx.strokeStyle = variant > 0.5 ? '#d4b04f' : '#7fae55'
+  // Furrows a shade darker than the field, whatever the season's colour.
+  ctx.strokeStyle = mix(variant > 0.5 ? PALETTE.wheat : PALETTE.crop, '#5a4a2a', 0.16)
   ctx.lineWidth = Math.max(0.7, 1 * s)
   for (let i = -6; i < 8; i++) {
     ctx.beginPath()

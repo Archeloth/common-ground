@@ -24,6 +24,7 @@ import { UNDO_WINDOW_MS } from '../game/constants'
 import { playSound } from './audio'
 import type { SoundId } from './soundMap'
 import { refreshAmbience, startAmbience, stopAmbience } from './ambience'
+import { seasonOfDay } from '../game/calendar'
 import { refreshMusic } from './music'
 import type { GameStore } from '../game/store'
 import type { Command, GameState, Reason, Speed } from '../game/types'
@@ -175,10 +176,11 @@ export default function GameScreen({
     return () => stopAmbience()
   }, [])
   const green = Math.round(townNeedAverage(state, scenario, 'green') * 20) / 20
+  const season = seasonOfDay(state.day)
   useEffect(() => {
-    refreshAmbience({ green, paused: state.speed === 0 })
+    refreshAmbience({ green, paused: state.speed === 0, season })
     refreshMusic({ paused: state.speed === 0 })
-  }, [green, state.speed, settings])
+  }, [green, state.speed, settings, season])
 
   // Clock shortcuts (Milestone 8.6): Space pauses/resumes at the last speed,
   // 1/2/3 pick 1x/2x/4x. Off while typing or while the lexicon is open.

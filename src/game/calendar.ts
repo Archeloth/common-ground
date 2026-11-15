@@ -20,3 +20,16 @@ export function calendarOf(day: number): CalendarDate {
   const dayOfMonth = (inYear % TICKS_PER_MONTH) + 1
   return { year, month, dayOfMonth }
 }
+
+// Seasons by calendar month (northern hemisphere): spring March-May, summer
+// June-August, autumn September-November, winter December-February. Purely
+// visual: the simulation does not change with the season.
+export type Season = 'spring' | 'summer' | 'autumn' | 'winter'
+
+export function seasonOfDay(day: number): Season {
+  const { month } = calendarOf(day)
+  if (month >= 3 && month <= 5) return 'spring'
+  if (month >= 6 && month <= 8) return 'summer'
+  if (month >= 9 && month <= 11) return 'autumn'
+  return 'winter'
+}

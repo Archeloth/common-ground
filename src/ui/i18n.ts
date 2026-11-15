@@ -176,7 +176,7 @@ const MESSAGES: Record<string, string> = {
   'lexicon.milestones.title': 'Milestones',
   'lexicon.milestones.body': 'Five chapters, each with a goal and a few tasks. Completing one pays Knowledge and teaches one idea - from small visible wins to community-owned energy. Track them in the Goals panel at the top left. The town keeps running after the last chapter.',
   'lexicon.time.title': 'Calendar and speed',
-  'lexicon.time.body': 'One day passes every second at normal speed; 30 days make a month and 12 months a year. Income, new volunteers and engagement growth arrive at the start of each month.\n\nUse the speed buttons in the top bar, or the keyboard: Space pauses and resumes, 1, 2 and 3 pick normal, fast and fastest, and Z (or Ctrl+Z) undoes your last action for a few seconds after it. The game always opens paused, including after loading a save.',
+  'lexicon.time.body': 'One day passes every second at normal speed; 30 days make a month and 12 months a year. The seasons follow the months (snow from December to February, blossom in spring, golden leaves in autumn); they change how the town looks and sounds, not how it works. Income, new volunteers and engagement growth arrive at the start of each month.\n\nUse the speed buttons in the top bar, or the keyboard: Space pauses and resumes, 1, 2 and 3 pick normal, fast and fastest, and Z (or Ctrl+Z) undoes your last action for a few seconds after it. The game always opens paused, including after loading a save.',
   'lexicon.title': 'Lexicon',
   'lexicon.open': 'Lexicon',
   'lexicon.close': 'Close lexicon',

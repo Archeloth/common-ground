@@ -14,6 +14,7 @@ import { bees, bird, bus, butterfly, floatingLabel, popScale, ripple, smoke, spa
 import type { DistrictCache, DistrictLook } from './district'
 import { renderDistrict } from './district'
 import { layoutFor } from './layout'
+import { SEASON_LOOKS, applySeason, seasonalGround } from './season'
 
 // One frame of the town (Milestone 9). The static part of each district comes
 // from its cache; everything that moves is drawn live on top.
@@ -106,7 +107,10 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
   const s = cam.zoom * SPRITE_SCALE
 
   ctx.setTransform(f.dpr, 0, 0, f.dpr, 0, 0)
-  ctx.fillStyle = COLORS.ground
+  // Every district shares the season; the live layer draws in it too.
+  const season = f.looks.values().next().value?.season ?? SEASON_LOOKS.summer
+  applySeason(season)
+  ctx.fillStyle = seasonalGround(COLORS.ground, season)
   ctx.fillRect(0, 0, f.cssWidth, f.cssHeight)
 
   drawRiver(ctx, cam, scenario.river.points, scenario.river.halfDepth)
@@ -241,10 +245,11 @@ function drawLife(
       const hub = turbineHub(p.x, p.y, s)
       turbineBlades(ctx, hub.x, hub.y, s, t, true)
     } else if (slot.visual === 'meadow') {
-      bees(ctx, p.x, p.y, s, t + plot.variant * 5)
-      if (look.needs.green > 0.55) butterfly(ctx, p.x, p.y, s, t, Math.floor(plot.variant * 10))
+      // Bees and butterflies stay home in winter (and thin out in autumn).
+      if (look.season.life >= 0.5) bees(ctx, p.x, p.y, s, t + plot.variant * 5)
+      if (look.season.life >= 1 && look.needs.green > 0.55) butterfly(ctx, p.x, p.y, s, t, Math.floor(plot.variant * 10))
     } else if (slot.visual === 'garden') {
-      bees(ctx, p.x, p.y - 2 * s, s, t + i)
+      if (look.season.life >= 0.5) bees(ctx, p.x, p.y - 2 * s, s, t + i)
     } else if (slot.visual === 'rainGarden') {
       ripple(ctx, p.x, p.y, s, t + plot.variant)
     }
@@ -252,7 +257,7 @@ function drawLife(
 
   // Birds come back to green districts.
   const green = look.needs.green
-  const birds = green > 0.85 ? 3 : green > 0.72 ? 2 : green > 0.6 ? 1 : 0
+  const birds = Math.round((green > 0.85 ? 3 : green > 0.72 ? 2 : green > 0.6 ? 1 : 0) * look.season.life)
   const centre = at(n.shape.x, n.shape.y - n.shape.radius * 0.45)
   for (let i = 0; i < birds; i++) bird(ctx, centre.x, centre.y, s, t, (n.shape.seed % 97) + i * 2.1)
 }

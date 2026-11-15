@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calendarOf, MONTHS_PER_YEAR } from './calendar'
+import { calendarOf, MONTHS_PER_YEAR, seasonOfDay } from './calendar'
 import { TICKS_PER_MONTH } from './constants'
 
 // One tick is one in-game day; 30 days = 1 month; 12 months = 1 year.
@@ -36,5 +36,21 @@ describe('calendarOf (year - month - day)', () => {
       expect(date.dayOfMonth, String(day)).toBeGreaterThanOrEqual(1)
       expect(date.dayOfMonth, String(day)).toBeLessThanOrEqual(TICKS_PER_MONTH)
     }
+  })
+})
+
+describe('seasonOfDay', () => {
+  const firstOf = (month: number, year = 1) => ((year - 1) * MONTHS_PER_YEAR + (month - 1)) * TICKS_PER_MONTH + 1
+  it('follows the calendar months', () => {
+    const seasons = Array.from({ length: 12 }, (_, i) => seasonOfDay(firstOf(i + 1)))
+    expect(seasons).toEqual([
+      'winter', 'winter', 'spring', 'spring', 'spring', 'summer',
+      'summer', 'summer', 'autumn', 'autumn', 'autumn', 'winter',
+    ])
+  })
+  it('changes exactly at the month boundary and repeats every year', () => {
+    expect(seasonOfDay(firstOf(3) - 1)).toBe('winter')
+    expect(seasonOfDay(firstOf(3))).toBe('spring')
+    expect(seasonOfDay(firstOf(7, 4))).toBe('summer')
   })
 })
