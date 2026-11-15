@@ -4,6 +4,7 @@ import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
 import { loadMilestones } from './milestones'
+import { TUTORIAL_DONE } from './tutorial'
 
 // Runtime validation of a GameState. Used when loading saved games (a broken
 // save must show a friendly message, never crash) and by the invariant tests.
@@ -138,6 +139,15 @@ export function validateGameState(state: unknown): string[] {
         problems.push(`messages.${n.id} must be "open" or "done"`)
       }
     }
+  }
+
+  // Milestone 8: the tutorial step is an index into the scripted steps.
+  if (
+    !Number.isInteger(s.tutorialStep) ||
+    (s.tutorialStep as number) < 0 ||
+    (s.tutorialStep as number) > TUTORIAL_DONE
+  ) {
+    problems.push(`tutorialStep must be an integer between 0 and ${TUTORIAL_DONE}`)
   }
 
   // Last line of defence: not a single non-finite number anywhere.

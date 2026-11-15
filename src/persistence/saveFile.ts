@@ -1,6 +1,7 @@
 import type { GameState } from '../game/types'
 import { loadScenario } from '../game/scenario'
 import { validateGameState } from '../game/validate'
+import { TUTORIAL_DONE } from '../game/tutorial'
 
 // The plan's versioned save format (section "Commands and a versioned save
 // format"): { version, savedAt, seed, state }. Every load runs through the
@@ -8,7 +9,7 @@ import { validateGameState } from '../game/validate'
 // fails validation reports problems instead of crashing. All functions here
 // are pure, so the round-trip, migration and corrupt-save tests run in Node.
 
-export const CURRENT_SAVE_VERSION = 3
+export const CURRENT_SAVE_VERSION = 4
 
 export interface SaveFile {
   version: number
@@ -54,6 +55,17 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
       ...s,
       version: 3,
       state: { ...s.state, engagement, busLines: [], messages },
+    }
+  },
+  // 3 -> 4 (Milestone 8): the tutorial joined the state. A migrating save
+  // belongs to a player who already knows how to play, so it starts finished
+  // (fresh games begin at step 0).
+  3: (save) => {
+    const s = save as { state: GameState }
+    return {
+      ...s,
+      version: 4,
+      state: { ...s.state, tutorialStep: TUTORIAL_DONE },
     }
   },
 }

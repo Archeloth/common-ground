@@ -98,6 +98,7 @@ export type Command =
   | { type: 'clearMilestoneNotices' }
   | { type: 'townMeeting'; neighborhood: string }
   | { type: 'startBusLine'; from: string; to: string }
+  | { type: 'tutorialNext' }
 
 // Machine-readable refusal codes; the UI maps each to t("reason.<code>").
 export type Reason =
@@ -165,6 +166,10 @@ export interface GameState {
   // Resident message status per neighborhood (Milestone 7): 'open' until the
   // request is fulfilled, then 'done' (the reward is paid once).
   messages: Record<string, MessageStatus>
+  // Index into the tutorial steps (Milestone 8); TUTORIAL_DONE when finished.
+  // The intro step advances with the tutorialNext command, action steps with
+  // tick() once their condition is met.
+  tutorialStep: number
 }
 
 export type MessageStatus = 'open' | 'done'

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import type { Command, GameState } from './types'
+import { TUTORIAL_DONE } from './tutorial'
 
 const scenario = loadScenario()
 
@@ -386,5 +387,30 @@ describe('purity & determinism', () => {
       expect(r1.state.budget).toBe(b.budget - 400)
       expect(r1.state.time).toBe(b.time - 2)
     }
+  })
+})
+describe('tutorialNext (Milestone 8)', function () {
+  it('advances one step at a time', function () {
+    const s = initialState(scenario)
+    const first = applyCommand(s, { type: 'tutorialNext' })
+    if (!first.ok) throw new Error('tutorialNext refused')
+    expect(first.state.tutorialStep).toBe(1)
+    const second = applyCommand(first.state, { type: 'tutorialNext' })
+    if (!second.ok) throw new Error('tutorialNext refused')
+    expect(second.state.tutorialStep).toBe(2)
+  })
+
+  it('clamps at the done sentinel', function () {
+    const finished = { ...initialState(scenario), tutorialStep: TUTORIAL_DONE }
+    const result = applyCommand(finished, { type: 'tutorialNext' })
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.state.tutorialStep).toBe(TUTORIAL_DONE)
+  })
+
+  it('does not mutate its input', function () {
+    const s = initialState(scenario)
+    const snapshot = structuredClone(s)
+    applyCommand(s, { type: 'tutorialNext' })
+    expect(s).toEqual(snapshot)
   })
 })

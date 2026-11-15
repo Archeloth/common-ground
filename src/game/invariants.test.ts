@@ -4,6 +4,7 @@ import { applyCommand, initialState } from './state'
 import { tick } from './tick'
 import { loadTechnologies } from './technologies'
 import { loadMilestones } from './milestones'
+import { TUTORIAL_DONE } from './tutorial'
 import type { Command, GameState } from './types'
 
 const scenario = loadScenario()
@@ -100,5 +101,10 @@ describe('state invariants (plan M4 exit #5)', () => {
     for (const n of scenario.neighborhoods) {
       expect(['open', 'done'], `messages.${n.id}`).toContain(state.messages[n.id])
     }
+
+    // Milestone 8 invariant: the tutorial step is an index into the steps.
+    expect(Number.isInteger(state.tutorialStep)).toBe(true)
+    expect(state.tutorialStep).toBeGreaterThanOrEqual(0)
+    expect(state.tutorialStep).toBeLessThanOrEqual(TUTORIAL_DONE)
   })
 })

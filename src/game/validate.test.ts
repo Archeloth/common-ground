@@ -3,6 +3,7 @@ import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { loadTechnologies } from './technologies'
 import { loadMilestones } from './milestones'
+import { TUTORIAL_DONE } from './tutorial'
 import { validateGameState } from './validate'
 import type { GameState } from './types'
 
@@ -86,5 +87,22 @@ describe('validateGameState', () => {
     expect(validateGameState(s)).toEqual([])
     expect(loadTechnologies().length).toBe(8)
     expect(loadMilestones().length).toBe(5)
+  })
+})
+
+describe('validateGameState tutorialStep (Milestone 8)', function () {
+  it('accepts the initial and done values', function () {
+    const fresh = initialState(scenario)
+    expect(validateGameState(fresh)).toEqual([])
+    const finished = { ...fresh, tutorialStep: TUTORIAL_DONE }
+    expect(validateGameState(finished)).toEqual([])
+  })
+
+  it('rejects a tutorialStep outside the valid range', function () {
+    for (const bad of [-1, 1.5, 99]) {
+      const s = structuredClone(initialState(scenario)) as GameState
+      s.tutorialStep = bad as number
+      expect(validateGameState(s).some((m) => m.includes('tutorialStep')), String(bad)).toBe(true)
+    }
   })
 })

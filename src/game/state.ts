@@ -10,6 +10,7 @@ import type {
 import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
+import { TUTORIAL_DONE } from './tutorial'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import {
   BUS_LINE_COST,
@@ -56,6 +57,7 @@ export function initialState(scenario: ScenarioDef): GameState {
     engagement,
     busLines: [],
     messages,
+    tutorialStep: 0,
   }
 }
 
@@ -142,6 +144,9 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     return { ok: true, state: { ...state, milestoneNotices: [] } }
   }
 
+  // Tutorial (Milestone 8): the player's "Continue" on the intro card.
+  if (command.type === 'tutorialNext') return applyTutorialNext(state)
+
   // setSpeed, the only remaining variant.
   if (![0, 1, 2, 4].includes(command.speed)) return refusal('invalid_speed')
   return { ok: true, state: { ...state, speed: command.speed } }
@@ -216,4 +221,12 @@ function applyResearch(state: GameState, techId: string): CommandResult {
 
 function refusal(reason: Reason): CommandResult {
   return { ok: false, reason }
+}
+
+// The tutorial's info step (Milestone 8): "Continue" moves to the next step;
+// action steps complete by themselves in tick(). Never moves past the done
+// sentinel (TUTORIAL_DONE).
+function applyTutorialNext(state: GameState): CommandResult {
+  if (state.tutorialStep >= TUTORIAL_DONE) return { ok: true, state }
+  return { ok: true, state: { ...state, tutorialStep: state.tutorialStep + 1 } }
 }

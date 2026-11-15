@@ -4,6 +4,7 @@ import { loadScenario } from './scenario'
 import { loadProjects, projectById } from './projects'
 import { loadMilestones, milestoneCompleted } from './milestones'
 import { messageCatalog, messageFulfilled, applyMessageReward } from './messages'
+import { advanceTutorial } from './tutorial'
 import { satisfactionOf, shortfalls } from './satisfaction'
 import { clamp, clamp01, moveNeedsToward, needTargets, round } from './needs'
 import {
@@ -178,5 +179,8 @@ export function tick(state: GameState): GameState {
     }
   }
 
-  return { ...withNewSim, knowledge, engagement, messages, milestones, milestoneNotices }
+  return advanceTutorial(
+    { ...withNewSim, knowledge, engagement, messages, milestones, milestoneNotices },
+    scenario,
+  )
 }

@@ -1,0 +1,224 @@
+import type { GameState, NeedId, NeighborhoodDef, ProjectDef } from './types'
+import { NEED_ORDER } from './needs'
+import { loadScenario, neighborhoodById } from './scenario'
+import { loadProjects, projectById } from './projects'
+import { loadMilestones } from './milestones'
+import type { MilestoneCondition, MilestoneDef } from './milestones'
+import { messageCatalog, messageFulfilled } from './messages'
+import { applyCommand } from './state'
+import { currentTutorialStep } from './tutorial'
+
+// The "what should I do next?" hint (Milestone 8, plan item 2): a pure
+// function that reads the open goals and returns the single best next step.
+// Priorities:
+//  1. the current tutorial step, while the tutorial is running;
+//  2. the first unfulfilled condition of the first uncompleted milestone
+//     (actionable ones only - specific projects, counts, need averages and
+//     slot totals; a plain town-satisfaction target is not a direct step);
+//  3. the first open resident message whose request is not met yet;
+//  4. the biggest town-wide need gap with a reachable project.
+// Suggestions that need a project are only returned when applyCommand would
+// accept the start, so the hint never sends the player into a refusal banner.
+
+export interface NextAction {
+  kind: 'tutorial' | 'milestone' | 'message' | 'need'
+  textKey: string
+  params: Record<string, string | number>
+  neighborhoodId?: string
+  projectId?: string
+  needId?: NeedId
+}
+
+export function nextAction(state: GameState): NextAction | null {
+  const scenario = loadScenario()
+  const projects = loadProjects()
+
+  const step = currentTutorialStep(state)
+  if (step) {
+    return {
+      kind: 'tutorial',
+      textKey: `tutorial.${step.id}`,
+      params: {},
+      neighborhoodId: step.pulse[0],
+    }
+  }
+
+  for (const def of loadMilestones()) {
+    if (state.milestones.includes(def.id)) continue
+    for (const condition of def.conditions) {
+      const hint = suggestionForCondition(state, scenario, projects, def, condition)
+      if (hint) return hint
+    }
+  }
+
+  for (const def of messageCatalog()) {
+    if (state.messages[def.neighborhood] === 'done') continue
+    if (messageFulfilled(state, def)) continue
+    const neighborhood = neighborhoodById(scenario, def.neighborhood)
+    return {
+      kind: 'message',
+      textKey: 'guide.message',
+      params: {
+        neighborhood: neighborhood.name,
+        project: projectById(projects, def.request.project).name,
+      },
+      neighborhoodId: def.neighborhood,
+      projectId: def.request.project,
+    }
+  }
+
+  return biggestNeedGap(state, scenario, projects)
+}
+
+function suggestionForCondition(
+  state: GameState,
+  scenario: ReturnType<typeof loadScenario>,
+  projects: readonly ProjectDef[],
+  def: MilestoneDef,
+  condition: MilestoneCondition,
+): NextAction | null {
+  switch (condition.type) {
+    case 'projectIn': {
+      if ((state.projects[condition.neighborhood] ?? []).includes(condition.project)) return null
+      const neighborhood = neighborhoodById(scenario, condition.neighborhood)
+      return {
+        kind: 'milestone',
+        textKey: 'guide.milestone',
+        params: {
+          goal: def.name,
+          project: projectById(projects, condition.project).name,
+          neighborhood: neighborhood.name,
+        },
+        neighborhoodId: condition.neighborhood,
+        projectId: condition.project,
+      }
+    }
+    case 'projectCount': {
+      let total = 0
+      for (const slots of Object.values(state.projects)) {
+        for (const id of slots) if (id === condition.project) total++
+      }
+      if (total >= condition.min) return null
+      const where = scenario.neighborhoods.find((n) =>
+        applyCommand(state, { type: 'startProject', neighborhood: n.id, project: condition.project }).ok,
+      )
+      if (!where) return null
+      return {
+        kind: 'milestone',
+        textKey: 'guide.milestoneCount',
+        params: {
+          goal: def.name,
+          project: projectById(projects, condition.project).name,
+          remaining: condition.min - total,
+        },
+        neighborhoodId: where.id,
+        projectId: condition.project,
+      }
+    }
+    case 'slotsFilled': {
+      let total = 0
+      for (const slots of Object.values(state.projects)) {
+        for (const id of slots) if (id !== null) total++
+      }
+      if (total >= condition.min) return null
+      const start = firstReachableStart(state, scenario, projects)
+      if (!start) return null
+      return {
+        kind: 'milestone',
+        textKey: 'guide.slots',
+        params: { goal: def.name, remaining: condition.min - total },
+        neighborhoodId: start.neighborhood.id,
+        projectId: start.project.id,
+      }
+    }
+    case 'needsAverage': {
+      let sum = 0
+      for (const n of scenario.neighborhoods) {
+        sum += state.neighborhoods[n.id]?.needs[condition.need] ?? 0
+      }
+      if (sum / scenario.neighborhoods.length >= condition.min) return null
+      const lowest = lowestCoverage(state, scenario, condition.need)
+      const project = projects.find(
+        (p) =>
+          p.effects.some((e) => e.need === condition.need) &&
+          applyCommand(state, { type: 'startProject', neighborhood: lowest.id, project: p.id }).ok,
+      )
+      if (!project) return null
+      return {
+        kind: 'milestone',
+        textKey: 'guide.milestoneNeed',
+        params: { goal: def.name },
+        needId: condition.need,
+        neighborhoodId: lowest.id,
+        projectId: project.id,
+      }
+    }
+    case 'townSatisfaction':
+      // Not directly actionable as a single next step; other conditions guide.
+      return null
+  }
+}
+
+// The first start (any project, any neighbourhood) applyCommand accepts, or
+// null when nothing is affordable or placeable right now.
+function firstReachableStart(
+  state: GameState,
+  scenario: ReturnType<typeof loadScenario>,
+  projects: readonly ProjectDef[],
+): { neighborhood: NeighborhoodDef; project: ProjectDef } | null {
+  for (const n of scenario.neighborhoods) {
+    for (const p of projects) {
+      if (applyCommand(state, { type: 'startProject', neighborhood: n.id, project: p.id }).ok) {
+        return { neighborhood: n, project: p }
+      }
+    }
+  }
+  return null
+}
+
+// The neighbourhood with the lowest coverage of a need (first one on ties, so
+// suggestions stay deterministic).
+function lowestCoverage(
+  state: GameState,
+  scenario: ReturnType<typeof loadScenario>,
+  need: NeedId,
+): NeighborhoodDef {
+  return scenario.neighborhoods.reduce((a, b) =>
+    (state.neighborhoods[a.id]?.needs[need] ?? 0) <= (state.neighborhoods[b.id]?.needs[need] ?? 0) ? a : b,
+  )
+}
+
+// Last resort: the need with the biggest town-wide gap that still has a
+// reachable project in the neighbourhood where it hurts most.
+function biggestNeedGap(
+  state: GameState,
+  scenario: ReturnType<typeof loadScenario>,
+  projects: readonly ProjectDef[],
+): NextAction | null {
+  let best: { gap: number; neighborhoodId: string; projectId: string; needId: NeedId } | null = null
+  for (const needId of NEED_ORDER) {
+    const lowest = lowestCoverage(state, scenario, needId)
+    const coverage = state.neighborhoods[lowest.id]?.needs[needId] ?? 0
+    const gap = 1 - coverage
+    const project = projects.find(
+      (p) =>
+        p.effects.some((e) => e.need === needId) &&
+        applyCommand(state, { type: 'startProject', neighborhood: lowest.id, project: p.id }).ok,
+    )
+    if (project && (!best || gap > best.gap)) {
+      best = { gap, neighborhoodId: lowest.id, projectId: project.id, needId }
+    }
+  }
+  if (!best) return null
+  return {
+    kind: 'need',
+    textKey: 'guide.need',
+    params: {
+      neighborhood: neighborhoodById(scenario, best.neighborhoodId).name,
+      project: projectById(projects, best.projectId).name,
+    },
+    needId: best.needId,
+    neighborhoodId: best.neighborhoodId,
+    projectId: best.projectId,
+  }
+}

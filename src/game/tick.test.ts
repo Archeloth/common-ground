@@ -245,3 +245,24 @@ describe('tick', () => {
     expect(again.messages.old_town).toBe('done')
   })
 })
+
+describe('tutorial auto-advance (Milestone 8)', function () {
+  it('keeps the intro step until the player taps Continue', function () {
+    const s = initialState(scenario)
+    expect(tick(s).tutorialStep).toBe(0)
+    const started = applyCommand(s, startGarden('school_green'))
+    if (!started.ok) throw new Error('garden refused')
+    expect(tick(started.state).tutorialStep).toBe(0) // the intro step still blocks
+  })
+
+  it('completes the garden step once the player continues and a garden runs', function () {
+    let state = initialState(scenario)
+    const cont = applyCommand(state, { type: 'tutorialNext' })
+    if (!cont.ok) throw new Error('tutorialNext refused')
+    state = cont.state
+    const garden = applyCommand(state, startGarden('school_green'))
+    if (!garden.ok) throw new Error('garden refused')
+    state = tick(garden.state)
+    expect(state.tutorialStep).toBe(2) // garden done, watch step active
+  })
+})
