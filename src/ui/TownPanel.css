@@ -18,14 +18,14 @@
 .town-stat {
   padding: 0.45rem 0.55rem;
   border-radius: 0.6rem;
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .town-stat dt {
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .town-stat dd {
@@ -39,19 +39,19 @@
   display: block;
   font-size: 0.7rem;
   font-weight: 600;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .town-stat-note.warn {
-  color: #a2451a;
+  color: var(--warn);
 }
 
 .town-stat.tier-low {
-  background: #f7e3d6;
+  background: var(--warn-soft);
 }
 
 .town-stat.tier-fair {
-  background: #f6efd9;
+  background: var(--sun-soft);
 }
 
 .town-stat.tier-good {
@@ -63,7 +63,7 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 
@@ -95,7 +95,7 @@
 }
 
 .town-ranking button:hover {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .town-rank-name {
@@ -104,7 +104,7 @@
 
 .town-rank-weak {
   font-size: 0.74rem;
-  color: #6a7564;
+  color: var(--ink-faint);
 }
 
 .town-rank-sat {

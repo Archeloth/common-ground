@@ -16,7 +16,7 @@
   border: none;
   border-left: 1px solid rgba(31, 43, 28, 0.14);
   background: transparent;
-  color: #2d3929;
+  color: var(--ink);
   fill: currentColor;
   cursor: pointer;
 }
@@ -26,17 +26,17 @@
 }
 
 .speed-segment:hover {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .speed-segment:focus-visible {
-  outline: 2px solid #3f6a3a;
+  outline: 2px solid var(--primary);
   outline-offset: -2px;
 }
 
 .speed-segment.active {
-  background: #3f523a;
-  color: #f2f6e7;
+  background: var(--forest);
+  color: var(--on-dark);
 }
 
 /* While paused, Play breathes gently so the next step is obvious. */
@@ -50,18 +50,18 @@
     background: transparent;
   }
   50% {
-    background: #d6e8cc;
+    background: var(--primary-soft);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .speed-segment.nudge {
     animation: none;
-    background: #d6e8cc;
+    background: var(--primary-soft);
   }
 }
 
 :root[data-motion='reduced'] .speed-segment.nudge {
   animation: none;
-  background: #d6e8cc;
+  background: var(--primary-soft);
 }

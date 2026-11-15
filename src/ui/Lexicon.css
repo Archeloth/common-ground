@@ -10,6 +10,7 @@
 }
 
 .lexicon {
+  animation: pop-in 260ms var(--ease-spring) both;
   display: flex;
   flex-direction: column;
   width: min(52rem, 100%);
@@ -45,7 +46,7 @@
 }
 
 .lexicon-close:hover {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .lexicon-columns {
@@ -87,8 +88,8 @@
 }
 
 .lexicon-contents button.active {
-  background: #3f523a;
-  color: #f2f6e7;
+  background: var(--forest);
+  color: var(--on-dark);
   font-weight: 600;
 }
 
@@ -97,7 +98,7 @@
   padding: 1rem 1.4rem 1.4rem;
   font-size: 0.92rem;
   line-height: 1.55;
-  color: #26321f;
+  color: var(--ink-strong);
 }
 
 .lexicon-body h3 {
@@ -115,7 +116,7 @@
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 0.6rem;
-  background: #3f6a3a;
+  background: var(--primary);
   color: #fff;
   font-size: 0.95rem;
   font-weight: 600;
@@ -123,7 +124,7 @@
 }
 
 .lexicon-start:hover {
-  background: #345a30;
+  background: var(--primary-strong);
 }
 
 /* Narrow screens: contents become a scrolling row above the entry. */

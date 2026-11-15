@@ -5,6 +5,8 @@ import { satisfactionOf } from '../game/satisfaction'
 import { expiredSlots } from '../game/expiry'
 import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
+import NeedIcon from './NeedIcon'
+import { NEED_COLORS } from './render/colors'
 
 const kinds = loadKinds()
 
@@ -36,12 +38,16 @@ export default function HoverChip({ neighborhood, state }: { neighborhood: Neigh
         {t('chip.engagement', { value: Math.round(engagement) })}
       </span>
       <span className="chip-weakest">
+        <NeedIcon need={weakest} size={12} />{' '}
         {t('chip.weakest', { need: t(`need.${weakest}`), pct: Math.round(needs[weakest] * 100) })}
       </span>
       <span className="chip-bars" aria-hidden="true">
         {NEED_ORDER.map((need) => (
           <span key={need} className="chip-bar" title={t(`need.${need}`)}>
-            <span className="chip-bar-fill" style={{ height: `${Math.round(needs[need] * 100)}%` }} />
+            <span
+              className="chip-bar-fill"
+              style={{ height: `${Math.round(needs[need] * 100)}%`, background: NEED_COLORS[need] }}
+            />
           </span>
         ))}
       </span>

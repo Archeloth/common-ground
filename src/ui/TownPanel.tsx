@@ -86,7 +86,7 @@ export default function TownPanel({ state, onSelect }: TownPanelProps) {
         <h4>{t('town.needs')}</h4>
         <div className="needs-grid">
           {NEED_ORDER.map((need) => (
-            <NeedBar key={need} label={t(`need.${need}`)} value={townNeedAverage(state, scenario, need)} />
+            <NeedBar key={need} need={need} label={t(`need.${need}`)} value={townNeedAverage(state, scenario, need)} />
           ))}
         </div>
       </section>

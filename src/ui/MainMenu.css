@@ -68,12 +68,12 @@
   margin: 0;
   font-size: 2rem;
   letter-spacing: -0.01em;
-  color: #26321f;
+  color: var(--ink-strong);
 }
 
 .menu-tagline {
   margin: 0.3rem 0 1.2rem;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .menu-notice {
@@ -84,7 +84,7 @@
   margin: 0 0 0.9rem;
   padding: 0.5rem 0.75rem;
   border-radius: 0.6rem;
-  background: #f7e3d6;
+  background: var(--warn-soft);
   color: #6b2a10;
   font-size: 0.85rem;
 }
@@ -110,7 +110,7 @@
   border: 1px solid rgba(31, 43, 28, 0.15);
   border-radius: 0.75rem;
   background: #fff;
-  color: #26321f;
+  color: var(--ink-strong);
   font-size: 1rem;
   font-weight: 600;
   text-align: left;
@@ -118,27 +118,27 @@
 }
 
 .menu-button:hover:not(:disabled) {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .menu-button small {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .menu-button.primary {
-  border-color: #3f6a3a;
-  background: #3f6a3a;
+  border-color: var(--primary);
+  background: var(--primary);
   color: #fff;
 }
 
 .menu-button.primary small {
-  color: #d6e8cc;
+  color: var(--primary-soft);
 }
 
 .menu-button.primary:hover:not(:disabled) {
-  background: #345a30;
+  background: var(--primary-strong);
 }
 
 .menu-button:disabled {
@@ -174,7 +174,7 @@
 }
 
 .menu-slot:hover:not(:disabled) {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .menu-slot:disabled {
@@ -183,7 +183,7 @@
 }
 
 .menu-slot small {
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .menu-row {
@@ -196,7 +196,7 @@
   padding: 0.3rem 0;
   border: none;
   background: transparent;
-  color: #3f6a3a;
+  color: var(--primary);
   font-weight: 600;
   cursor: pointer;
 }
@@ -208,7 +208,7 @@
 .menu-about {
   margin: 1.2rem 0 0;
   font-size: 0.74rem;
-  color: #6a7564;
+  color: var(--ink-faint);
 }
 
 /* Settings */
@@ -225,13 +225,13 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .settings-note {
   margin: 0 0 0.5rem;
   font-size: 0.78rem;
-  color: #6a7564;
+  color: var(--ink-faint);
 }
 
 .setting-row {
@@ -246,7 +246,7 @@
 .setting-row output {
   font-variant-numeric: tabular-nums;
   text-align: right;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .setting-row.toggle {
@@ -260,15 +260,15 @@
 
 .setting-row small {
   font-size: 0.74rem;
-  color: #6a7564;
+  color: var(--ink-faint);
 }
 
 .setting-row input[type='checkbox'] {
   width: 1.1rem;
   height: 1.1rem;
-  accent-color: #3f6a3a;
+  accent-color: var(--primary);
 }
 
 .setting-row input[type='range'] {
-  accent-color: #3f6a3a;
+  accent-color: var(--primary);
 }

@@ -10,6 +10,7 @@ import type { DrawerId } from './Toolbar'
 import TownPanel from './TownPanel'
 import GoalTracker from './GoalTracker'
 import TutorialCard from './TutorialCard'
+import Celebration from './Celebration'
 import GuideButton from './GuideButton'
 import { expiryBubbles } from './expiryBubbles'
 import type { ExpiryBubble } from './expiryBubbles'
@@ -168,6 +169,17 @@ export default function GameScreen({
     if (overlayOpen && store.getState().speed !== 0) resumeRef.current = null
   }, [overlayOpen, state.speed, store])
 
+  useEffect(() => {
+    if (!notice) return
+    const timer = window.setTimeout(() => setNotice(null), 4000)
+    return () => window.clearTimeout(timer)
+  }, [notice, setNotice])
+  useEffect(() => {
+    if (!reason) return
+    const timer = window.setTimeout(() => setReason(null), 6000)
+    return () => window.clearTimeout(timer)
+  }, [reason])
+
   const handleLoad = useCallback(
     async (key: string) => {
       if (await saves.load(key)) {
@@ -269,22 +281,10 @@ export default function GameScreen({
           </div>
         )}
         {state.milestoneNotices.length > 0 && (
-          <div className="milestone-banner" role="alert">
-            <strong>{t('milestones.completedTitle')}</strong>
-            <ul>
-              {state.milestoneNotices.map((id) => (
-                <li key={id}>
-                  {t('milestones.completed', {
-                    name: milestoneById(milestones, id).name,
-                    goal: milestoneById(milestones, id).goal,
-                  })}
-                </li>
-              ))}
-            </ul>
-            <button type="button" onClick={() => dispatch({ type: 'clearMilestoneNotices' })}>
-              {t('milestones.gotIt')}
-            </button>
-          </div>
+          <Celebration
+            milestones={state.milestoneNotices.map((id) => milestoneById(milestones, id))}
+            onDone={() => dispatch({ type: 'clearMilestoneNotices' })}
+          />
         )}
       </div>
       <p className="app-help">{t('app.help')}</p>

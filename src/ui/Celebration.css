@@ -1,0 +1,122 @@
+.celebration {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(31, 43, 28, 0.25);
+  animation: fade-in 200ms ease both;
+}
+
+.celebration-card {
+  position: relative;
+  width: min(24rem, 100%);
+  padding: 1.4rem 1.4rem 1.2rem;
+  border-radius: var(--radius-l);
+  background: #fffdf6;
+  box-shadow: var(--shadow-m);
+  text-align: center;
+  animation: pop-in 380ms var(--ease-spring) both;
+}
+
+.celebration-badge {
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  margin: -2.8rem auto 0.4rem;
+  border-radius: 50%;
+  background: #fff4cc;
+  box-shadow: 0 0 0 0.35rem #fffdf6, var(--shadow-s);
+  font-size: 2rem;
+}
+
+.celebration-card h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+  color: var(--ink-strong);
+}
+
+.celebration-name {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0 0 0.6rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.celebration-name strong {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.celebration-reward {
+  display: inline-block;
+  margin: 0 0 0.9rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.celebration-button {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--primary-strong);
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti span {
+  position: absolute;
+  top: -1rem;
+  width: 0.5rem;
+  height: 0.8rem;
+  border-radius: 2px;
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.3, 0.6, 0.6, 1);
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+}
+
+@keyframes confetti-fall {
+  0% {
+    translate: 0 0;
+    rotate: 0deg;
+    opacity: 1;
+  }
+  100% {
+    translate: 2rem 105vh;
+    rotate: 540deg;
+    opacity: 0.8;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+:root[data-motion='reduced'] .confetti {
+  display: none;
+}

@@ -31,7 +31,7 @@
 .goal-chevron {
   grid-row: span 2;
   align-self: center;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .goal-kicker {
@@ -39,12 +39,12 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .goal-name {
   font-weight: 700;
-  color: #1f2b1c;
+  color: var(--ink-strong);
 }
 
 .goal-tasks,
@@ -60,7 +60,7 @@
 .goal-chapters > li {
   display: flex;
   gap: 0.4rem;
-  color: #2d3929;
+  color: var(--ink);
 }
 
 .goal-tasks li.met {
@@ -72,7 +72,7 @@
 }
 
 .goal-chapters > li.done {
-  color: #6a7564;
+  color: var(--ink-faint);
 }
 
 .goal-chapters > li.current {
@@ -90,7 +90,7 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: #3f6a3a;
+  color: var(--primary);
   font-size: 0.74rem;
   font-weight: 600;
   cursor: pointer;

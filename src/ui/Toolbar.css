@@ -25,22 +25,23 @@
   border: none;
   border-radius: 0.55rem;
   background: transparent;
-  color: #2d3929;
+  color: var(--ink);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
 }
 
 .toolbar-button:hover {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .toolbar-button.active {
-  background: #3f523a;
-  color: #f2f6e7;
+  background: var(--forest);
+  color: var(--on-dark);
 }
 
 .toolbar-drawer {
+  animation: rise-in 220ms var(--ease-out) both;
   width: min(26rem, calc(100vw - 1.5rem));
   max-height: 72vh;
   overflow-y: auto;
@@ -59,5 +60,5 @@
   margin-left: 0.2rem;
   border-left: 1px solid rgba(31, 43, 28, 0.15);
   border-radius: 0 0.55rem 0.55rem 0;
-  color: #53604c;
+  color: var(--ink-soft);
 }

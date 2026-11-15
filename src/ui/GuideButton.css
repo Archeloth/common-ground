@@ -14,7 +14,7 @@
   border: 1px solid rgba(31, 43, 28, 0.18);
   border-radius: 0.6rem;
   background: rgba(255, 255, 255, 0.92);
-  color: #2d3929;
+  color: var(--ink);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -22,10 +22,11 @@
 }
 
 .guide-toggle:hover {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .guide-popover {
+  animation: pop-in 220ms var(--ease-spring) both;
   display: grid;
   gap: 0.5rem;
   max-width: 22rem;
@@ -34,7 +35,7 @@
   background: rgba(255, 255, 255, 0.97);
   box-shadow: 0 4px 18px rgba(31, 43, 28, 0.22);
   font-size: 0.84rem;
-  color: #2d3929;
+  color: var(--ink);
 }
 
 .guide-label {
@@ -42,7 +43,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .guide-text {

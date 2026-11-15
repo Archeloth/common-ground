@@ -8,7 +8,7 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .tech-branch {
@@ -32,7 +32,7 @@
 }
 
 .tech-card.researched {
-  background: #eef2e6;
+  background: var(--surface-soft);
 }
 
 .tech-card.locked {
@@ -77,13 +77,13 @@
 .tech-benefit {
   margin: 0;
   font-size: 0.82rem;
-  color: #2d3929;
+  color: var(--ink);
 }
 
 .tech-limit {
   margin: 0;
   font-size: 0.76rem;
-  color: #6a7564;
+  color: var(--ink-faint);
 }
 
 .tech-foot {
@@ -95,7 +95,7 @@
 
 .tech-cost {
   font-size: 0.76rem;
-  color: #53604c;
+  color: var(--ink-soft);
 }
 
 .tech-learn {
@@ -116,7 +116,7 @@
 
 .tech-learn:disabled {
   background: #c7cfbb;
-  color: #6a7564;
+  color: var(--ink-faint);
   cursor: not-allowed;
 }
 
@@ -129,7 +129,7 @@
 .tech-blocked {
   margin: 0;
   font-size: 0.74rem;
-  color: #a2451a;
+  color: var(--warn);
 }
 
 

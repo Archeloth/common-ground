@@ -30,8 +30,8 @@
   padding: 0.25rem 0.6rem;
   border: 1px solid rgba(31, 43, 28, 0.18);
   border-radius: 0.5rem;
-  background: #eef2e6;
-  color: #2d3929;
+  background: var(--surface-soft);
+  color: var(--ink);
   font-size: 0.78rem;
   cursor: pointer;
 }

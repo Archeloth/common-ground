@@ -244,7 +244,7 @@ export default function TownMap({
     const from = cameraRef.current
     const zoom = clampZoom(Math.max(from.zoom, 1.15))
     // Centre the district in the part of the map the side panel leaves free.
-    const freeWidth = width > 760 ? width - 360 : width
+    const freeWidth = width > 760 ? width - 400 : width
     const to: Camera = {
       x: n.shape.x - freeWidth / 2 / zoom,
       y: n.shape.y - height / 2 / zoom,

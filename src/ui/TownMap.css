@@ -36,12 +36,13 @@
 
 .neighborhood-chip span {
   font-size: 0.8rem;
-  color: #4a5c44;
+  color: var(--ink-soft);
 }
 
 /* Milestone 8.5: expiry popups pinned above their district (positioned by the
    canvas draw loop through a transform). */
 .expiry-bubble {
+  animation: fade-in 260ms ease both;
   position: absolute;
   left: 0;
   top: 0;
@@ -50,7 +51,7 @@
   padding: 0.55rem 0.7rem;
   border-radius: 0.7rem;
   background: #fffaf2;
-  border: 2px solid #b4561f;
+  border: 2px solid var(--warn-strong);
   box-shadow: 0 4px 14px rgba(74, 24, 10, 0.25);
   font-size: 0.8rem;
 }
@@ -63,8 +64,8 @@
   width: 12px;
   height: 12px;
   background: #fffaf2;
-  border-right: 2px solid #b4561f;
-  border-bottom: 2px solid #b4561f;
+  border-right: 2px solid var(--warn-strong);
+  border-bottom: 2px solid var(--warn-strong);
   transform: translateX(-50%) rotate(45deg);
 }
 
@@ -89,7 +90,7 @@
 }
 
 .expiry-bubble-actions .expiry-renew {
-  background: #3f6a3a;
+  background: var(--primary);
   color: #fff;
   font-weight: 600;
 }
@@ -105,7 +106,7 @@
   align-items: center;
   gap: 0.35rem;
   font-weight: 600;
-  color: #2d3929 !important;
+  color: var(--ink) !important;
 }
 
 .chip-sep {
@@ -144,7 +145,7 @@
 .chip-lapsed {
   font-size: 0.76rem;
   font-weight: 600;
-  color: #a2451a !important;
+  color: var(--warn) !important;
 }
 
 /* Flipped below its district (no room above): the arrow points up. */

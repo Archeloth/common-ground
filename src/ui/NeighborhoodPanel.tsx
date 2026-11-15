@@ -137,7 +137,7 @@ export default function NeighborhoodPanel({
           <h3>{t('panel.needs')}</h3>
           <div className="needs-grid">
             {NEED_ORDER.map((need) => (
-              <NeedBar key={need} label={t(`need.${need}`)} value={needs[need]} />
+              <NeedBar key={need} need={need} label={t(`need.${need}`)} value={needs[need]} />
             ))}
           </div>
         </section>

@@ -4,19 +4,34 @@ import { applyCommand, projectTimeCost } from '../game/state'
 import { expiryOf, isExpired, isRenewable } from '../game/expiry'
 import { t } from './i18n'
 import { formatGameDate } from './dates'
+import NeedIcon from './NeedIcon'
+import { NEED_COLORS } from './render/colors'
+import { projectIcon } from './projectIcons'
 import './ProjectSlots.css'
 
 const projects = loadProjects()
 
-function effectPreview(project: ProjectDef): string {
-  const parts = project.effects.map(
-    (effect) => `+${Math.round(effect.change * 100)}% ${t(`need.${effect.need}`)}`,
+// What a project improves, as small chips coloured by need (Milestone 9).
+function EffectChips({ project }: { project: ProjectDef }) {
+  return (
+    <span className="effect-chips">
+      {project.effects.map((effect) => (
+        <span key={effect.need} className="effect-chip" style={{ color: NEED_COLORS[effect.need] }}>
+          <NeedIcon need={effect.need} size={12} />+{Math.round(effect.change * 100)}% {t(`need.${effect.need}`)}
+        </span>
+      ))}
+      {project.engagement > 0 && (
+        <span className="effect-chip neutral">
+          🤝 +{project.engagement} {t('panel.engagement')}
+        </span>
+      )}
+      {project.knowledgePerMonth > 0 && (
+        <span className="effect-chip neutral">
+          📚 {t('project.knowledgePerMonth', { value: project.knowledgePerMonth })}
+        </span>
+      )}
+    </span>
   )
-  if (project.engagement > 0) parts.push(`+${project.engagement} ${t('panel.engagement')}`)
-  if (project.knowledgePerMonth > 0) {
-    parts.push(t('project.knowledgePerMonth', { value: project.knowledgePerMonth }))
-  }
-  return parts.join(' · ')
 }
 
 // "1 volunteer" / "2 volunteers" for a Volunteer cost.
@@ -94,7 +109,10 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
           return (
             <li key={slot} className={`slot-row${expired ? ' expired' : renewable ? ' ending' : ''}`}>
               <span className="slot-info">
-                <span className="slot-name">{projectById(projects, projectId).name}</span>
+                <span className="slot-name">
+                  <span aria-hidden="true">{projectIcon(projectById(projects, projectId).visual)} </span>
+                  {projectById(projects, projectId).name}
+                </span>
                 <span className="slot-status">{status}</span>
               </span>
               <span className="slot-actions">
@@ -136,13 +154,23 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
             const ready = result.ok
             return (
               <div key={project.id} className={`project-option${ready ? '' : ' disabled'}`}>
+                <span className="project-emoji" aria-hidden="true">
+                  {projectIcon(project.visual)}
+                </span>
                 <div className="project-info">
                   <span className="project-name">{project.name}</span>
-                  <span className="project-meta">
-                    {t('project.cost', { value: project.cost })} ·{' '}
-                    {volunteersText(projectTimeCost(project.time, engagement))} · {lifetimeText(project)}
+                  <span className="project-pills">
+                    <span className="pill" title={t('resources.budget')}>
+                      💰 {project.cost.toLocaleString('en-GB')}
+                    </span>
+                    <span className="pill" title={t('resources.time')}>
+                      🙋 {volunteersText(projectTimeCost(project.time, engagement))}
+                    </span>
+                    <span className="pill" title={t('project.lifetime')}>
+                      {project.durationMonths === undefined ? '🏗️' : '⏳'} {lifetimeText(project)}
+                    </span>
                   </span>
-                  <span className="project-effects">{effectPreview(project)}</span>
+                  <EffectChips project={project} />
                   <span className="project-explain">{project.explain}</span>
                   {!ready && (
                     <span className="project-disabled-reason">
