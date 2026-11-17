@@ -119,9 +119,14 @@ export function drawBusLine(
   ctx.beginPath()
   pts.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)))
   ctx.lineJoin = 'round'
-  ctx.strokeStyle = color
-  ctx.lineWidth = Math.max(3, 5 * cam.zoom)
   ctx.lineCap = 'round'
+  const width = Math.max(3, 5 * cam.zoom)
+  // A soft casing first, so the route reads over busy district ground.
+  ctx.strokeStyle = 'rgba(251, 248, 236, 0.75)'
+  ctx.lineWidth = width + Math.max(3, 4 * cam.zoom)
+  ctx.stroke()
+  ctx.strokeStyle = color
+  ctx.lineWidth = width
   ctx.setLineDash([6, 6])
   ctx.stroke()
   ctx.restore()
