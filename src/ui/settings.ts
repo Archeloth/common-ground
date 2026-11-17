@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { applyNeedPalette } from './render/colors'
 
 // Player preferences (Milestone 8.6 main menu): audio volumes, reduced motion,
 // text size and "pause when panels open". These are per-device UI settings,
@@ -14,7 +15,14 @@ export interface Settings {
   reducedMotion: boolean
   largeText: boolean
   pauseOnPanels: boolean
+  // Post-Milestone 9 accessibility: the need colours, and a pattern on each
+  // need bar so needs never rely on colour alone.
+  needPalette: NeedPalette
+  needPatterns: boolean
 }
+
+export type NeedPalette = 'standard' | 'colourBlind'
+export const NEED_PALETTE_IDS: readonly NeedPalette[] = ['standard', 'colourBlind']
 
 const STORAGE_KEY = 'common-ground.settings'
 
@@ -36,6 +44,8 @@ export function defaultSettings(reducedMotion = systemPrefersReducedMotion()): S
     reducedMotion,
     largeText: false,
     pauseOnPanels: false,
+    needPalette: 'standard',
+    needPatterns: false,
   }
 }
 
@@ -68,6 +78,10 @@ export function parseSettings(raw: string | null, defaults: Settings): Settings 
     reducedMotion: flag(data.reducedMotion, defaults.reducedMotion),
     largeText: flag(data.largeText, defaults.largeText),
     pauseOnPanels: flag(data.pauseOnPanels, defaults.pauseOnPanels),
+    needPalette: NEED_PALETTE_IDS.includes(data.needPalette as NeedPalette)
+      ? (data.needPalette as NeedPalette)
+      : defaults.needPalette,
+    needPatterns: flag(data.needPatterns, defaults.needPatterns),
   }
 }
 
@@ -125,11 +139,14 @@ export function useSettings(): Settings {
   return useSyncExternalStore(subscribe, getSettings, getSettings)
 }
 
-// Reduced motion and text size are page-wide: attributes on <html> that the
-// CSS (and the canvas, through the hook) respond to.
+// Reduced motion, text size and need patterns are page-wide: attributes on
+// <html> that the CSS (and the canvas, through the hook) respond to. The need
+// palette is swapped in place for every reader of NEED_COLORS.
 export function applySettingsToDocument(settings: Settings): void {
   if (typeof document === 'undefined') return
   const root = document.documentElement
   root.dataset.motion = settings.reducedMotion ? 'reduced' : 'full'
   root.dataset.text = settings.largeText ? 'large' : 'normal'
+  root.dataset.needPatterns = settings.needPatterns ? 'on' : 'off'
+  applyNeedPalette(settings.needPalette)
 }

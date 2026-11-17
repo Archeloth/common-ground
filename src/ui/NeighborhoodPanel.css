@@ -113,6 +113,40 @@
   transition: width 900ms var(--ease-out);
 }
 
+/* Settings > Patterns on need bars: each need gets its own texture, so the
+   bars never depend on colour alone (colour-blind players, greyscale). */
+:root[data-need-patterns='on'] .need-fill {
+  --pattern-ink: rgba(255, 255, 255, 0.55);
+}
+
+:root[data-need-patterns='on'] .need-fill[data-need='energy'] {
+  background-image: repeating-linear-gradient(45deg, var(--pattern-ink) 0 2px, transparent 2px 6px);
+}
+
+:root[data-need-patterns='on'] .need-fill[data-need='food'] {
+  background-image: radial-gradient(var(--pattern-ink) 1.3px, transparent 1.6px);
+  background-size: 6px 6px;
+}
+
+:root[data-need-patterns='on'] .need-fill[data-need='mobility'] {
+  background-image: repeating-linear-gradient(0deg, var(--pattern-ink) 0 2px, transparent 2px 5px);
+}
+
+:root[data-need-patterns='on'] .need-fill[data-need='green'] {
+  background-image: repeating-linear-gradient(90deg, var(--pattern-ink) 0 2px, transparent 2px 6px);
+}
+
+:root[data-need-patterns='on'] .need-fill[data-need='waste'] {
+  background-image:
+    repeating-linear-gradient(45deg, var(--pattern-ink) 0 1.5px, transparent 1.5px 6px),
+    repeating-linear-gradient(-45deg, var(--pattern-ink) 0 1.5px, transparent 1.5px 6px);
+}
+
+:root[data-need-patterns='on'] .need-fill[data-need='housing'] {
+  background-image: conic-gradient(var(--pattern-ink) 25%, transparent 0 50%, var(--pattern-ink) 0 75%, transparent 0);
+  background-size: 8px 8px;
+}
+
 .need-label {
   display: inline-flex;
   align-items: center;

@@ -1,9 +1,11 @@
-import { updateSettings, useSettings } from './settings'
+import { NEED_PALETTE_IDS, updateSettings, useSettings } from './settings'
 import type { Settings } from './settings'
+import { NEED_PALETTES } from './render/colors'
+import { NEED_ORDER } from '../game/needs'
 import { t } from './i18n'
 
 type VolumeKey = 'masterVolume' | 'musicVolume' | 'interfaceVolume' | 'gameVolume'
-type FlagKey = 'muted' | 'reducedMotion' | 'largeText' | 'pauseOnPanels'
+type FlagKey = 'muted' | 'reducedMotion' | 'largeText' | 'pauseOnPanels' | 'needPatterns'
 
 const VOLUMES: VolumeKey[] = ['masterVolume', 'musicVolume', 'interfaceVolume', 'gameVolume']
 const FLAGS: FlagKey[] = ['reducedMotion', 'largeText', 'pauseOnPanels']
@@ -61,6 +63,35 @@ export default function SettingsScreen({ onBack }: { onBack: () => void }) {
         {FLAGS.map((id) => (
           <Toggle key={id} id={id} settings={settings} />
         ))}
+      </fieldset>
+
+      <fieldset>
+        <legend>{t('settings.colours')}</legend>
+        <div className="setting-choice" role="radiogroup" aria-label={t('settings.needPalette')}>
+          <span>
+            {t('settings.needPalette')}
+            <small>{t('settings.needPalette.hint')}</small>
+          </span>
+          <div className="choice-options">
+            {NEED_PALETTE_IDS.map((id) => (
+              <label key={id} className="choice-option">
+                <input
+                  type="radio"
+                  name="needPalette"
+                  checked={settings.needPalette === id}
+                  onChange={() => updateSettings({ needPalette: id })}
+                />
+                {t(`settings.needPalette.${id}`)}
+                <span className="palette-swatches" aria-hidden="true">
+                  {NEED_ORDER.map((need) => (
+                    <i key={need} style={{ background: NEED_PALETTES[id][need] }} />
+                  ))}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+        <Toggle id="needPatterns" settings={settings} />
       </fieldset>
 
       <div className="menu-row">

@@ -1,4 +1,5 @@
 import type { NeedId, NeighborhoodKind } from '../../game/types'
+import type { NeedPalette } from '../settings'
 
 // One flat ~12-colour palette — placeholder art, tuned by eye later
 // (development plan, "Art plan for an open-source project"). Nothing here is
@@ -29,13 +30,42 @@ export const COLORS = {
 // icon (and the history chart has a table view). Violet and blue are too close
 // for some colour-blind players when compared directly, so the history chart
 // draws needs as separate small charts, never six lines on one plot.
-export const NEED_COLORS: Record<NeedId, string> = {
+const STANDARD_NEED_COLORS: Record<NeedId, string> = {
   energy: '#eda100',
   food: '#e34948',
   mobility: '#2a78d6',
   green: '#0ca30c',
   waste: '#6250d6',
   housing: '#e87ba4',
+}
+
+// The colour-blind palette (Settings > Need colours), built on the Okabe-Ito
+// hues with a deeper green. Validated the same way, but stricter: every PAIR
+// (not just neighbours) passes colour-blind separation (worst 9.0, protan) and
+// the normal-vision floor (worst 15.6). In the standard palette, Food red and
+// Green space green are almost the same colour for deuteranopes (2.5).
+// Energy, Waste and Housing are below 3:1 contrast, handled as above.
+const COLOUR_BLIND_NEED_COLORS: Record<NeedId, string> = {
+  energy: '#e69f00',
+  food: '#d55e00',
+  mobility: '#0072b2',
+  green: '#008c66',
+  waste: '#56b4e9',
+  housing: '#cc79a7',
+}
+
+export const NEED_PALETTES: Record<NeedPalette, Readonly<Record<NeedId, string>>> = {
+  standard: STANDARD_NEED_COLORS,
+  colourBlind: COLOUR_BLIND_NEED_COLORS,
+}
+
+// The live need colours. Like the sprite PALETTE and the seasons, the chosen
+// palette is copied in place (applyNeedPalette, from the settings), so every
+// reader - bars, chips, chart and map - follows the setting.
+export const NEED_COLORS: Record<NeedId, string> = { ...STANDARD_NEED_COLORS }
+
+export function applyNeedPalette(palette: NeedPalette): void {
+  Object.assign(NEED_COLORS, NEED_PALETTES[palette])
 }
 
 export const KIND_COLORS: Record<NeighborhoodKind, string> = {

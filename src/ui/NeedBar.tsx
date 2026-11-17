@@ -14,7 +14,8 @@ export default function NeedBar({ need, label, value }: { need: NeedId; label: s
         {label}
       </span>
       <div className="need-track">
-        <div className="need-fill" style={{ width: `${percent}%`, background: NEED_COLORS[need] }} />
+        {/* backgroundColor, not background: the optional pattern is a CSS background-image. */}
+        <div className="need-fill" data-need={need} style={{ width: `${percent}%`, backgroundColor: NEED_COLORS[need] }} />
       </div>
       <span className="need-value">{percent}%</span>
     </div>

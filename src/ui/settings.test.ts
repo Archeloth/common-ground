@@ -22,6 +22,15 @@ describe('settings', () => {
     expect(parsed.muted).toBe(defaults.muted)
   })
 
+  it('keeps a known need palette and the pattern flag, and ignores unknown palettes', () => {
+    expect(defaults.needPalette).toBe('standard')
+    expect(defaults.needPatterns).toBe(false)
+    const parsed = parseSettings(JSON.stringify({ needPalette: 'colourBlind', needPatterns: true }), defaults)
+    expect(parsed.needPalette).toBe('colourBlind')
+    expect(parsed.needPatterns).toBe(true)
+    expect(parseSettings(JSON.stringify({ needPalette: 'rainbow' }), defaults).needPalette).toBe('standard')
+  })
+
   it('survives storage that throws on every call', () => {
     const broken = {
       getItem: () => {
