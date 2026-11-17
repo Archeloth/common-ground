@@ -84,9 +84,10 @@ describe('versioned save files', function () {
       5: function (s: unknown) { return { ...(s as object), version: 6, fromFive: true } },
       6: function (s: unknown) { return { ...(s as object), version: 7, fromSix: true } },
       7: function (s: unknown) { return { ...(s as object), version: 8, fromSeven: true } },
+      8: function (s: unknown) { return { ...(s as object), version: 9, fromEight: true } },
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(8)
+    expect(migrated.version).toBe(9)
     expect((migrated as unknown as { fromFour: boolean }).fromFour).toBe(true)
     expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
     expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
@@ -98,9 +99,9 @@ describe('versioned save files', function () {
     expect(function () { migrateSave({ version: 0 } as never) }).toThrow(/no migration/)
   })
 
-  it('the shipped migration table covers the earlier shapes (1 to 7)', function () {
-    expect(CURRENT_SAVE_VERSION).toBe(8)
-    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6, 7])
+  it('the shipped migration table covers the earlier shapes (1 to 8)', function () {
+    expect(CURRENT_SAVE_VERSION).toBe(9)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
   })
 
   it('migrates a version-1 save to version 4, seeding research, engagement, messages and the finished tutorial', function () {
@@ -219,5 +220,30 @@ describe('versioned save files', function () {
     const result = parseAndLoad(JSON.stringify(v7))
     expect(result.ok).toBe(true)
     if (result.ok) expect(result.save.state.history).toEqual([])
+  })
+
+  it('migrates a version-8 save to version 9 with an empty journal and no stories yet', function () {
+    const v8 = createSave(playedState()) as unknown as { version: number; state: { [key: string]: unknown } }
+    v8.version = 8
+    delete v8.state.wildlife
+    delete v8.state.wildlifeNotices
+    delete v8.state.stories
+    delete v8.state.storyNotices
+    const result = parseAndLoad(JSON.stringify(v8))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.save.version).toBe(9)
+      expect(result.save.state.wildlife).toEqual({})
+      expect(result.save.state.wildlifeNotices).toEqual([])
+      expect(result.save.state.stories).toEqual({})
+      expect(result.save.state.storyNotices).toEqual([])
+    }
+  })
+
+  it('refuses a save whose journal names an unknown species', function () {
+    const save = createSave(playedState()) as unknown as { state: { wildlife: unknown } }
+    save.state.wildlife = { dodo: { day: 3, neighborhood: 'old_town' } }
+    const result = parseAndLoad(JSON.stringify(save))
+    expect(result.ok).toBe(false)
   })
 })

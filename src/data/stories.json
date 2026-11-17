@@ -1,0 +1,172 @@
+{
+  "residents": [
+    {
+      "id": "priya",
+      "name": "Priya",
+      "role": "Cyclist and nurse",
+      "neighborhood": "station_quarter",
+      "avatar": { "skin": "#a5714f", "hair": "#2b1d16", "shirt": "#2a78d6", "accessory": "helmet" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 61 }],
+          "text": "Hi! I'm Priya. I cycle to the hospital every morning, and the ring road scares me half to death. One safe route would change my whole week."
+        },
+        {
+          "when": [{ "type": "project", "project": "safe_streets" }],
+          "text": "The safe streets mean my neighbour's kids now ride to school alongside me. We call ourselves the 7:40 convoy."
+        },
+        {
+          "when": [{ "type": "need", "need": "mobility", "min": 0.78 }],
+          "text": "I sold the car I hardly used and took my mum to the seaside by train with the money. Getting around Willowbrook is easy now."
+        }
+      ]
+    },
+    {
+      "id": "edith",
+      "name": "Edith",
+      "role": "Allotment keeper, plot 14",
+      "neighborhood": "allotment_row",
+      "avatar": { "skin": "#f1c9a5", "hair": "#d9d6d0", "shirt": "#7a9a4a", "accessory": "hat" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 91 }],
+          "text": "Edith here, plot 14. I've grown runner beans on this allotment for forty years. Half the plots stand empty now, and the young ones don't know where to start."
+        },
+        {
+          "when": [{ "type": "project", "project": "compost_point" }],
+          "text": "The compost point is a marvel. Young Sam from plot 9 asked me how to make leaf mould, so now I teach on Saturdays. Tea provided."
+        },
+        {
+          "when": [{ "type": "need", "need": "food", "min": 0.9 }],
+          "text": "There's a waiting list for plots again! We sent forty jars of chutney to the food market. I've never been so busy, or so happy."
+        }
+      ]
+    },
+    {
+      "id": "rafael",
+      "name": "Rafael",
+      "role": "Grocer on Market Street",
+      "neighborhood": "old_town",
+      "avatar": { "skin": "#c68b62", "hair": "#3a2a20", "shirt": "#e8e2d0", "accessory": "apron" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 121 }],
+          "text": "Morning! Rafael, from the corner shop on Market Street. The supermarket on the bypass took most of my customers. I'd love to sell local food, if only I could find any."
+        },
+        {
+          "when": [{ "type": "town", "condition": { "type": "projectCount", "project": "local_food_market", "min": 1 } }],
+          "text": "Saturdays at the food market are wonderful chaos. I buy apples from Orchard Lane and eggs from Northfield, and people are coming back to the high street."
+        },
+        {
+          "when": [{ "type": "satisfaction", "min": 74 }],
+          "text": "My daughter wants to take over the shop one day. Ten years ago I'd have told her to leave town. Now I tell her Willowbrook is going places."
+        }
+      ]
+    },
+    {
+      "id": "joe",
+      "name": "Joe",
+      "role": "Works at the old mill",
+      "neighborhood": "mill_yard",
+      "avatar": { "skin": "#e0ac85", "hair": "#8a6a48", "shirt": "#5b6b7a", "accessory": "cap" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 151 }],
+          "text": "Joe, from the old mill. The heating bills here would make you weep, and half our kit gets thrown out the moment it breaks."
+        },
+        {
+          "when": [{ "type": "town", "condition": { "type": "projectCount", "project": "repair_cafe", "min": 1 } }],
+          "text": "Turns out I'm good at fixing toasters. Every other Thursday I run a bench at the repair café, and people bring me cake."
+        },
+        {
+          "when": [{ "type": "project", "project": "energy_coop" }],
+          "text": "The energy co-op put panels on the mill roof. The lads joke that we finally make something cleaner than smoke. Proud of that, I am."
+        }
+      ]
+    },
+    {
+      "id": "amara",
+      "name": "Amara",
+      "role": "Teacher at School Green",
+      "neighborhood": "school_green",
+      "avatar": { "skin": "#7a4b32", "hair": "#1d1411", "shirt": "#c75b8f", "accessory": "glasses" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 181 }],
+          "text": "I'm Amara, I teach Year 4. My class drew maps of their walk to school. Most of them drew cars. Only one drew a tree."
+        },
+        {
+          "when": [{ "type": "project", "project": "safe_streets" }],
+          "text": "With the safe streets in, we walk to school as a 'walking bus'. The children count birds on the way. Yesterday's record: eleven."
+        },
+        {
+          "when": [{ "type": "need", "need": "green", "min": 0.7 }],
+          "text": "This year the children drew their maps again. They're full of trees, flowers and one very large hedgehog. I've pinned it by my desk."
+        }
+      ]
+    },
+    {
+      "id": "nadia",
+      "name": "Nadia",
+      "role": "Night-shift nurse, fourth floor",
+      "neighborhood": "linden_flats",
+      "avatar": { "skin": "#d9a27c", "hair": "#4a2c1d", "shirt": "#3f8f7a", "accessory": "scarf" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 211 }],
+          "text": "Nadia, fourth floor. I work nights. In winter our flat is so cold the windows stream with water, and my son's cough never quite goes away."
+        },
+        {
+          "when": [{ "type": "project", "project": "retrofit_program" }],
+          "text": "They insulated our block! The draught under the door has gone and the damp patch in the bedroom is drying out. I slept right through the afternoon."
+        },
+        {
+          "when": [{ "type": "need", "need": "housing", "min": 0.7 }],
+          "text": "Our energy bill is half what it was. My son hasn't coughed all winter. The money we save goes in a jar marked 'holiday'."
+        }
+      ]
+    },
+    {
+      "id": "tom",
+      "name": "Tom",
+      "role": "Farmer, fourth generation",
+      "neighborhood": "northfield_farms",
+      "avatar": { "skin": "#e6b48f", "hair": "#b0703a", "shirt": "#8a5a3a", "accessory": "cap" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 241 }],
+          "text": "Tom, Northfield Farms. Fourth generation. Money's tight, the soil is tired, and I'm not sure my kids will want this life."
+        },
+        {
+          "when": [{ "type": "project", "project": "pocket_meadow" }],
+          "text": "Left the field edges wild this year, like you suggested. The skylarks are back over the barley and the bees are doing half my work."
+        },
+        {
+          "when": [{ "type": "need", "need": "food", "min": 0.9 }],
+          "text": "I sell straight to the town market now. Better price, and I know who eats my food. My daughter's studying soil science. Reckon she'll be back."
+        }
+      ]
+    },
+    {
+      "id": "leo",
+      "name": "Leo",
+      "role": "Aged nine, lives by the weir",
+      "neighborhood": "weir_bend",
+      "avatar": { "skin": "#f0c09a", "hair": "#d8a040", "shirt": "#e34948", "accessory": "none" },
+      "chapters": [
+        {
+          "when": [{ "type": "dayAtLeast", "day": 271 }],
+          "text": "My name is Leo and I am nine. Mum says when I was little the river came into our garden. I want to see an otter but Grandad says they're all gone."
+        },
+        {
+          "when": [{ "type": "project", "project": "rain_garden" }],
+          "text": "We planted a rain garden at the end of our road. When it rains it fills up like a bath, then soaks away slowly. Our garden stays dry now."
+        },
+        {
+          "when": [{ "type": "species", "species": "otter" }],
+          "text": "I SAW AN OTTER!!! It was by the weir eating a fish. Grandad cried a bit. He says he hasn't seen one since he was my age."
+        }
+      ]
+    }
+  ]
+}

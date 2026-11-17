@@ -134,6 +134,9 @@ export type Command =
   // Renew every lapsed project the volunteers can cover (playtest).
   | { type: 'renewAll' }
   | { type: 'dismissExpiryNotice'; notice: string }
+  // Post-Milestone 9: the journal's discovery note and a resident's postcard.
+  | { type: 'dismissWildlifeNotice'; species: string }
+  | { type: 'dismissStoryNotice'; notice: string }
 
 // Machine-readable refusal codes; the UI maps each to t("reason.<code>").
 export type Reason =
@@ -226,6 +229,14 @@ export interface GameState {
   // The intro step advances with the tutorialNext command, action steps with
   // tick() once their condition is met.
   tutorialStep: number
+  // The wildlife journal (post-Milestone 9): species id -> first sighting.
+  wildlife: { [species: string]: { day: number; neighborhood: string } }
+  // Species found since the player last dismissed their discovery note.
+  wildlifeNotices: string[]
+  // Citizen stories: resident id -> chapters reached so far (absent = 0).
+  stories: { [resident: string]: number }
+  // "resident:chapter" keys of postcards not yet read.
+  storyNotices: string[]
 }
 
 export type MessageStatus = 'open' | 'done'

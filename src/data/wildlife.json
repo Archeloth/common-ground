@@ -1,0 +1,130 @@
+{
+  "species": [
+    {
+      "id": "badger",
+      "name": "Badger",
+      "where": ["woodland"],
+      "conditions": [{ "type": "need", "need": "green", "min": 0.85 }],
+      "hint": "Shy and nocturnal, at home in old, undisturbed woodland.",
+      "note": "Badgers live in family groups in underground setts that can be used for generations. They come out at dusk to forage, mostly for earthworms.",
+      "confidence": "established"
+    },
+    {
+      "id": "bumblebee",
+      "name": "Buff-tailed bumblebee",
+      "where": ["old_town", "apartments", "suburb", "riverside", "industrial_edge", "retail_park", "farmland", "woodland"],
+      "conditions": [
+        { "type": "project", "project": "pocket_meadow" },
+        { "type": "season", "seasons": ["spring", "summer"] }
+      ],
+      "hint": "Visits flower meadows in the warmer months.",
+      "note": "Bumblebees can fly in cooler weather than many other bees. Flower-rich meadows and gardens feed them from early spring into autumn.",
+      "confidence": "established"
+    },
+    {
+      "id": "house_sparrow",
+      "name": "House sparrow",
+      "where": ["old_town", "apartments", "suburb"],
+      "conditions": [{ "type": "project", "project": "community_garden" }],
+      "hint": "Likes busy gardens with plenty of insects for its chicks.",
+      "note": "House sparrows have declined sharply in many British towns. Dense shrubs, insects to feed their chicks and safe nesting spots help them come back.",
+      "confidence": "established"
+    },
+    {
+      "id": "hedgehog",
+      "name": "Hedgehog",
+      "where": ["suburb"],
+      "conditions": [{ "type": "need", "need": "green", "min": 0.68 }],
+      "hint": "Needs green, connected gardens in the suburbs.",
+      "note": "Hedgehogs can travel around a mile in a night looking for food. A small gap at the bottom of a garden fence, about 13 cm square, lets them travel between gardens.",
+      "confidence": "established"
+    },
+    {
+      "id": "swift",
+      "name": "Swift",
+      "where": ["old_town", "apartments"],
+      "conditions": [
+        { "type": "project", "project": "retrofit_program" },
+        { "type": "season", "seasons": ["summer"] }
+      ],
+      "hint": "Arrives for the summer and nests in the walls of older buildings.",
+      "note": "Swifts spend almost their whole lives on the wing and nest in small gaps in buildings. Retrofits can seal those gaps, so good retrofits add built-in swift bricks.",
+      "confidence": "established"
+    },
+    {
+      "id": "common_frog",
+      "name": "Common frog",
+      "where": ["riverside", "woodland"],
+      "conditions": [
+        { "type": "project", "project": "rain_garden" },
+        { "type": "season", "seasons": ["spring"] }
+      ],
+      "hint": "Look for damp, planted ground in spring.",
+      "note": "Common frogs gather to spawn in shallow water in early spring. Rain gardens, ponds and damp planting give them places to feed and shelter.",
+      "confidence": "established"
+    },
+    {
+      "id": "kingfisher",
+      "name": "Kingfisher",
+      "where": ["riverside"],
+      "conditions": [
+        { "type": "need", "need": "waste", "min": 0.65 },
+        { "type": "need", "need": "green", "min": 0.6 }
+      ],
+      "hint": "Needs a clean river full of small fish.",
+      "note": "Kingfishers dive from a perch to catch small fish, so they need clear water. They nest in tunnels dug into steep earth riverbanks.",
+      "confidence": "established"
+    },
+    {
+      "id": "otter",
+      "name": "Otter",
+      "where": ["riverside"],
+      "conditions": [
+        { "type": "project", "project": "rain_garden" },
+        { "type": "need", "need": "green", "min": 0.7 }
+      ],
+      "hint": "A sign of a truly clean, wild riverbank.",
+      "note": "Otters almost disappeared from English rivers by the 1970s, poisoned by pesticides and pollution. Cleaner water let them return, and by 2011 they were found in every English county again.",
+      "confidence": "established"
+    },
+    {
+      "id": "skylark",
+      "name": "Skylark",
+      "where": ["farmland"],
+      "conditions": [{ "type": "project", "project": "pocket_meadow" }],
+      "hint": "Sings high above open farmland with wild margins.",
+      "note": "Skylarks nest on the ground in open fields and sing while hovering high overhead. Wild field margins and meadows give them safe places to raise chicks.",
+      "confidence": "established"
+    },
+    {
+      "id": "barn_owl",
+      "name": "Barn owl",
+      "where": ["farmland"],
+      "conditions": [{ "type": "need", "need": "green", "min": 0.82 }],
+      "hint": "Hunts at dusk over rough, grassy farmland.",
+      "note": "Barn owls hunt voles over rough grassland. Uncut field margins full of small mammals, and nest boxes in barns and trees, help them thrive.",
+      "confidence": "established"
+    },
+    {
+      "id": "stag_beetle",
+      "name": "Stag beetle",
+      "where": ["woodland", "suburb"],
+      "conditions": [
+        { "type": "project", "project": "compost_point" },
+        { "type": "season", "seasons": ["summer"] }
+      ],
+      "hint": "Its young grow for years in rotting wood.",
+      "note": "Stag beetle larvae spend several years underground feeding on rotting wood before emerging as adults in early summer. Log piles and dead wood left in place give them a home.",
+      "confidence": "established"
+    },
+    {
+      "id": "peregrine",
+      "name": "Peregrine falcon",
+      "where": ["apartments", "industrial_edge"],
+      "conditions": [{ "type": "satisfaction", "min": 62 }],
+      "hint": "Nests high up, on tall buildings that work like cliffs.",
+      "note": "Diving peregrine falcons are among the fastest animals on Earth. Tall buildings work like cliffs for them, and many cities now have nesting pairs.",
+      "confidence": "established"
+    }
+  ]
+}

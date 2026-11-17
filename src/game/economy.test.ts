@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { finishConstruction } from './testHelpers'
+import { finishConstruction, withJournalComplete } from './testHelpers'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
@@ -16,7 +16,7 @@ function settle(state: GameState): GameState {
 
 describe('monthlyIncome (shown in the top bar)', () => {
   it('is exactly what the monthly settlement pays', () => {
-    const s = initialState(scenario)
+    const s = withJournalComplete(initialState(scenario))
     const income = monthlyIncome(s, scenario)
     const after = settle(s)
     expect(after.budget - s.budget).toBe(income.budget)
@@ -25,7 +25,7 @@ describe('monthlyIncome (shown in the top bar)', () => {
   })
 
   it('adds the Knowledge of running workshops', () => {
-    let s: GameState = { ...initialState(scenario), research: [...initialState(scenario).research, 'community_learning'] }
+    let s: GameState = withJournalComplete({ ...initialState(scenario), research: [...initialState(scenario).research, 'community_learning'] })
     const before = monthlyIncome(s, scenario).knowledge
     const started = applyCommand(s, { type: 'startProject', neighborhood: 'school_green', project: 'workshop_series' })
     if (!started.ok) throw new Error(started.reason)

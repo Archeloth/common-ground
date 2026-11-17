@@ -7,6 +7,8 @@ import { loadTechnologies } from './technologies'
 import { loadMilestones } from './milestones'
 import { TUTORIAL_DONE } from './tutorial'
 import { HISTORY_MAX_POINTS } from './constants'
+import { loadWildlife } from './wildlife'
+import { loadStories, parseStoryNoticeKey } from './stories'
 
 // Runtime validation of a GameState. Used when loading saved games (a broken
 // save must show a friendly message, never crash) and by the invariant tests.
@@ -233,6 +235,51 @@ export function validateGameState(state: unknown): string[] {
     (s.tutorialStep as number) > TUTORIAL_DONE
   ) {
     problems.push(`tutorialStep must be an integer between 0 and ${TUTORIAL_DONE}`)
+  }
+
+  // Post-Milestone 9: the wildlife journal and the citizen stories.
+  const species = new Set(loadWildlife().map((sp) => sp.id))
+  if (s.wildlife === null || typeof s.wildlife !== 'object' || Array.isArray(s.wildlife)) {
+    problems.push('wildlife must be an object')
+  } else {
+    for (const [id, sighting] of Object.entries(s.wildlife as Record<string, unknown>)) {
+      const seen = sighting as { day?: unknown; neighborhood?: unknown } | null
+      if (!species.has(id)) problems.push(`wildlife.${id} is not a known species`)
+      else if (
+        !seen ||
+        typeof seen !== 'object' ||
+        !Number.isInteger(seen.day) ||
+        (seen.day as number) < 1 ||
+        !scenario.neighborhoods.some((n) => n.id === seen.neighborhood)
+      ) {
+        problems.push(`wildlife.${id} must be a sighting { day, neighborhood }`)
+      }
+    }
+  }
+  checkIdList(s.wildlifeNotices, 'wildlifeNotices', species, problems)
+
+  const residents = loadStories(scenario)
+  if (s.stories === null || typeof s.stories !== 'object' || Array.isArray(s.stories)) {
+    problems.push('stories must be an object')
+  } else {
+    for (const [id, reached] of Object.entries(s.stories as Record<string, unknown>)) {
+      const resident = residents.find((r) => r.id === id)
+      if (!resident) problems.push(`stories.${id} is not a known resident`)
+      else if (!Number.isInteger(reached) || (reached as number) < 0 || (reached as number) > resident.chapters.length) {
+        problems.push(`stories.${id} must be a chapter count`)
+      }
+    }
+  }
+  if (!Array.isArray(s.storyNotices)) {
+    problems.push('storyNotices must be an array')
+  } else {
+    s.storyNotices.forEach((key, index) => {
+      const parsed = typeof key === 'string' ? parseStoryNoticeKey(key) : null
+      const resident = parsed ? residents.find((r) => r.id === parsed.resident) : undefined
+      if (!parsed || !resident || parsed.chapter >= resident.chapters.length) {
+        problems.push(`storyNotices[${index}] must be a "resident:chapter" key`)
+      }
+    })
   }
 
   // Last line of defence: not a single non-finite number anywhere.

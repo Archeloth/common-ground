@@ -70,6 +70,10 @@ export function initialState(scenario: ScenarioDef): GameState {
     busLines: [],
     messages,
     tutorialStep: 0,
+    wildlife: {},
+    wildlifeNotices: [],
+    stories: {},
+    storyNotices: [],
   }
 }
 
@@ -176,6 +180,14 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
 
   if (command.type === 'dismissExpiryNotice') {
     return { ok: true, state: { ...state, expiryNotices: state.expiryNotices.filter((n) => n !== command.notice) } }
+  }
+
+  if (command.type === 'dismissWildlifeNotice') {
+    return { ok: true, state: { ...state, wildlifeNotices: state.wildlifeNotices.filter((s) => s !== command.species) } }
+  }
+
+  if (command.type === 'dismissStoryNotice') {
+    return { ok: true, state: { ...state, storyNotices: state.storyNotices.filter((n) => n !== command.notice) } }
   }
 
   if (command.type === 'townMeeting') return applyTownMeeting(state, command.neighborhood)

@@ -5,6 +5,8 @@ import { loadProjects, projectById } from './projects'
 import { loadMilestones, milestoneCompleted } from './milestones'
 import { messageCatalog, messageFulfilled, applyMessageReward } from './messages'
 import { advanceTutorial } from './tutorial'
+import { discoverWildlife } from './wildlife'
+import { advanceStories } from './stories'
 import { activeProjectIds, expiryNoticeKey } from './expiry'
 import { monthlyIncome, monthlyUpkeep, volunteerCap } from './economy'
 import { townNeedAverage, townSatisfaction } from './milestones'
@@ -222,8 +224,13 @@ export function tick(state: GameState): GameState {
     )
   }
 
-  return advanceTutorial(
-    { ...withNewSim, knowledge, engagement, messages, milestones, milestoneNotices, history },
-    scenario,
-  )
+  let next: GameState = { ...withNewSim, knowledge, engagement, messages, milestones, milestoneNotices, history }
+
+  // Post-Milestone 9: once a month, a new species may turn up in the journal
+  // and a resident may send a postcard (at most one of each).
+  if (day > 1 && (day - 1) % TICKS_PER_MONTH === 0) {
+    next = advanceStories(discoverWildlife(next, scenario), scenario)
+  }
+
+  return advanceTutorial(next, scenario)
 }
