@@ -12,6 +12,7 @@ import { loadScenario } from './game/scenario'
 import { t } from './ui/i18n'
 import { installUiSounds } from './ui/uiSounds'
 import { refreshMusic } from './ui/music'
+import { applyUpdate, useUpdateReady } from './ui/offline'
 import './App.css'
 import './ui/mobile.css'
 
@@ -30,6 +31,7 @@ function App() {
   const [lexicon, setLexicon] = useState<LexiconEntryId | null>(null)
   const saves = useSaves(store, setNotice)
   const settings = useSettings()
+  const updateReady = useUpdateReady()
 
   // The music follows the volume settings live (and is never hushed in the menu).
   useEffect(() => {
@@ -121,6 +123,14 @@ function App() {
           onLexicon={setLexicon}
           onMenu={toMenu}
         />
+      )}
+      {screen === 'menu' && updateReady && (
+        <div className="update-banner" role="status">
+          <span>{t('offline.updateReady')}</span>
+          <button type="button" onClick={applyUpdate}>
+            {t('offline.reload')}
+          </button>
+        </div>
       )}
       {lexicon && (
         <Lexicon

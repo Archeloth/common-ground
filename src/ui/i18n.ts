@@ -280,6 +280,8 @@ const MESSAGES: Record<string, string> = {
   'settings.largeText.hint': 'Make all text and buttons a size bigger.',
   'settings.pauseOnPanels': 'Pause when panels open',
   'settings.pauseOnPanels.hint': 'Opening a menu, the lexicon or a neighbourhood pauses time; closing it resumes.',
+  'offline.updateReady': 'A new version of Common Ground is ready.',
+  'offline.reload': 'Reload now',
   'settings.colours': 'Colours',
   'settings.needPalette': 'Need colours',
   'settings.needPalette.hint': 'The colours of energy, food, mobility, green space, waste and housing.',
