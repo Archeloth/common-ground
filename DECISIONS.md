@@ -476,3 +476,56 @@ drawer closes.
 
 **Music**: the 96 kbps re-encode (2.2 MB) replaces the 7.4 MB original in
 `public/`; the original stays in `audio-src/`.
+
+## 17 Nov 2026 - After Milestone 9: map, journal, stories, colours, offline
+
+**Districts share borders with their land neighbours.** The 4x4 grid became
+staggered rows, and each district's outline (`src/game/outline.ts`) reaches
+toward the neighbours it shares land with until they meet on a shared, gently
+wavy seam. The seam is defined once per pair (seeded from the sorted ids), so
+both sides compute the same curve. Every outline is clipped against every
+other district's seam and kept clear of the river, so outlines never overlap
+and hit-testing no longer depends on draw order. Districts that are not
+neighbours keep a strip of open ground, so touching always means "connected".
+The neighbour graph did not change, so saved bus lines stay valid. Tests check
+no overlaps, a shared edge for every land pair, a gap for every other pair and
+river clearance.
+
+**Wildlife journal (save v9).** Twelve species, each tied to kinds of district
+and to conditions there: a project (rain garden, meadow, compost), a need level
+or a season. Conditions are checked per district by `conditions.ts`, which also
+reuses the milestone conditions for town-wide checks. At most one new species a
+month, +1 Knowledge each: a small nudge, never a balance lever. The badger in
+the old woodland is the deliberate first find (month one), so players learn the
+journal exists. Every note is a short real-world fact with a confidence tag.
+Discovered species are drawn on the map wherever their home is right for them
+now, so the map shows what is living there, not just what was once seen.
+
+**Citizen stories.** Eight fictional residents, three chapters each, whose
+conditions are checked against their own district. At most one postcard a
+month, introductions before follow-ups, and none in the first two months. The
+postcard never pauses the game and waits for the tutorial card to finish, so
+the bottom-left corner never holds two things at once. Leo's last chapter
+waits for the otter in the journal: the two features tell one story.
+
+**A colour-blind need palette, validated for every pair.** The standard palette
+passes colour-blind checks for neighbouring needs only; its food red and green
+space green are almost the same for deuteranopes (Delta E 2.5). The alternative
+uses the Okabe-Ito hues with a deeper green (#008c66) and passes every pair
+(worst 9.0) and the normal-vision floor (worst 15.6). The palette is copied into
+`NEED_COLORS` in place, like the season palette, so every reader follows it. An
+optional pattern per need bar (stripes, dots, crosshatch, checks) means the bars
+never rely on colour alone.
+
+**Offline play without a dependency.** A small Vite plugin
+(`scripts/offline-plugin.mjs`) writes `sw.js` at build time, precaching the
+bundle and every public file; the cache name is a hash of their contents, so a
+new build replaces it. Pages load network-first, files cache-first, and music
+byte ranges are served from the cache. A new version is offered on the main
+menu only (the game has autosaved by then) and never forces a reload.
+`vite-plugin-pwa` was not used: the hand-written worker is about 60 lines,
+and the project keeps its dependencies minimal.
+
+**Weather events are deferred** (a choice of priorities, not difficulty). The
+seasons still never change needs or money; they now also decide which wildlife
+is about (frogs in spring, swifts in summer).
