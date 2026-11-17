@@ -556,6 +556,11 @@ Done during Milestone 9 polish, from playtest feedback: undo for the last
 action, construction time, a town history chart, seasons (visual), background
 music with separate volume sliders, and a cooldown on town meetings.
 
+Done after Milestone 9 (17 Nov 2026): citizen stories (2), the wildlife journal
+(3), colour-blind palettes (7) and offline play (10), plus a new map: districts
+sit off the grid and share borders with their land neighbours. Weather events
+(1) are deferred. See DECISIONS.md.
+
 The bigger ideas, roughly in the order they would pay off. Each keeps the
 pillars: gentle, honest, never punishing.
 
@@ -563,26 +568,114 @@ pillars: gentle, honest, never punishing.
    two, announced a month ahead. Resilient projects (street trees, rain
    gardens, retrofits) visibly soften them; nothing is ever destroyed. Builds
    on the seasons that are already drawn.
-2. **Citizen stories.** Five to ten recurring residents with short notes whose
+2. **(Done)** **Citizen stories.** Five to ten recurring residents with short notes whose
    lives change as their district improves (the cyclist, the allotment
    grandmother, the shop owner).
-3. **Wildlife journal.** Species appear as green space and biodiversity rise
+3. **(Done)** **Wildlife journal.** Species appear as green space and biodiversity rise
    (bees, hedgehogs, swifts, otters), each with a short real-world note, and are
    collected in a journal.
 4. **Before/after slider and photo mode.** Compare the town now with day one,
    hide the interface, and save the picture.
-5. **More scenarios and seeded freeplay.** A coastal town, a mountain village,
-   and a random-seed mode, all from the same content files.
+5. **World regions.** Three new scenarios elsewhere in the world, each with its
+   own research and look: see Milestone 10 below. Seeded freeplay and more
+   European towns (coastal, mountain) come after it.
 6. **Translations.** Every string already goes through `t()`; add a language
    picker and invite contributors.
-7. **Colour-blind palettes.** An alternative need palette (validated like the
+7. **(Done)** **Colour-blind palettes.** An alternative need palette (validated like the
    current one) and optional patterns on the need bars.
 8. **Day and night.** A slow light cycle with lit windows at night; retrofitted
    homes glow warmest.
 9. **Optional gentle challenges.** Seeded weekly goals with no streaks and no
    penalties.
-10. **Install for offline play (PWA).** A manifest and a service worker so the
+10. **(Done)** **Install for offline play (PWA).** A manifest and a service worker so the
     game opens without a connection.
+
+### Milestone 10: World regions (5 to 6 months in total)
+
+Willowbrook teaches sustainability through the eyes of a temperate English town:
+gas heating, retrofits, buses across a river. Most of the world faces different
+problems and already has its own answers. This milestone adds three regions, in
+this order: an oasis village in the Sahel or Middle East, a mountain village in
+East Asia, and a river town in the Amazon. Each one has its own districts,
+research, seasons and look.
+
+**How hard is it?** Moderate. The core simulation (coverage ratios,
+satisfaction, engagement, projects, research, Knowledge) does not care where the
+town is. Seven places in the code assume one temperate English town:
+
+| What assumes Willowbrook | Where it lives | Change needed | Size |
+| --- | --- | --- | --- |
+| One scenario | `loadScenario()` in `src/game/scenario.ts`, used by about 15 modules | A scenario registry and `setActiveScenario(id)`, set on new game or load; the save stores `scenarioId` (save v10; old saves become Willowbrook) | Medium, mechanical |
+| Eight fixed district kinds | `NEIGHBORHOOD_KINDS` in `src/game/types.ts`, `data/neighborhoods.json`, `KIND_COLORS`, the layout recipes | New kinds per region (old ksar, oasis gardens, rice terraces, floodplain village, forest), each tagged with its region | Medium |
+| Six needs with fixed weights | `Needs` in `src/game/types.ts`, the satisfaction formula | Add a water need (weight 0 and hidden in Willowbrook); weights per scenario; housing comfort means cooling in hot regions | Medium, save migration |
+| One research and project catalog | `data/technologies.json`, `data/projects.json` | Each entry lists its regions, or "all"; a shared core stays (gardens, compost, repair cafés, participatory budgeting) | Small code, large content |
+| A river with bridges is required | `validateScenario`, `river` and `bridges` in the scenario | Water features become a list (river, oasis, wadi, coast) with crossings (bridge, ford, ferry); a river is optional | Medium |
+| Bus lines are the only link | `startBusLine`, `busLines` | A transport mode per scenario (bus, shared minibus, river boat) with its own name, icon and drawing; same rules | Small |
+| Four temperate seasons | `src/game/calendar.ts`, `SEASON_LOOKS` in `src/ui/render/scene/season.ts` | Each scenario declares its seasons (wet and dry, high and low water, a rainy season) | Small to medium |
+
+**Graphics are the cheaper half.** Every sprite is drawn in code, with no image
+files, so a regional look is a theme object: the palettes (`PALETTE` in
+`src/ui/render/sprites/kit.ts`, `COLORS` and `KIND_COLORS` in
+`src/ui/render/colors.ts`), building and tree recipes, wildlife and season
+looks. A palette swap takes a day. New building and tree shapes are the real
+cost, roughly as much code again as today's buildings and decorations (about 900
+lines) per region.
+
+**Principles**
+
+- Fictional towns inspired by real places, never a real named village.
+- The player is a local organizer from the town, never an outside saviour.
+  Residents' own knowledge (traditional water channels, agroforestry) counts as
+  technology, not as something missing.
+- Every regional technology gets a confidence tag and a "limits" line, and goes
+  through the educational content pipeline. Find at least one reader from, or
+  deeply familiar with, each region before it ships.
+- Willowbrook must play exactly as before: the determinism and playthrough tests
+  pass without changing their expected numbers.
+
+**Step 10.0: Shared groundwork (2 to 3 weeks)**
+
+1. Scenario registry, active scenario, `scenarioId` in the save (v10 migration).
+2. Region-tagged district kinds, and a check that every kind a scenario uses has
+   colours and a layout recipe.
+3. The water need and satisfaction weights per scenario.
+4. Region tags on technologies and projects; each scenario lists its tree.
+5. Water features and crossings instead of the fixed river and bridges.
+6. Transport mode per scenario.
+7. Season sets per scenario.
+8. A `RegionTheme` (palette, kind colours, building and tree recipes, wildlife,
+   season looks, ambient track, a UI accent colour), with Willowbrook as the
+   first theme.
+9. A scenario picker on the main menu, and a test mini region of four districts
+   to prove the plumbing.
+
+**Exit test:** Willowbrook is unchanged, and the bot plays the mini region from
+start to finish.
+
+**Steps 10.1 to 10.3: one region each (4 to 6 weeks each)**
+
+About half of each step is research and review, not code. Each region gets a
+story, 12 to 16 districts, a research tree, five chapters, resident messages,
+tutorial text, a theme and an ambient track. The technology lists below are a
+first draft from general knowledge, like the starter tree, and need the same
+checking against sources.
+
+| | 10.1 Sahel or Middle East | 10.2 East Asia | 10.3 Amazon |
+| --- | --- | --- | --- |
+| The town | An oasis village at the desert edge | An ageing mountain village with rice terraces | A river town on a tributary |
+| Main pressure | Water; cooling instead of heating | Fewer and older residents, so mobility and Community time | Forest health and food; seasonal floods are normal |
+| Map | Oasis and a seasonal wadi with fords | River and terraces on a slope | Wide river and floodplain |
+| Transport | Shared minibus | Community bus on demand | River boats |
+| Seasons | Dry, hot, rainy, harvest | Four, plus a rainy season | High water, low water |
+| Research ideas | Solar water pumping, rainwater cisterns, zaï pits and half-moons, farmer-managed natural regeneration, restoring qanat (falaj) channels, solar mini-grids, clean cookstoves, earth building (compressed earth blocks, Nubian vaults), windcatchers and shading, layered oasis gardens, drip irrigation | Woodland care (satoyama), rice-fish farming, terrace restoration, micro-hydro, biogas, solar water heaters, community-supported agriculture (teikei), renovating empty houses for newcomers, water-retaining "sponge" streets | Agroforestry, community forest management, sustainable açaí and Brazil-nut harvesting, extractive reserves, community territory monitoring, river ambulance and school boats, solar for off-grid homes, rainwater cisterns, floating gardens, participatory budgeting (from Porto Alegre) |
+| Look | Ochre and sand, flat roofs with parapets, courtyard houses, palms, acacia, baobab, goats, storks | Tiled roofs with curved eaves, wooden houses, bamboo, pine and cherry trees, herons, summer fireflies | Bright painted wood, houses on stilts, thatched roofs, kapok and açaí palms, macaws, river dolphins |
+
+**Exit test for each region:** the bot reaches the last chapter, every new
+technology has sources and a limits line, and a playtester from or familiar with
+the region finds nothing that feels wrong or patronising.
+
+**Later:** seeded freeplay for each region, and more European towns (coastal,
+mountain).
 
 ## Testing and balancing
 
