@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { loadScenario } from '../../../game/scenario'
-import { blobPoints } from '../../../game/blob'
+import { districtOutline } from '../../../game/outline'
 import { pointInPolygon } from '../../../game/geometry'
 import { sceneLayout } from './layout'
 import type { Plot } from './layout'
@@ -20,9 +20,9 @@ describe('scene layout', () => {
     for (const n of scenario.neighborhoods) expect(sceneLayout(n).slots, n.id).toHaveLength(n.slots)
   })
 
-  it('keeps every plot inside its blob', () => {
+  it('keeps every plot inside its district', () => {
     for (const n of scenario.neighborhoods) {
-      const outline = blobPoints(n.shape.seed, n.shape.x, n.shape.y, n.shape.radius)
+      const outline = districtOutline(scenario, n.id)
       for (const p of all(sceneLayout(n))) expect(pointInPolygon(outline, p.x, p.y), n.id).toBe(true)
     }
   })

@@ -11,24 +11,32 @@ export const BLOB_MAX_RADIUS_FACTOR = 1 + 3 * BLOB_MAX_WOBBLE
 // How many segments the wobbled circle is sampled into.
 export const BLOB_STEPS = 48
 
-// Blob outline from a seed: a circle whose radius wobbles with a few sine
-// waves, squashed vertically for the top-down tilt.
-//
-// Pure geometry on purpose: the UI builds a Path2D from these points for
-// drawing, so the shape stays testable in Node. Same seed -> same blob.
-export function blobPoints(seed: number, cx: number, cy: number, r: number): Point[] {
+// The blob's radius as a function of angle (unsquashed): a circle whose radius
+// wobbles with a few seeded sine waves. Same seed -> same wobble.
+export function blobRadius(seed: number, r: number): (angle: number) => number {
   const rand = mulberry32(seed)
   const waves = [2, 3, 5].map((k) => ({
     k,
     amp: 0.06 + rand() * 0.1,
     phase: rand() * Math.PI * 2,
   }))
+  return (a) => {
+    let rr = r
+    for (const w of waves) rr += r * w.amp * Math.sin(w.k * a + w.phase)
+    return rr
+  }
+}
 
+// Blob outline from a seed, squashed vertically for the top-down tilt.
+//
+// Pure geometry on purpose: the UI builds a Path2D from these points for
+// drawing, so the shape stays testable in Node. Same seed -> same blob.
+export function blobPoints(seed: number, cx: number, cy: number, r: number): Point[] {
+  const radius = blobRadius(seed, r)
   const points: Point[] = []
   for (let i = 0; i <= BLOB_STEPS; i++) {
     const a = (i / BLOB_STEPS) * Math.PI * 2
-    let rr = r
-    for (const w of waves) rr += r * w.amp * Math.sin(w.k * a + w.phase)
+    const rr = radius(a)
     points.push({ x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr * BLOB_Y_SQUASH })
   }
   return points

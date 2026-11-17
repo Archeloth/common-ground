@@ -1,7 +1,8 @@
 import type { GameState, NeighborhoodDef, Needs } from '../../../game/types'
 import { loadProjects, projectById } from '../../../game/projects'
 import { isExpired } from '../../../game/expiry'
-import { blobPoints } from '../../../game/blob'
+import { districtOutline, outlineBox } from '../../../game/outline'
+import { loadScenario } from '../../../game/scenario'
 import { satisfactionOf } from '../../../game/satisfaction'
 import { KIND_COLORS, shade } from '../colors'
 import { buildPath2D, drawRaisedBlob } from '../draw'
@@ -95,15 +96,11 @@ export interface DistrictCache {
 
 const RAISED_DEPTH_CSS = 6
 
-// World-space box that holds the blob and everything standing on it.
+// World-space box that holds the outline and everything standing on it
+// (sprites rise up to 34 units above their plots; the raised edge hangs below).
 function bounds(n: NeighborhoodDef): { x: number; y: number; w: number; h: number } {
-  const r = n.shape.radius
-  return {
-    x: n.shape.x - r * 1.55,
-    y: n.shape.y - r * 0.6 * 1.55 - 34,
-    w: r * 3.1,
-    h: r * 0.6 * 3.1 + 34 + 16,
-  }
+  const box = outlineBox(districtOutline(loadScenario(), n.id))
+  return { x: box.minX - 6, y: box.minY - 34, w: box.maxX - box.minX + 12, h: box.maxY - box.minY + 34 + 16 }
 }
 
 // Draw one district (ground, buildings, greenery, cars, projects) into its own
@@ -126,7 +123,7 @@ export function renderDistrict(
   const toX = (wx: number) => (wx - box.x) * scale
   const toY = (wy: number) => (wy - box.y) * scale
 
-  const outline = blobPoints(n.shape.seed, n.shape.x, n.shape.y, n.shape.radius)
+  const outline = districtOutline(loadScenario(), n.id)
   const path = buildPath2D(outline.map((p) => ({ x: toX(p.x), y: toY(p.y) })))
   applySeason(look.season)
   const top = seasonalGround(groundColour(n, look.satisfaction), look.season)

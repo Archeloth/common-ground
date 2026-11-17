@@ -1,7 +1,7 @@
 import type { NeedId, NeighborhoodDef, ScenarioDef } from '../../../game/types'
 import type { Point } from '../../../game/geometry'
 import { bridgeBetween, neighborhoodById } from '../../../game/scenario'
-import { blobPoints } from '../../../game/blob'
+import { districtOutline } from '../../../game/outline'
 import type { Camera } from '../camera'
 import { worldToScreen } from '../camera'
 import { COLORS, NEED_COLORS } from '../colors'
@@ -61,10 +61,10 @@ export interface FrameInput {
 const caches = new Map<string, DistrictCache>()
 const outlines = new Map<string, Point[]>()
 
-function outlineOf(n: NeighborhoodDef): Point[] {
+function outlineOf(scenario: ScenarioDef, n: NeighborhoodDef): Point[] {
   let points = outlines.get(n.id)
   if (!points) {
-    points = blobPoints(n.shape.seed, n.shape.x, n.shape.y, n.shape.radius)
+    points = districtOutline(scenario, n.id)
     outlines.set(n.id, points)
   }
   return points
@@ -148,14 +148,19 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
       (cache.canvas.width / f.dpr) * k,
       (cache.canvas.height / f.dpr) * k,
     )
-    if (f.selectedId === n.id) {
-      const path = buildPath2D(outlineOf(n).map((p) => worldToScreen(cam, p.x, p.y - lift / cam.zoom)))
-      ctx.strokeStyle = COLORS.selectedStroke
-      ctx.lineWidth = 3
-      ctx.lineJoin = 'round'
-      ctx.stroke(path)
-    }
     drawLife(ctx, f, n, look, lift, t, s)
+  }
+
+  // The selection outline goes on top: districts now share borders, so the
+  // neighbour drawn next would otherwise cover half of it.
+  if (f.selectedId) {
+    const n = neighborhoodById(scenario, f.selectedId)
+    const lift = f.lifts.get(n.id) ?? 0
+    const path = buildPath2D(outlineOf(scenario, n).map((p) => worldToScreen(cam, p.x, p.y - lift / cam.zoom)))
+    ctx.strokeStyle = COLORS.selectedStroke
+    ctx.lineWidth = 3
+    ctx.lineJoin = 'round'
+    ctx.stroke(path)
   }
 
   // Buses drive along their lines, across the bridges.
@@ -190,7 +195,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
       const look = f.looks.get(n.id)
       if (!look) continue
       const lift = f.lifts.get(n.id) ?? 0
-      const path = buildPath2D(outlineOf(n).map((p) => worldToScreen(cam, p.x, p.y - lift / cam.zoom)))
+      const path = buildPath2D(outlineOf(scenario, n).map((p) => worldToScreen(cam, p.x, p.y - lift / cam.zoom)))
       ctx.strokeStyle = NEED_COLORS[need]
       ctx.lineWidth = 2.5
       ctx.lineJoin = 'round'

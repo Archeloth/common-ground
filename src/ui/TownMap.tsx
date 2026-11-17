@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { loadScenario, neighborhoodById, scenarioBounds } from '../game/scenario'
-import { blobPoints } from '../game/blob'
+import { districtOutline } from '../game/outline'
 import type { Point } from '../game/geometry'
 import { pointInPolygon } from '../game/geometry'
 import { loadProjects, projectById } from '../game/projects'
@@ -109,8 +109,7 @@ export default function TownMap({
   const pointsFor = useCallback((id: string): Point[] => {
     let points = pointsCacheRef.current.get(id)
     if (!points) {
-      const n = neighborhoodById(scenario, id)
-      points = blobPoints(n.shape.seed, n.shape.x, n.shape.y, n.shape.radius)
+      points = districtOutline(scenario, id)
       pointsCacheRef.current.set(id, points)
     }
     return points

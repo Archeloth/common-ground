@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { bridgeBetween, loadScenario, scenarioBounds, neighborhoodById, validateScenario } from './scenario'
 import type { ScenarioDef } from './types'
-import { BLOB_Y_SQUASH } from './blob'
 
 const scenario = loadScenario()
 
@@ -86,18 +85,7 @@ describe('willowbrook scenario content', () => {
     }
   })
 
-  it('does not let any two blobs overlap (squash-aware)', () => {
-    for (let i = 0; i < scenario.neighborhoods.length; i++) {
-      for (let j = i + 1; j < scenario.neighborhoods.length; j++) {
-        const a = scenario.neighborhoods[i]
-        const b = scenario.neighborhoods[j]
-        const dx = a.shape.x - b.shape.x
-        const dy = (a.shape.y - b.shape.y) / BLOB_Y_SQUASH
-        const dist = Math.hypot(dx, dy)
-        expect(dist, `${a.id} vs ${b.id}`).toBeGreaterThanOrEqual(a.shape.radius + b.shape.radius)
-      }
-    }
-  })
+  // Outlines (shared borders, no overlaps, river clearance) are tested in outline.test.ts.
 })
 
 describe('river crossings (bus lines cross only at bridges)', () => {

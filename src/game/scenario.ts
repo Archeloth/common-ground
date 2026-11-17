@@ -1,6 +1,6 @@
 import type { BridgeDef, ScenarioDef, NeighborhoodDef } from './types'
 import { segmentHitsPolyline } from './geometry'
-import { BLOB_Y_SQUASH } from './blob'
+import { districtOutline, outlineBox } from './outline'
 import willowbrook from '../data/scenarios/willowbrook.json'
 
 // Content validation lives here so a typo in a scenario JSON fails loudly
@@ -110,7 +110,7 @@ export function neighborhoodById(s: ScenarioDef, id: string): NeighborhoodDef {
   return found
 }
 
-// World extent of the scenario (squash-aware, wobble-envelope padded). Used to
+// World extent of the scenario (every district outline). Used to
 // frame the initial camera and to draw the river.
 export interface Bounds {
   minX: number
@@ -125,13 +125,11 @@ export function scenarioBounds(s: ScenarioDef): Bounds {
   let maxX = -Infinity
   let maxY = -Infinity
   for (const n of s.neighborhoods) {
-    const r = n.shape.radius
-    const dx = r * 1.2 // wobble envelope
-    const dy = r * 1.2 * BLOB_Y_SQUASH
-    minX = Math.min(minX, n.shape.x - dx)
-    maxX = Math.max(maxX, n.shape.x + dx)
-    minY = Math.min(minY, n.shape.y - dy)
-    maxY = Math.max(maxY, n.shape.y + dy)
+    const box = outlineBox(districtOutline(s, n.id))
+    minX = Math.min(minX, box.minX)
+    maxX = Math.max(maxX, box.maxX)
+    minY = Math.min(minY, box.minY)
+    maxY = Math.max(maxY, box.maxY)
   }
   return { minX, minY, width: maxX - minX, height: maxY - minY }
 }

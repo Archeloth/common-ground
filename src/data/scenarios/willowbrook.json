@@ -16,7 +16,7 @@
       "slots": 4,
       "engagement": 50,
       "needs": { "energy": 0.55, "food": 0.75, "mobility": 0.45, "green": 0.6, "waste": 0.7, "housing": 0.5 },
-      "shape": { "x": 170, "y": 235, "radius": 78, "seed": 48213 },
+      "shape": { "x": 240, "y": 242, "radius": 78, "seed": 48213 },
       "neighbors": ["maple_heights", "orchard_lane", "riverside"]
     },
     {
@@ -27,7 +27,7 @@
       "slots": 3,
       "engagement": 40,
       "needs": { "energy": 0.65, "food": 0.78, "mobility": 0.6, "green": 0.4, "waste": 0.45, "housing": 0.6 },
-      "shape": { "x": 930, "y": 444, "radius": 76, "seed": 808 },
+      "shape": { "x": 905, "y": 450, "radius": 76, "seed": 808 },
       "neighbors": ["linden_flats", "mill_yard", "hollow_wood"]
     },
     {
@@ -38,7 +38,7 @@
       "slots": 3,
       "engagement": 20,
       "needs": { "energy": 0.4, "food": 0.72, "mobility": 0.55, "green": 0.45, "waste": 0.55, "housing": 0.38 },
-      "shape": { "x": 930, "y": 238, "radius": 80, "seed": 42 },
+      "shape": { "x": 990, "y": 204, "radius": 80, "seed": 42 },
       "neighbors": ["clay_hill", "meadow_rise", "station_quarter"]
     },
     {
@@ -49,7 +49,7 @@
       "slots": 5,
       "engagement": 35,
       "needs": { "energy": 0.58, "food": 0.8, "mobility": 0.42, "green": 0.55, "waste": 0.68, "housing": 0.65 },
-      "shape": { "x": 170, "y": 110, "radius": 72, "seed": 1177 },
+      "shape": { "x": 140, "y": 122, "radius": 72, "seed": 1177 },
       "neighbors": ["birch_park_estate", "old_town"]
     },
     {
@@ -60,7 +60,7 @@
       "slots": 5,
       "engagement": 35,
       "needs": { "energy": 0.56, "food": 0.76, "mobility": 0.45, "green": 0.45, "waste": 0.62, "housing": 0.6 },
-      "shape": { "x": 430, "y": 110, "radius": 74, "seed": 2113 },
+      "shape": { "x": 395, "y": 70, "radius": 74, "seed": 2113 },
       "neighbors": ["maple_heights", "school_green", "orchard_lane"]
     },
     {
@@ -71,7 +71,7 @@
       "slots": 4,
       "engagement": 38,
       "needs": { "energy": 0.42, "food": 0.78, "mobility": 0.58, "green": 0.6, "waste": 0.65, "housing": 0.7 },
-      "shape": { "x": 690, "y": 233, "radius": 70, "seed": 314 },
+      "shape": { "x": 748, "y": 236, "radius": 70, "seed": 314 },
       "neighbors": ["school_green", "orchard_lane", "linden_flats"]
     },
     {
@@ -82,7 +82,7 @@
       "slots": 4,
       "engagement": 42,
       "needs": { "energy": 0.6, "food": 0.8, "mobility": 0.6, "green": 0.45, "waste": 0.68, "housing": 0.65 },
-      "shape": { "x": 690, "y": 108, "radius": 70, "seed": 337 },
+      "shape": { "x": 655, "y": 102, "radius": 70, "seed": 337 },
       "neighbors": ["birch_park_estate", "clay_hill", "meadow_rise"]
     },
     {
@@ -93,7 +93,7 @@
       "slots": 5,
       "engagement": 45,
       "needs": { "energy": 0.66, "food": 0.82, "mobility": 0.62, "green": 0.65, "waste": 0.45, "housing": 0.68 },
-      "shape": { "x": 430, "y": 237, "radius": 72, "seed": 555 },
+      "shape": { "x": 492, "y": 212, "radius": 72, "seed": 555 },
       "neighbors": ["birch_park_estate", "old_town", "meadow_rise"]
     },
     {
@@ -104,7 +104,7 @@
       "slots": 4,
       "engagement": 30,
       "needs": { "energy": 0.62, "food": 0.78, "mobility": 0.44, "green": 0.58, "waste": 0.66, "housing": 0.62 },
-      "shape": { "x": 930, "y": 112, "radius": 68, "seed": 1987 },
+      "shape": { "x": 905, "y": 66, "radius": 68, "seed": 1987 },
       "neighbors": ["school_green", "linden_flats"]
     },
     {
@@ -115,7 +115,7 @@
       "slots": 4,
       "engagement": 48,
       "needs": { "energy": 0.6, "food": 0.74, "mobility": 0.55, "green": 0.55, "waste": 0.6, "housing": 0.58 },
-      "shape": { "x": 170, "y": 448, "radius": 66, "seed": 4242 },
+      "shape": { "x": 128, "y": 466, "radius": 66, "seed": 4242 },
       "neighbors": ["old_town", "weir_bend", "allotment_row"]
     },
     {
@@ -126,7 +126,7 @@
       "slots": 3,
       "engagement": 40,
       "needs": { "energy": 0.58, "food": 0.72, "mobility": 0.52, "green": 0.42, "waste": 0.58, "housing": 0.55 },
-      "shape": { "x": 430, "y": 445, "radius": 64, "seed": 898 },
+      "shape": { "x": 378, "y": 448, "radius": 64, "seed": 898 },
       "neighbors": ["riverside", "mill_yard", "northfield_farms"]
     },
     {
@@ -137,7 +137,7 @@
       "slots": 4,
       "engagement": 28,
       "needs": { "energy": 0.6, "food": 0.7, "mobility": 0.5, "green": 0.45, "waste": 0.45, "housing": 0.5 },
-      "shape": { "x": 690, "y": 450, "radius": 72, "seed": 9000 },
+      "shape": { "x": 640, "y": 474, "radius": 72, "seed": 9000 },
       "neighbors": ["weir_bend", "station_quarter", "southgate_retail"]
     },
     {
@@ -148,7 +148,7 @@
       "slots": 3,
       "engagement": 25,
       "needs": { "energy": 0.45, "food": 0.85, "mobility": 0.42, "green": 0.4, "waste": 0.6, "housing": 0.62 },
-      "shape": { "x": 690, "y": 560, "radius": 70, "seed": 2020 },
+      "shape": { "x": 712, "y": 606, "radius": 70, "seed": 2020 },
       "neighbors": ["mill_yard", "northfield_farms", "hollow_wood"]
     },
     {
@@ -159,7 +159,7 @@
       "slots": 4,
       "engagement": 38,
       "needs": { "energy": 0.7, "food": 0.95, "mobility": 0.55, "green": 0.7, "waste": 0.65, "housing": 0.68 },
-      "shape": { "x": 430, "y": 565, "radius": 68, "seed": 618 },
+      "shape": { "x": 450, "y": 582, "radius": 68, "seed": 618 },
       "neighbors": ["weir_bend", "allotment_row", "southgate_retail"]
     },
     {
@@ -170,7 +170,7 @@
       "slots": 3,
       "engagement": 60,
       "needs": { "energy": 0.68, "food": 0.95, "mobility": 0.58, "green": 0.8, "waste": 0.75, "housing": 0.7 },
-      "shape": { "x": 170, "y": 562, "radius": 58, "seed": 2718 },
+      "shape": { "x": 196, "y": 596, "radius": 58, "seed": 2718 },
       "neighbors": ["riverside", "northfield_farms"]
     },
     {
@@ -181,7 +181,7 @@
       "slots": 2,
       "engagement": 55,
       "needs": { "energy": 0.7, "food": 0.6, "mobility": 0.5, "green": 0.95, "waste": 0.7, "housing": 0.62 },
-      "shape": { "x": 930, "y": 566, "radius": 72, "seed": 1618 },
+      "shape": { "x": 968, "y": 578, "radius": 72, "seed": 1618 },
       "neighbors": ["station_quarter", "southgate_retail"]
     }
   ],
@@ -194,8 +194,8 @@
     "halfDepth": 34
   },
   "bridges": [
-    { "from": "old_town", "to": "riverside", "point": { "x": 170, "y": 340 } },
-    { "from": "linden_flats", "to": "station_quarter", "point": { "x": 930, "y": 339 } }
+    { "from": "old_town", "to": "riverside", "point": { "x": 186, "y": 343 } },
+    { "from": "linden_flats", "to": "station_quarter", "point": { "x": 946, "y": 339 } }
   ]
 }
 

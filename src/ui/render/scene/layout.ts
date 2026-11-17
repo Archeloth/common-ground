@@ -1,7 +1,9 @@
 import type { NeighborhoodDef, NeighborhoodKind } from '../../../game/types'
 import type { Point } from '../../../game/geometry'
 import { pointInPolygon } from '../../../game/geometry'
-import { BLOB_Y_SQUASH, blobPoints } from '../../../game/blob'
+import { BLOB_Y_SQUASH } from '../../../game/blob'
+import { districtOutline } from '../../../game/outline'
+import { loadScenario } from '../../../game/scenario'
 import { mulberry32 } from '../../../game/random'
 
 // Where things stand inside a neighbourhood (Milestone 9 art). Pure and
@@ -86,9 +88,10 @@ function apart(a: Plot, b: Plot, gap: number): boolean {
   return Math.hypot(dx, dy) >= a.size + b.size + gap
 }
 
-export function sceneLayout(n: NeighborhoodDef): SceneLayout {
+// `outline` is the district's shape on the map (see game/outline.ts).
+export function sceneLayout(n: NeighborhoodDef, outline: readonly Point[] = districtOutline(loadScenario(), n.id)): SceneLayout {
   const { x: cx, y: cy, radius: r, seed } = n.shape
-  const inner: Point[] = blobPoints(seed, cx, cy, r).map((p) => ({
+  const inner: Point[] = outline.map((p) => ({
     x: cx + (p.x - cx) * SHRINK,
     y: cy + (p.y - cy) * SHRINK,
   }))
