@@ -280,6 +280,8 @@ const MESSAGES: Record<string, string> = {
   'settings.largeText.hint': 'Make all text and buttons a size bigger.',
   'settings.pauseOnPanels': 'Pause when panels open',
   'settings.pauseOnPanels.hint': 'Opening a menu, the lexicon or a neighbourhood pauses time; closing it resumes.',
+  'readMore.label': 'Read more on Wikipedia:',
+  'readMore.aria': '{title} on Wikipedia (opens in a new tab)',
   'offline.updateReady': 'A new version of Common Ground is ready.',
   'offline.reload': 'Reload now',
   'settings.colours': 'Colours',

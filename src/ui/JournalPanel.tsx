@@ -5,6 +5,7 @@ import { loadWildlife } from '../game/wildlife'
 import { loadStories } from '../game/stories'
 import ResidentAvatar from './ResidentAvatar'
 import SpeciesThumb from './SpeciesThumb'
+import ReadMore from './ReadMore'
 import { formatGameDate } from './dates'
 import { t } from './i18n'
 import './Journal.css'
@@ -62,6 +63,7 @@ function WildlifeTab({ state, onShow }: JournalPanelProps) {
                   <>
                     <strong>{s.name}</strong>
                     <p className="species-note">{s.note}</p>
+                    <ReadMore links={s.readMore} />
                     <button type="button" className="journal-link" onClick={() => onShow(sighting.neighborhood)}>
                       {t('journal.firstSeen', {
                         place: neighborhoodById(scenario, sighting.neighborhood).name,

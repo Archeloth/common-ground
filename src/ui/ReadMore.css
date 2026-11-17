@@ -1,0 +1,27 @@
+/* "Read more on Wikipedia" links (post-Milestone 9). */
+.read-more {
+  margin: 0.3rem 0 0;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--ink-faint);
+}
+
+.lexicon-body .read-more {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+.read-more-label {
+  margin-right: 0.35rem;
+}
+
+.read-more a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.read-more a:hover {
+  color: var(--primary-strong);
+}

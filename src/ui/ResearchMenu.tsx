@@ -4,6 +4,7 @@ import { applyCommand } from '../game/state'
 import { loadTechnologies } from '../game/technologies'
 import { loadProjects } from '../game/projects'
 import { projectIcon } from './projectIcons'
+import ReadMore from './ReadMore'
 import { t } from './i18n'
 import './ResearchMenu.css'
 
@@ -42,6 +43,7 @@ function TechCard({
       </div>
       <p className="tech-benefit">{tech.benefit}</p>
       <p className="tech-limit">{tech.limit}</p>
+      <ReadMore links={tech.readMore} />
       {unlocksProjects.length > 0 && (
         <p className="tech-unlocks">{t('research.unlocksProjects', { names: unlocksProjects.join(', ') })}</p>
       )}

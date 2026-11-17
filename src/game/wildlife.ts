@@ -4,6 +4,8 @@ import type { PlaceCondition } from './conditions'
 import { allPlaceConditionsMet, placeConditionProblems } from './conditions'
 import { loadProjects } from './projects'
 import { loadMilestones } from './milestones'
+import type { ReadMoreLink } from './readMore'
+import { readMoreProblems } from './readMore'
 import catalog from '../data/wildlife.json'
 
 // The wildlife journal (post-Milestone 9). Species live in particular kinds
@@ -22,6 +24,7 @@ export interface SpeciesDef {
   hint: string // shown while the species is still undiscovered
   note: string // a short real-world fact
   confidence: string
+  readMore: ReadMoreLink[] // Wikipedia articles for further reading
 }
 
 export interface Sighting {
@@ -50,6 +53,7 @@ function buildWildlife(): SpeciesDef[] {
     hint: s.hint ?? '',
     note: s.note ?? '',
     confidence: s.confidence ?? '',
+    readMore: s.readMore ?? [],
   }))
   const ids = {
     projects: new Set(loadProjects().map((p) => p.id)),
@@ -64,6 +68,7 @@ function buildWildlife(): SpeciesDef[] {
     if (!['established', 'emerging', 'contested'].includes(s.confidence)) fail(`species "${s.id}" needs a confidence tag`)
     if (s.where.length === 0) fail(`species "${s.id}" needs at least one district kind`)
     for (const k of s.where) if (!NEIGHBORHOOD_KINDS.includes(k)) fail(`species "${s.id}" lists unknown kind "${k}"`)
+    for (const problem of readMoreProblems(s.readMore)) fail(`species "${s.id}": ${problem}`)
     for (const c of s.conditions) {
       for (const problem of placeConditionProblems(c, ids)) fail(`species "${s.id}": ${problem}`)
     }

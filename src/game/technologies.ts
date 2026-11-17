@@ -1,4 +1,6 @@
 import technologiesCatalog from '../data/technologies.json'
+import type { ReadMoreLink } from './readMore'
+import { readMoreProblems } from './readMore'
 
 // The research tree (Milestone 6), content-driven like projects and kinds.
 // The 8 entries are the plan's three starting chains:
@@ -30,6 +32,7 @@ export interface TechDef {
   limit: string // honest real-world trade-off
   confidence: Confidence
   sources: TechSource[]
+  readMore: ReadMoreLink[] // Wikipedia articles for further reading
 }
 
 const BRANCHES: readonly TechBranch[] = ['energy', 'food', 'mobility', 'circular', 'ecology', 'community']
@@ -50,6 +53,7 @@ interface RawTech {
   limit?: string
   confidence?: string
   sources?: Array<{ title?: string }>
+  readMore?: ReadMoreLink[]
 }
 
 // Content is static, so it is parsed and validated once and then shared
@@ -75,6 +79,7 @@ function buildLoadTechnologies(): TechDef[] {
     limit: t.limit ?? '',
     confidence: (t.confidence ?? '') as Confidence,
     sources: (t.sources ?? []).map((s) => ({ title: s.title ?? '' })),
+    readMore: t.readMore ?? [],
   }))
 
   const ids = new Set<string>()
@@ -105,6 +110,7 @@ function buildLoadTechnologies(): TechDef[] {
     for (const source of tech.sources) {
       if (!source.title.trim()) fail(`technology "${tech.id}" has a source without a title`)
     }
+    for (const problem of readMoreProblems(tech.readMore)) fail(`technology "${tech.id}": ${problem}`)
   }
 
   // No cycles: follow unlocks from every node; revisiting a node on the same

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { LEXICON_ENTRIES } from './lexiconEntries'
+import { LEXICON_ENTRIES, LEXICON_READ_MORE } from './lexiconEntries'
+import ReadMore from './ReadMore'
 import type { LexiconEntryId } from './lexiconEntries'
 import { t } from './i18n'
 import './Lexicon.css'
@@ -68,6 +69,7 @@ export default function Lexicon({ entry, onSelect, onClose, onStart }: LexiconPr
             {paragraphs.map((text, index) => (
               <p key={index}>{text}</p>
             ))}
+            <ReadMore links={LEXICON_READ_MORE[entry] ?? []} />
             {entry === 'welcome' && onStart && (
               <button type="button" className="lexicon-start" onClick={onStart}>
                 {t('lexicon.start')}

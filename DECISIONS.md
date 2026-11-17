@@ -529,3 +529,26 @@ and the project keeps its dependencies minimal.
 **Weather events are deferred** (a choice of priorities, not difficulty). The
 seasons still never change needs or money; they now also decide which wildlife
 is about (frogs in spring, swifts in summer).
+
+## 17 Nov 2026 - Playtest: bus routes, the countryside, Read more links
+
+**Bus routes are drawn over the districts.** With shared borders there are no
+gaps left for a route drawn underneath to show through. A soft cream casing
+under the dashes keeps the route readable on any district colour.
+
+**The countryside is one cached picture.** Copses, bushes, grass, flowers and
+rocks around the town, reeds on the banks and lily pads on the water come from a
+seeded, tested layout (`ui/render/scene/wilds.ts`): nothing grows inside a
+district or pokes a crown into one, and nothing stands in the river. The
+ground, river, bridges and all of this are painted into one screen-sized canvas
+that is redrawn only when the camera, the window size or the season changes, so
+a still frame is one image copy. Panning redraws only the items in view. Fish
+and ducks are the only live parts, and they rest in winter.
+
+**Read more links are further reading, not citations.** Every technology,
+species and real-world lexicon topic links to one or two English Wikipedia
+articles. They are kept apart from `sources` (the fact-check citations the
+content pipeline still asks for). Only English Wikipedia article URLs pass
+validation. All 45 links were checked against the Wikipedia API on 17 Nov 2026:
+each one resolves directly, with no redirects. Links open in a new tab; the
+game still sends nothing anywhere.

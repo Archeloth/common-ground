@@ -12,7 +12,8 @@
       "benefit": "Reveals each neighbourhood's biggest energy losses. Unlocks rooftop solar and deeper retrofit research.",
       "limit": "Cheap and fast, but the savings depend on the building and on people acting on the findings.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Energy audit", "url": "https://en.wikipedia.org/wiki/Energy_audit" }]
     },
     {
       "id": "building_retrofits",
@@ -28,7 +29,8 @@
       "benefit": "Insulation and windows cut heating demand and raise comfort.",
       "limit": "Strong in older, poorly insulated housing; deep retrofits are costly and disruptive.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Building insulation", "url": "https://en.wikipedia.org/wiki/Building_insulation" }, { "title": "Retrofitting", "url": "https://en.wikipedia.org/wiki/Retrofitting" }]
     },
     {
       "id": "heat_pumps",
@@ -44,7 +46,8 @@
       "benefit": "Move heat rather than burn fuel, so homes get several units of heat per unit of electricity.",
       "limit": "Efficient heat, but less so in very cold weather; works best in homes that are retrofitted first.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Heat pump", "url": "https://en.wikipedia.org/wiki/Heat_pump" }]
     },
     {
       "id": "energy_cooperatives",
@@ -58,7 +61,8 @@
       "benefit": "Residents jointly own local renewable energy: more clean power and a stronger sense of ownership.",
       "limit": "Many European communities run them, but success depends on local rules and steady organising effort.",
       "confidence": "context",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Renewable energy cooperative", "url": "https://en.wikipedia.org/wiki/Renewable_energy_cooperative" }, { "title": "Community solar", "url": "https://en.wikipedia.org/wiki/Community_solar" }]
     },
     {
       "id": "community_gardens",
@@ -72,7 +76,8 @@
       "benefit": "Shared food growing: food, green space and engagement in a neighbourhood.",
       "limit": "Meaningful social benefits, but only a small share of a town's total food.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Community gardening", "url": "https://en.wikipedia.org/wiki/Community_gardening" }]
     },
     {
       "id": "composting",
@@ -88,7 +93,8 @@
       "benefit": "Diverts food waste and builds soil fertility for nearby gardens.",
       "limit": "Needs good sorting and careful management of smells and pests.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Compost", "url": "https://en.wikipedia.org/wiki/Compost" }]
     },
     {
       "id": "local_food_hubs",
@@ -102,7 +108,8 @@
       "benefit": "A weekly market brings local growers and residents together: more local food, less packaging.",
       "limit": "Shorter chains help local growers, but local does not always mean lower emissions.",
       "confidence": "context",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Local food", "url": "https://en.wikipedia.org/wiki/Local_food" }]
     },
     {
       "id": "safe_streets",
@@ -116,7 +123,8 @@
       "benefit": "Walking and cycling infrastructure: mobility up, car emissions down.",
       "limit": "Works best as a connected network, not isolated lanes.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Traffic calming", "url": "https://en.wikipedia.org/wiki/Traffic_calming" }]
     },
     {
       "id": "public_transport",
@@ -132,7 +140,8 @@
       "benefit": "Unlocks bus lines between neighbouring neighbourhoods (they cross the river only at the bridges).",
       "limit": "Frequency and reliability matter more than coverage; low-density areas are harder to serve.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Public transport", "url": "https://en.wikipedia.org/wiki/Public_transport" }]
     },
     {
       "id": "shared_mobility",
@@ -146,7 +155,8 @@
       "benefit": "Shared bikes and cars mean fewer cars per household and easier trips without owning one.",
       "limit": "Helps most where density and good alternatives already exist.",
       "confidence": "context",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Bicycle-sharing system", "url": "https://en.wikipedia.org/wiki/Bicycle-sharing_system" }, { "title": "Carsharing", "url": "https://en.wikipedia.org/wiki/Carsharing" }]
     },
     {
       "id": "repair_cafes",
@@ -160,7 +170,8 @@
       "benefit": "Neighbours fix and share things instead of throwing them away: less waste, more engagement.",
       "limit": "Repair sits above recycling in the waste hierarchy, but needs volunteers and a space to meet.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Repair Café", "url": "https://en.wikipedia.org/wiki/Repair_Caf%C3%A9" }]
     },
     {
       "id": "separate_collection",
@@ -174,7 +185,8 @@
       "benefit": "Sorted collection points raise the share of waste that is recycled.",
       "limit": "Quality depends on clean sorting, and recycling is not the same as preventing waste.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Waste sorting", "url": "https://en.wikipedia.org/wiki/Waste_sorting" }, { "title": "Recycling", "url": "https://en.wikipedia.org/wiki/Recycling" }]
     },
     {
       "id": "pollinator_meadows",
@@ -188,7 +200,8 @@
       "benefit": "Mowing less and sowing native flowers turns lawns into green space that is alive with insects.",
       "limit": "Benefits grow over several seasons, and a tidy-lawn culture can resist the change.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Pollinator decline", "url": "https://en.wikipedia.org/wiki/Pollinator_decline" }, { "title": "Meadow", "url": "https://en.wikipedia.org/wiki/Meadow" }]
     },
     {
       "id": "urban_trees",
@@ -204,7 +217,8 @@
       "benefit": "Street trees add shade, cooling and green space that residents notice every day.",
       "limit": "Young trees need water and care for years; green roofs need structural support.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Urban forestry", "url": "https://en.wikipedia.org/wiki/Urban_forestry" }, { "title": "Urban heat island", "url": "https://en.wikipedia.org/wiki/Urban_heat_island" }]
     },
     {
       "id": "rain_gardens",
@@ -218,7 +232,8 @@
       "benefit": "Planted hollows and wetlands soak up and filter runoff along the river.",
       "limit": "They need space and upkeep, and cannot stop extreme floods on their own.",
       "confidence": "established",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Rain garden", "url": "https://en.wikipedia.org/wiki/Rain_garden" }]
     },
     {
       "id": "community_learning",
@@ -230,7 +245,8 @@
       "benefit": "Evening workshops at the school or library: residents learn together and the town gains Knowledge each month.",
       "limit": "Turnout depends on timing and childcare; the same keen people often come every time.",
       "confidence": "context",
-      "sources": []
+      "sources": [],
+      "readMore": [{ "title": "Community education", "url": "https://en.wikipedia.org/wiki/Community_education" }]
     }
   ]
 }
