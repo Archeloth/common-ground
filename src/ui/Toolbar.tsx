@@ -4,9 +4,9 @@ import { useEscapeToClose } from './useEscapeToClose'
 import { t } from './i18n'
 import './Toolbar.css'
 
-export type DrawerId = 'town' | 'research' | 'saves'
+export type DrawerId = 'town' | 'research' | 'journal' | 'saves'
 
-const DRAWERS: readonly DrawerId[] = ['town', 'research', 'saves']
+const DRAWERS: readonly DrawerId[] = ['town', 'research', 'journal', 'saves']
 
 interface ToolbarProps {
   open: DrawerId | null

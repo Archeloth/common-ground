@@ -15,6 +15,7 @@ import { layoutFor } from './layout'
 import type { SeasonLook } from './season'
 import { SEASON_LOOKS, applySeason, seasonalGround } from './season'
 import { seasonOfDay } from '../../../game/calendar'
+import { habitatsFor, loadWildlife } from '../../../game/wildlife'
 
 // What a district looks like right now (Milestone 9), and a cached picture of
 // it. The picture is redrawn only when its look changes (projects, lapses,
@@ -35,6 +36,8 @@ export interface DistrictLook {
   needs: Needs
   carsShown: number
   season: SeasonLook
+  // Journal species that live here right now (drawn live, not cached).
+  species: string[]
   key: string // changes exactly when the cached picture must change
 }
 
@@ -75,7 +78,11 @@ export function districtLook(state: GameState, n: NeighborhoodDef): DistrictLook
     .join(',')
   const season = SEASON_LOOKS[seasonOfDay(state.day)]
   const key = `${slotKey}|${overlays.solar ? 1 : 0}${overlays.retrofit ? 1 : 0}${overlays.heatPump ? 1 : 0}|${band}|${carsShown}|${season.season}`
-  return { slots, overlays, satisfaction, needs, carsShown, season, key }
+  const scenario = loadScenario()
+  const species = loadWildlife()
+    .filter((sp) => state.wildlife?.[sp.id] && habitatsFor(state, scenario, sp).includes(n.id))
+    .map((sp) => sp.id)
+  return { slots, overlays, satisfaction, needs, carsShown, season, species, key }
 }
 
 // The district's ground colour: dusty when unhappy, vivid when content.

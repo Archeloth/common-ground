@@ -11,6 +11,7 @@ import { drawBuildRing, drawDecoration, turbineHub } from '../sprites/decoration
 import type { VisualId } from '../sprites/decorations'
 import { SPRITE_SCALE } from '../sprites/kit'
 import { bees, bird, bus, butterfly, floatingLabel, popScale, ripple, smoke, sparkles, turbineBlades, valuePill } from '../sprites/life'
+import { drawSpecies } from '../sprites/wildlife'
 import type { DistrictCache, DistrictLook } from './district'
 import { renderDistrict } from './district'
 import { layoutFor } from './layout'
@@ -288,4 +289,14 @@ function drawLife(
   const birds = Math.round((green > 0.85 ? 3 : green > 0.72 ? 2 : green > 0.6 ? 1 : 0) * look.season.life)
   const centre = at(n.shape.x, n.shape.y - n.shape.radius * 0.45)
   for (let i = 0; i < birds; i++) bird(ctx, centre.x, centre.y, s, t, (n.shape.seed % 97) + i * 2.1)
+
+  // Journal species living here: one at a time, taking turns every ~15 s.
+  if (look.species.length > 0) {
+    const turn = Math.floor(t / 15 + (n.shape.seed % 7)) % look.species.length
+    const id = look.species[turn]
+    const plots = layout.greenery.length > 0 ? layout.greenery : layout.slots
+    const home = plots.length > 0 ? plots[n.shape.seed % plots.length] : { x: n.shape.x, y: n.shape.y }
+    const p = at(home.x + 6, home.y + 2)
+    drawSpecies(ctx, id, p.x, p.y, s, t + (n.shape.seed % 11))
+  }
 }

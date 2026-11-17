@@ -1,0 +1,288 @@
+/* The Journal drawer, resident postcards and the "new species" note
+   (post-Milestone 9). */
+
+.journal .drawer-title {
+  margin: 0 2.4rem 0.6rem 0;
+  font-size: 1.05rem;
+  color: var(--ink-strong);
+}
+
+.journal-tabs {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 0.7rem;
+  padding: 0.2rem;
+  border-radius: 0.6rem;
+  background: var(--surface-soft);
+}
+
+.journal-tab {
+  flex: 1;
+  padding: 0.35rem 0.6rem;
+  border: none;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.journal-tab.active {
+  background: var(--surface);
+  color: var(--ink-strong);
+  box-shadow: var(--shadow-s);
+}
+
+.journal-intro,
+.journal-empty {
+  margin: 0 0 0.5rem;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+}
+
+.journal-count {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+}
+
+.journal-species,
+.journal-people {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.species-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #e3e8da;
+  border-radius: 0.7rem;
+  background: #f6f7f2;
+}
+
+.species-card.found {
+  border-color: #cfe0c3;
+  background: var(--surface);
+}
+
+.species-thumb {
+  display: block;
+  border-radius: 0.5rem;
+}
+
+.species-text strong {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--ink-strong);
+}
+
+.species-text .species-unknown {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.species-note {
+  margin: 0.15rem 0 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.journal-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--primary);
+  font-size: 0.76rem;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.person-card {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #e3e8da;
+  border-radius: 0.7rem;
+  background: var(--surface);
+}
+
+.person-head {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+.person-head strong {
+  display: block;
+  color: var(--ink-strong);
+}
+
+.person-note {
+  margin: 0.35rem 0 0;
+  padding-left: 0.6rem;
+  border-left: 3px solid var(--primary-soft);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.resident-avatar {
+  flex: none;
+}
+
+/* A resident's postcard: bottom left, never pausing the game. */
+.story-card {
+  animation: rise-in 320ms var(--ease-out) both;
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 4;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  max-width: 25rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.9rem 0.9rem 0.9rem 0.3rem;
+  background: #fffaf0;
+  color: var(--ink);
+  box-shadow: var(--shadow-m);
+  border: 1px solid #efe3c8;
+}
+
+.story-body strong {
+  display: block;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8a5a2a;
+}
+
+.story-where {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+
+.story-body p {
+  margin: 0.35rem 0 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.story-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.story-actions button {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.story-show {
+  border: 1px solid #d8c9a6;
+  background: transparent;
+  color: var(--ink);
+}
+
+.story-close {
+  border: none;
+  background: var(--forest);
+  color: var(--on-dark);
+}
+
+/* "New in your journal": top centre, fades by itself. */
+.wildlife-note {
+  animation: rise-in 280ms var(--ease-out) both;
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: calc(100% - 2rem);
+  padding: 0.3rem 0.5rem 0.3rem 0.4rem;
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-m);
+  font-size: 0.85rem;
+}
+
+.wildlife-note .species-thumb {
+  width: 54px !important;
+  height: 42px !important;
+}
+
+.wildlife-note-text {
+  display: grid;
+}
+
+.wildlife-note-reward {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.wildlife-note-open {
+  padding: 0.3rem 0.7rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.wildlife-note-close {
+  padding: 0.2rem 0.3rem;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .story-card {
+    left: 0.5rem;
+    right: 5.6rem;
+    bottom: 0.5rem;
+    max-width: none;
+    padding: 0.6rem 0.7rem;
+  }
+
+  .story-card .resident-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .wildlife-note {
+    top: auto;
+    bottom: 4rem;
+  }
+
+  .wildlife-note-open {
+    display: none;
+  }
+}

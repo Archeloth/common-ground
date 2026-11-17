@@ -16,6 +16,7 @@ export const LEXICON_ENTRIES = [
   'food',
   'requests',
   'milestones',
+  'journal',
   'time',
 ] as const
 

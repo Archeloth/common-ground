@@ -31,7 +31,10 @@ import type { Command, GameState, NeedId, Reason, Speed } from '../game/types'
 import { applyCommand } from '../game/state'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { loadMilestones, milestoneById } from '../game/milestones'
-import { TUTORIAL_STEPS } from '../game/tutorial'
+import { TUTORIAL_STEPS, currentTutorialStep } from '../game/tutorial'
+import JournalPanel from './JournalPanel'
+import StoryCard from './StoryCard'
+import WildlifeNote from './WildlifeNote'
 import { allExpired } from '../game/expiry'
 import { townNeedAverage } from '../game/milestones'
 
@@ -179,6 +182,8 @@ export default function GameScreen({
     else if (countDone(state) > countDone(before)) playSound('reward')
     if (state.expiryNotices.length > before.expiryNotices.length) playSound('expire')
     if (countFinished(state) > countFinished(before)) playSound('complete')
+    if (Object.keys(state.wildlife).length > Object.keys(before.wildlife).length) playSound('discovery')
+    if (state.storyNotices.length > before.storyNotices.length) playSound('postcard')
   }, [state])
 
   // Generated ambience: on while playing; livelier as the town gets greener;
@@ -272,6 +277,10 @@ export default function GameScreen({
     (bubble: ExpiryBubble) => dispatch({ type: 'renewProject', neighborhood: bubble.neighborhoodId, slot: bubble.slot }),
     [dispatch],
   )
+  const dismissWildlife = useCallback(
+    (species: string) => dispatch({ type: 'dismissWildlifeNotice', species }),
+    [dispatch],
+  )
   const handleDismissExpiry = useCallback(
     (key: string) => dispatch({ type: 'dismissExpiryNotice', notice: key }),
     [dispatch],
@@ -314,6 +323,15 @@ export default function GameScreen({
               />
             ),
             research: <ResearchMenu state={state} onResearch={(tech) => dispatch({ type: 'research', tech })} />,
+            journal: (
+              <JournalPanel
+                state={state}
+                onShow={(id) => {
+                  if (window.matchMedia('(max-width: 700px)').matches) setDrawer(null)
+                  showDistrict(id)
+                }}
+              />
+            ),
             saves: (
               <SaveMenu
                 meta={saves.meta}
@@ -337,6 +355,15 @@ export default function GameScreen({
           />
         )}
         <TutorialCard state={state} onNext={() => dispatch({ type: 'tutorialNext' })} />
+        {/* Postcards share the bottom-left corner: they wait for the tutorial
+            card and the renew-all bar to leave. */}
+        {!currentTutorialStep(state) && !renewAll && (
+          <StoryCard
+            state={state}
+            onShow={showDistrict}
+            onClose={(key) => dispatch({ type: 'dismissStoryNotice', notice: key })}
+          />
+        )}
         <GuideButton state={state} onShow={showDistrict} />
         {renewAll && (
           <div className="renew-all" role="region" aria-label={t('renewAll.text', { count: renewAll.lapsed })}>
@@ -374,6 +401,9 @@ export default function GameScreen({
             </button>
             <span className="undo-timer" aria-hidden="true" />
           </div>
+        )}
+        {!notice && !reason && (
+          <WildlifeNote state={state} onOpenJournal={() => setDrawer('journal')} onDismiss={dismissWildlife} />
         )}
         {(notice || reason) && (
           <div className={`reason-banner${notice ? ' info' : ''}`} role={notice ? 'status' : 'alert'}>

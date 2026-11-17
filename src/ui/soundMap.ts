@@ -24,6 +24,8 @@ export type SoundId =
   | 'meeting' // a town meeting is held
   | 'milestone' // a chapter is completed
   | 'expire' // a project ran its course
+  | 'discovery' // a new species in the journal
+  | 'postcard' // a resident's note arrives
 
 export type SoundCategory = 'interface' | 'game'
 
@@ -51,4 +53,6 @@ export const SOUND_MAP: Record<SoundId, SoundDef> = {
   meeting: { files: ['click6.wav'], gain: 1.6, category: 'game' },
   milestone: { files: ['message.wav'], gain: 1.8, category: 'game' },
   expire: { files: ['cut.wav'], gain: 1.8, category: 'game' },
+  discovery: { files: ['appear-online.wav'], gain: 2.4, rate: 1.3, category: 'game' },
+  postcard: { files: ['snap2.wav'], gain: 1.5, rate: 0.85, category: 'game' },
 }
