@@ -146,6 +146,18 @@ const MESSAGES: Record<string, string> = {
   'panel.rewardKnowledge': '+{value} Knowledge',
   'reason.bus_line_exists': 'A line already links these two.',
   'reason.not_adjacent': 'A line must link two adjacent neighbourhoods.',
+  // Season names (Milestone 10: each town has its own set of seasons).
+  'season.spring': 'Spring',
+  'season.summer': 'Summer',
+  'season.autumn': 'Autumn',
+  'season.winter': 'Winter',
+  'season.cool_dry': 'Cool dry season',
+  'season.hot_dry': 'Hot dry season',
+  'season.rains': 'The rains',
+  'season.harvest': 'Harvest',
+  'season.rainy': 'Rainy season',
+  'season.high_water': 'High water',
+  'season.low_water': 'Low water',
   // Transport per town (Milestone 10): one set of texts per mode.
   'transport.bus.icon': '🚌',
   'transport.bus.lines': 'Bus links',

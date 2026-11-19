@@ -1,8 +1,6 @@
 import { audioContext, audioLevels } from './audio'
 import { getSettings } from './settings'
-import type { Season } from '../game/calendar'
 
-const SEASON_BIRDS: Record<Season, number> = { spring: 0.8, summer: 1, autumn: 1.6, winter: 3.5 }
 
 // Generated ambience (Milestone 9): synthesised birdsong made with Web Audio
 // (no files, no licences), singing on top of the background music. Birds sing
@@ -129,8 +127,9 @@ export function stopAmbience(): void {
 }
 
 // Re-read the volume settings and the town's mood (fades smoothly).
-export function refreshAmbience(mood?: { green?: number; paused?: boolean; season?: Season }): void {
-  if (mood?.season !== undefined) seasonFactor = SEASON_BIRDS[mood.season]
+// `birds` comes from the season's look: lower means birds sing more often.
+export function refreshAmbience(mood?: { green?: number; paused?: boolean; birds?: number }): void {
+  if (mood?.birds !== undefined) seasonFactor = mood.birds
   if (mood?.green !== undefined) green = mood.green
   if (mood?.paused !== undefined) isPaused = mood.paused
   const ctx = audioContext()

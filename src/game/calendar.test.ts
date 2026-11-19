@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { calendarOf, MONTHS_PER_YEAR, seasonOfDay } from './calendar'
+import { ALL_SEASONS, calendarOf, MONTHS_PER_YEAR, SEASON_SET_IDS, SEASON_SETS, seasonOfDay } from './calendar'
 import { TICKS_PER_MONTH } from './constants'
 
 // One tick is one in-game day; 30 days = 1 month; 12 months = 1 year.
@@ -54,3 +54,31 @@ describe('seasonOfDay', () => {
     expect(seasonOfDay(firstOf(7, 4))).toBe('summer')
   })
 })
+
+// Milestone 10: a set of seasons per region.
+describe('season sets', () => {
+  const firstOf = (month: number, year = 1) => ((year - 1) * MONTHS_PER_YEAR + (month - 1)) * TICKS_PER_MONTH + 1
+
+  it.each(SEASON_SET_IDS)('%s gives every month exactly one season', (id) => {
+    const months = SEASON_SETS[id].flatMap((s) => [...s.months]).sort((a, b) => a - b)
+    expect(months).toEqual(Array.from({ length: 12 }, (_, i) => i + 1))
+  })
+
+  it('temperate is the default and matches the original four seasons on every day', () => {
+    for (let day = 1; day <= 2 * MONTHS_PER_YEAR * TICKS_PER_MONTH; day++) {
+      expect(seasonOfDay(day, 'temperate')).toBe(seasonOfDay(day))
+    }
+  })
+
+  it('reads a non-temperate year', () => {
+    expect(seasonOfDay(firstOf(7), 'sahel')).toBe('rains')
+    expect(seasonOfDay(firstOf(4), 'floodplain')).toBe('high_water')
+    expect(seasonOfDay(firstOf(6), 'monsoon')).toBe('rainy')
+  })
+
+  it('lists every season once across all sets', () => {
+    expect(new Set(ALL_SEASONS).size).toBe(ALL_SEASONS.length)
+    expect(ALL_SEASONS).toContain('high_water')
+  })
+})
+

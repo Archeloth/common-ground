@@ -16,6 +16,10 @@ export interface SeasonLook {
   snow: boolean
   // 0..1: how much small wildlife (bees, butterflies, birds) is about.
   life: number
+  // How often birds sing in the ambience (lower is more often).
+  birds: number
+  // How much water a wadi carries, and how high a river runs (Milestone 10).
+  water: 'dry' | 'low' | 'normal' | 'high'
 }
 
 const SUMMER_LEAVES = { leaf: '#69a85c', leafLight: '#86c271', leafDark: '#4a8a4f' }
@@ -30,6 +34,8 @@ export const SEASON_LOOKS: Record<Season, SeasonLook> = {
     fields: { wheat: '#c9d97a', crop: '#a6d06f' },
     snow: false,
     life: 1,
+    birds: 0.8,
+    water: 'normal',
   },
   summer: {
     season: 'summer',
@@ -40,6 +46,8 @@ export const SEASON_LOOKS: Record<Season, SeasonLook> = {
     fields: { wheat: '#e6c86a', crop: '#9bc469' },
     snow: false,
     life: 1,
+    birds: 1,
+    water: 'low',
   },
   autumn: {
     season: 'autumn',
@@ -50,6 +58,8 @@ export const SEASON_LOOKS: Record<Season, SeasonLook> = {
     fields: { wheat: '#d9b77a', crop: '#b9a35f' },
     snow: false,
     life: 0.6,
+    birds: 1.6,
+    water: 'normal',
   },
   winter: {
     season: 'winter',
@@ -60,7 +70,15 @@ export const SEASON_LOOKS: Record<Season, SeasonLook> = {
     fields: { wheat: '#eef1f2', crop: '#e7ecec' },
     snow: true,
     life: 0.2,
+    birds: 3.5,
+    water: 'high',
   },
+}
+
+// The look for a season id; a season without its own look (a theme still
+// being drawn) falls back to summer rather than failing to draw.
+export function seasonLook(season: Season): SeasonLook {
+  return SEASON_LOOKS[season] ?? SEASON_LOOKS.summer
 }
 
 // The season currently painted. The sprites read PALETTE, so a season swaps

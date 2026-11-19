@@ -70,7 +70,8 @@ function smoothPath(ctx: CanvasRenderingContext2D, pts: readonly Point[], closed
   ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y)
 }
 
-type WaterDrawer = (ctx: CanvasRenderingContext2D, cam: Camera, pts: readonly Point[], half: number) => void
+type WaterLevel = 'dry' | 'low' | 'normal' | 'high'
+type WaterDrawer = (ctx: CanvasRenderingContext2D, cam: Camera, pts: readonly Point[], half: number, level: WaterLevel) => void
 
 const WATER_DRAWERS: Record<WaterKind, WaterDrawer> = {
   river: (ctx, cam, pts, half) => {
@@ -84,8 +85,8 @@ const WATER_DRAWERS: Record<WaterKind, WaterDrawer> = {
     ctx.lineWidth = half * 2 * cam.zoom
     ctx.stroke()
   },
-  // A sandy bed with a thin trickle down the middle.
-  wadi: (ctx, cam, pts, half) => {
+  // A sandy bed; water runs in it only in the wet season (Milestone 10).
+  wadi: (ctx, cam, pts, half, level) => {
     smoothPath(ctx, pts, false)
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -95,8 +96,10 @@ const WATER_DRAWERS: Record<WaterKind, WaterDrawer> = {
     ctx.strokeStyle = COLORS.wadiBed
     ctx.lineWidth = half * 2 * cam.zoom
     ctx.stroke()
+    if (level === 'dry') return
+    const share = level === 'low' ? 0.2 : level === 'normal' ? 0.45 : 0.85
     ctx.strokeStyle = COLORS.river
-    ctx.lineWidth = Math.max(1, half * 0.35 * cam.zoom)
+    ctx.lineWidth = Math.max(1, half * 2 * share * cam.zoom)
     ctx.stroke()
   },
   oasis: (ctx, cam, pts) => {
@@ -110,11 +113,11 @@ const WATER_DRAWERS: Record<WaterKind, WaterDrawer> = {
   },
 }
 
-export function drawWater(ctx: CanvasRenderingContext2D, cam: Camera, feature: WaterFeature): void {
+export function drawWater(ctx: CanvasRenderingContext2D, cam: Camera, feature: WaterFeature, level: WaterLevel = 'normal'): void {
   const pts = feature.points.map((p) => worldToScreen(cam, p.x, p.y))
   if (pts.length < 2) return
   ctx.save()
-  WATER_DRAWERS[feature.kind](ctx, cam, pts, feature.halfDepth)
+  WATER_DRAWERS[feature.kind](ctx, cam, pts, feature.halfDepth, level)
   ctx.restore()
 }
 

@@ -236,7 +236,7 @@ function drawBackground(ctx: CanvasRenderingContext2D, f: FrameInput, season: Se
   const { cam, scenario } = f
   ctx.fillStyle = seasonalGround(COLORS.ground, season)
   ctx.fillRect(0, 0, f.cssWidth, f.cssHeight)
-  for (const water of scenario.water) drawWater(ctx, cam, water)
+  for (const water of scenario.water) drawWater(ctx, cam, water, season.water)
   for (const crossing of scenario.crossings) drawCrossing(ctx, cam, crossing, crossingFrame(scenario, crossing))
   return drawCountryside(ctx, scenario, cam, zoomBucket(cam.zoom), f.cssWidth, f.cssHeight, f.dpr, season)
 }

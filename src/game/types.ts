@@ -4,6 +4,8 @@
 // JSON.stringify later (development plan, coding standards item 6).
 // Content ids use snake_case ("community_garden"), components PascalCase.
 
+import type { SeasonSetId } from './calendar'
+
 // The eight neighborhood kinds. The array is the single source of truth: the
 // union type is derived from it, so a new kind automatically forces a catalog
 // entry in data/neighborhoods.json and the kinds test keeps them in sync.
@@ -105,6 +107,8 @@ export interface ScenarioDef {
   needLabels?: { housing?: 'cooling' }
   // Shared research or projects this town leaves out (Milestone 10).
   research?: { exclude?: string[] }
+  // The town's year (Milestone 10): which season set; temperate by default.
+  seasons?: SeasonSetId
   // Buses by default, unlocked by public_transport (Milestone 10).
   transport?: { mode: TransportMode; requiresTech?: string }
   // Whether the scripted first-steps tutorial runs (default true). Its

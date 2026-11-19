@@ -5,6 +5,7 @@ import { projectsFor } from './regionContent'
 import { loadMilestones } from './milestones'
 import { loadWildlife } from './wildlife'
 import { scenarioContent } from './scenario'
+import { SEASON_SETS } from './calendar'
 
 // Citizen stories (post-Milestone 9): a handful of recurring residents whose
 // short notes change as their district improves. Each chapter has conditions
@@ -63,6 +64,7 @@ function buildStories(scenario: ScenarioDef): ResidentDef[] {
     projects: new Set(projectsFor(scenario).map((p) => p.id)),
     species: new Set(loadWildlife().map((s) => s.id)),
     milestones: new Set(loadMilestones(scenario.id).map((m) => m.id)),
+    seasons: new Set(SEASON_SETS[scenario.seasons ?? 'temperate'].map((s) => s.id)),
   }
   const seen = new Set<string>()
   for (const r of residents) {

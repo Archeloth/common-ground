@@ -25,6 +25,7 @@ import { playSound } from './audio'
 import type { SoundId } from './soundMap'
 import { refreshAmbience, startAmbience, stopAmbience } from './ambience'
 import { seasonOfDay } from '../game/calendar'
+import { seasonLook } from './render/scene/season'
 import { refreshMusic } from './music'
 import type { GameStore } from '../game/store'
 import type { Command, GameState, NeedId, Reason, Speed } from '../game/types'
@@ -194,11 +195,11 @@ export default function GameScreen({
     return () => stopAmbience()
   }, [])
   const green = Math.round(townNeedAverage(state, scenario, 'green') * 20) / 20
-  const season = seasonOfDay(state.day)
+  const birds = seasonLook(seasonOfDay(state.day, scenario.seasons)).birds
   useEffect(() => {
-    refreshAmbience({ green, paused: state.speed === 0, season })
+    refreshAmbience({ green, paused: state.speed === 0, birds })
     refreshMusic({ paused: state.speed === 0 })
-  }, [green, state.speed, settings, season])
+  }, [green, state.speed, settings, birds])
 
   // Clock shortcuts (Milestone 8.6): Space pauses/resumes at the last speed,
   // 1/2/3 pick 1x/2x/4x. Off while typing or while the lexicon is open.

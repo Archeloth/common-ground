@@ -3,7 +3,7 @@ import { NEIGHBORHOOD_KINDS } from './types'
 import { NEED_ORDER } from './needs'
 import { activeProjectIds } from './expiry'
 import type { Season } from './calendar'
-import { seasonOfDay } from './calendar'
+import { ALL_SEASONS, seasonOfDay } from './calendar'
 import type { MilestoneCondition } from './milestones'
 import { conditionProgress } from './milestones'
 
@@ -25,7 +25,6 @@ export type PlaceCondition =
   | { type: 'milestone'; milestone: string } // chapter completed
   | { type: 'town'; condition: MilestoneCondition }
 
-const SEASONS: readonly Season[] = ['spring', 'summer', 'autumn', 'winter']
 
 export function placeConditionMet(
   state: GameState,
@@ -45,7 +44,7 @@ export function placeConditionMet(
     case 'busLine':
       return state.busLines.some(([a, b]) => a === place.id || b === place.id)
     case 'season':
-      return condition.seasons.includes(seasonOfDay(state.day))
+      return condition.seasons.includes(seasonOfDay(state.day, scenario.seasons))
     case 'dayAtLeast':
       return state.day >= condition.day
     case 'species':
@@ -71,6 +70,9 @@ export interface ConditionIds {
   projects: ReadonlySet<string>
   species: ReadonlySet<string>
   milestones: ReadonlySet<string>
+  // The seasons a condition may name: a town's own set for its stories, every
+  // set's seasons for shared content such as wildlife (Milestone 10).
+  seasons?: ReadonlySet<Season>
 }
 
 export function placeConditionProblems(condition: PlaceCondition, ids: ConditionIds): string[] {
@@ -95,7 +97,7 @@ export function placeConditionProblems(condition: PlaceCondition, ids: Condition
       break
     case 'season':
       if (!Array.isArray(condition.seasons) || condition.seasons.length === 0) problems.push('season needs at least one season')
-      else for (const s of condition.seasons) if (!SEASONS.includes(s)) problems.push(`unknown season "${s}"`)
+      else for (const s of condition.seasons) if (!(ids.seasons ?? new Set(ALL_SEASONS)).has(s)) problems.push(`unknown season "${s}"`)
       break
     case 'dayAtLeast':
       if (!Number.isInteger(condition.day) || condition.day < 1) problems.push('dayAtLeast must be a day number')
