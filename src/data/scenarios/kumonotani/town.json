@@ -1,0 +1,442 @@
+{
+  "id": "kumonotani",
+  "name": "Kumonotani",
+  "region": "A mountain village in East Asia",
+  "theme": "east_asia",
+  "tagline": "Twelve hamlets, terraces and woods along a mountain river.",
+  "blurb": "Fewer and older residents keep the terraces, the woods and the empty houses going. Help them get about, keep warm, make power from the valley and welcome newcomers. Five chapters, no tutorial.",
+  "tutorial": false,
+  "preview": true,
+  "seasons": "monsoon",
+  "transport": {
+    "mode": "bus",
+    "requiresTech": "demand_bus"
+  },
+  "needWeights": {
+    "energy": 0.15,
+    "food": 0.2,
+    "mobility": 0.2,
+    "green": 0.15,
+    "waste": 0.1,
+    "housing": 0.2,
+    "water": 0
+  },
+  "start": {
+    "budget": 8000,
+    "time": 5,
+    "knowledge": 12,
+    "unlockedTech": [
+      "energy_audits",
+      "community_gardens",
+      "satoyama_care",
+      "terrace_restoration"
+    ]
+  },
+  "neighborhoods": [
+    {
+      "id": "cedar_woods",
+      "name": "Cedar Woods",
+      "kind": "satoyama",
+      "residents": 80,
+      "slots": 2,
+      "engagement": 60,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.62,
+        "mobility": 0.35,
+        "green": 0.9,
+        "waste": 0.7,
+        "housing": 0.55,
+        "water": 1
+      },
+      "shape": {
+        "x": 160,
+        "y": 110,
+        "radius": 66,
+        "seed": 3101
+      },
+      "neighbors": [
+        "upper_terraces",
+        "old_village"
+      ]
+    },
+    {
+      "id": "upper_terraces",
+      "name": "Upper Terraces",
+      "kind": "rice_terraces",
+      "residents": 150,
+      "slots": 3,
+      "engagement": 55,
+      "needs": {
+        "energy": 0.55,
+        "food": 0.85,
+        "mobility": 0.32,
+        "green": 0.75,
+        "waste": 0.65,
+        "housing": 0.5,
+        "water": 1
+      },
+      "shape": {
+        "x": 400,
+        "y": 110,
+        "radius": 70,
+        "seed": 3203
+      },
+      "neighbors": [
+        "shrine_hill",
+        "temple_lane",
+        "cedar_woods"
+      ]
+    },
+    {
+      "id": "shrine_hill",
+      "name": "Shrine Hill",
+      "kind": "satoyama",
+      "residents": 90,
+      "slots": 2,
+      "engagement": 62,
+      "needs": {
+        "energy": 0.58,
+        "food": 0.6,
+        "mobility": 0.34,
+        "green": 0.88,
+        "waste": 0.7,
+        "housing": 0.55,
+        "water": 1
+      },
+      "shape": {
+        "x": 640,
+        "y": 110,
+        "radius": 66,
+        "seed": 3307
+      },
+      "neighbors": [
+        "east_terraces",
+        "school_hamlet",
+        "upper_terraces"
+      ]
+    },
+    {
+      "id": "east_terraces",
+      "name": "East Terraces",
+      "kind": "rice_terraces",
+      "residents": 140,
+      "slots": 3,
+      "engagement": 52,
+      "needs": {
+        "energy": 0.55,
+        "food": 0.84,
+        "mobility": 0.3,
+        "green": 0.74,
+        "waste": 0.64,
+        "housing": 0.5,
+        "water": 1
+      },
+      "shape": {
+        "x": 880,
+        "y": 115,
+        "radius": 70,
+        "seed": 3409
+      },
+      "neighbors": [
+        "plum_terraces",
+        "shrine_hill"
+      ]
+    },
+    {
+      "id": "old_village",
+      "name": "Old Village",
+      "kind": "village_core",
+      "residents": 420,
+      "slots": 4,
+      "engagement": 58,
+      "needs": {
+        "energy": 0.5,
+        "food": 0.7,
+        "mobility": 0.4,
+        "green": 0.6,
+        "waste": 0.6,
+        "housing": 0.45,
+        "water": 1
+      },
+      "shape": {
+        "x": 200,
+        "y": 290,
+        "radius": 72,
+        "seed": 3511
+      },
+      "neighbors": [
+        "temple_lane",
+        "station_hamlet",
+        "cedar_woods"
+      ]
+    },
+    {
+      "id": "temple_lane",
+      "name": "Temple Lane",
+      "kind": "village_core",
+      "residents": 380,
+      "slots": 4,
+      "engagement": 60,
+      "needs": {
+        "energy": 0.52,
+        "food": 0.7,
+        "mobility": 0.42,
+        "green": 0.62,
+        "waste": 0.62,
+        "housing": 0.46,
+        "water": 1
+      },
+      "shape": {
+        "x": 440,
+        "y": 290,
+        "radius": 70,
+        "seed": 3613
+      },
+      "neighbors": [
+        "school_hamlet",
+        "mill_hamlet",
+        "upper_terraces",
+        "old_village"
+      ]
+    },
+    {
+      "id": "school_hamlet",
+      "name": "School Hamlet",
+      "kind": "river_hamlet",
+      "residents": 450,
+      "slots": 4,
+      "engagement": 45,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.72,
+        "mobility": 0.5,
+        "green": 0.55,
+        "waste": 0.55,
+        "housing": 0.55,
+        "water": 1
+      },
+      "shape": {
+        "x": 680,
+        "y": 290,
+        "radius": 70,
+        "seed": 3719
+      },
+      "neighbors": [
+        "plum_terraces",
+        "south_terraces",
+        "shrine_hill",
+        "temple_lane"
+      ]
+    },
+    {
+      "id": "plum_terraces",
+      "name": "Plum Terraces",
+      "kind": "rice_terraces",
+      "residents": 130,
+      "slots": 3,
+      "engagement": 50,
+      "needs": {
+        "energy": 0.55,
+        "food": 0.82,
+        "mobility": 0.3,
+        "green": 0.72,
+        "waste": 0.62,
+        "housing": 0.5,
+        "water": 1
+      },
+      "shape": {
+        "x": 920,
+        "y": 290,
+        "radius": 68,
+        "seed": 3821
+      },
+      "neighbors": [
+        "bamboo_grove",
+        "east_terraces",
+        "school_hamlet"
+      ]
+    },
+    {
+      "id": "station_hamlet",
+      "name": "Station Hamlet",
+      "kind": "river_hamlet",
+      "residents": 500,
+      "slots": 4,
+      "engagement": 42,
+      "needs": {
+        "energy": 0.62,
+        "food": 0.74,
+        "mobility": 0.55,
+        "green": 0.5,
+        "waste": 0.55,
+        "housing": 0.56,
+        "water": 1
+      },
+      "shape": {
+        "x": 200,
+        "y": 560,
+        "radius": 72,
+        "seed": 3923
+      },
+      "neighbors": [
+        "mill_hamlet",
+        "old_village"
+      ]
+    },
+    {
+      "id": "mill_hamlet",
+      "name": "Mill Hamlet",
+      "kind": "river_hamlet",
+      "residents": 300,
+      "slots": 3,
+      "engagement": 48,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.72,
+        "mobility": 0.45,
+        "green": 0.58,
+        "waste": 0.58,
+        "housing": 0.52,
+        "water": 1
+      },
+      "shape": {
+        "x": 440,
+        "y": 560,
+        "radius": 68,
+        "seed": 4027
+      },
+      "neighbors": [
+        "south_terraces",
+        "temple_lane",
+        "station_hamlet"
+      ]
+    },
+    {
+      "id": "south_terraces",
+      "name": "South Terraces",
+      "kind": "rice_terraces",
+      "residents": 160,
+      "slots": 3,
+      "engagement": 50,
+      "needs": {
+        "energy": 0.55,
+        "food": 0.83,
+        "mobility": 0.32,
+        "green": 0.74,
+        "waste": 0.63,
+        "housing": 0.5,
+        "water": 1
+      },
+      "shape": {
+        "x": 680,
+        "y": 560,
+        "radius": 70,
+        "seed": 4129
+      },
+      "neighbors": [
+        "bamboo_grove",
+        "school_hamlet",
+        "mill_hamlet"
+      ]
+    },
+    {
+      "id": "bamboo_grove",
+      "name": "Bamboo Grove",
+      "kind": "satoyama",
+      "residents": 70,
+      "slots": 2,
+      "engagement": 58,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.6,
+        "mobility": 0.3,
+        "green": 0.9,
+        "waste": 0.7,
+        "housing": 0.55,
+        "water": 1
+      },
+      "shape": {
+        "x": 920,
+        "y": 560,
+        "radius": 66,
+        "seed": 4231
+      },
+      "neighbors": [
+        "plum_terraces",
+        "south_terraces"
+      ]
+    }
+  ],
+  "water": [
+    {
+      "id": "river",
+      "kind": "river",
+      "halfDepth": 28,
+      "points": [
+        {
+          "x": 20,
+          "y": 405
+        },
+        {
+          "x": 320,
+          "y": 420
+        },
+        {
+          "x": 600,
+          "y": 398
+        },
+        {
+          "x": 880,
+          "y": 415
+        },
+        {
+          "x": 1100,
+          "y": 402
+        }
+      ]
+    }
+  ],
+  "crossings": [
+    {
+      "from": "old_village",
+      "to": "station_hamlet",
+      "point": {
+        "x": 200,
+        "y": 414
+      },
+      "kind": "bridge",
+      "water": "river"
+    },
+    {
+      "from": "temple_lane",
+      "to": "mill_hamlet",
+      "point": {
+        "x": 440,
+        "y": 411
+      },
+      "kind": "bridge",
+      "water": "river"
+    },
+    {
+      "from": "school_hamlet",
+      "to": "south_terraces",
+      "point": {
+        "x": 680,
+        "y": 403
+      },
+      "kind": "bridge",
+      "water": "river"
+    },
+    {
+      "from": "plum_terraces",
+      "to": "bamboo_grove",
+      "point": {
+        "x": 920,
+        "y": 413
+      },
+      "kind": "bridge",
+      "water": "river"
+    }
+  ]
+}

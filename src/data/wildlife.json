@@ -189,6 +189,60 @@
           "url": "https://en.wikipedia.org/wiki/Fennec_fox"
         }
       ]
+    },
+    {
+      "id": "grey_heron",
+      "name": "Grey heron",
+      "where": [
+        "rice_terraces",
+        "river_hamlet"
+      ],
+      "conditions": [
+        {
+          "type": "project",
+          "project": "rice_fish_paddies"
+        }
+      ],
+      "hint": "Stalks the flooded paddies when there is something to catch.",
+      "note": "Grey herons wait motionless in shallow water and strike at fish and frogs. Flooded rice fields that hold fish feed them well.",
+      "confidence": "established",
+      "readMore": [
+        {
+          "title": "Grey heron",
+          "url": "https://en.wikipedia.org/wiki/Grey_heron"
+        }
+      ]
+    },
+    {
+      "id": "genji_firefly",
+      "name": "Genji firefly",
+      "where": [
+        "river_hamlet",
+        "satoyama"
+      ],
+      "conditions": [
+        {
+          "type": "season",
+          "seasons": [
+            "rainy",
+            "summer"
+          ]
+        },
+        {
+          "type": "need",
+          "need": "green",
+          "min": 0.7
+        }
+      ],
+      "hint": "Glows over clean streams on early summer nights.",
+      "note": "The Genji firefly's larvae live in clean, slow streams and feed on water snails, so the adults' early-summer glow is a sign of healthy water.",
+      "confidence": "established",
+      "readMore": [
+        {
+          "title": "Genji firefly",
+          "url": "https://en.wikipedia.org/wiki/Luciola_cruciata"
+        }
+      ]
     }
   ]
 }

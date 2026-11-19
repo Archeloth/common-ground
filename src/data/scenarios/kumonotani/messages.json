@@ -1,0 +1,148 @@
+{
+  "messages": [
+    {
+      "id": "cedar_woods_message",
+      "neighborhood": "cedar_woods",
+      "text": "Nobody has thinned the cedars in years. Give us a day and we will show you how it used to be done.",
+      "request": {
+        "type": "projectIn",
+        "project": "woodland_care"
+      },
+      "reward": {
+        "knowledge": 5
+      }
+    },
+    {
+      "id": "upper_terraces_message",
+      "neighborhood": "upper_terraces",
+      "text": "The top walls have slipped. If they go, the water goes, and the whole slope follows.",
+      "request": {
+        "type": "projectIn",
+        "project": "terrace_repair"
+      },
+      "reward": {
+        "time": 3
+      }
+    },
+    {
+      "id": "shrine_hill_message",
+      "neighborhood": "shrine_hill",
+      "text": "The stream below the shrine never freezes. It could light the village, if someone built a turbine.",
+      "request": {
+        "type": "projectIn",
+        "project": "micro_hydro_plant"
+      },
+      "reward": {
+        "knowledge": 6
+      }
+    },
+    {
+      "id": "east_terraces_message",
+      "neighborhood": "east_terraces",
+      "text": "My father kept carp in the paddies. The fish ate the weeds; we ate the fish.",
+      "request": {
+        "type": "projectIn",
+        "project": "rice_fish_paddies"
+      },
+      "reward": {
+        "budget": 300
+      }
+    },
+    {
+      "id": "old_village_message",
+      "neighborhood": "old_village",
+      "text": "Three houses on our lane are empty. A young family asked about one; help us make it fit to live in.",
+      "request": {
+        "type": "projectIn",
+        "project": "akiya_homes"
+      },
+      "reward": {
+        "time": 2
+      }
+    },
+    {
+      "id": "temple_lane_message",
+      "neighborhood": "temple_lane",
+      "text": "We bathe every evening; heating the water costs more than anything else.",
+      "request": {
+        "type": "projectIn",
+        "project": "solar_heaters"
+      },
+      "reward": {
+        "budget": 350
+      }
+    },
+    {
+      "id": "school_hamlet_message",
+      "neighborhood": "school_hamlet",
+      "text": "Parents in town would pay ahead for our vegetables, if we organised the boxes.",
+      "request": {
+        "type": "projectIn",
+        "project": "teikei_box"
+      },
+      "reward": {
+        "knowledge": 4
+      }
+    },
+    {
+      "id": "plum_terraces_message",
+      "neighborhood": "plum_terraces",
+      "text": "Our cows make more manure than the fields need. It could cook our dinners instead.",
+      "request": {
+        "type": "projectIn",
+        "project": "biogas_digester"
+      },
+      "reward": {
+        "budget": 300
+      }
+    },
+    {
+      "id": "station_hamlet_message",
+      "neighborhood": "station_hamlet",
+      "text": "Every heavy rain floods the lane by the station. Let the ground drink it.",
+      "request": {
+        "type": "projectIn",
+        "project": "sponge_lane"
+      },
+      "reward": {
+        "knowledge": 5
+      }
+    },
+    {
+      "id": "mill_hamlet_message",
+      "neighborhood": "mill_hamlet",
+      "text": "The old mill race still runs. A little turbine there would keep the lights on.",
+      "request": {
+        "type": "projectIn",
+        "project": "micro_hydro_plant"
+      },
+      "reward": {
+        "time": 2
+      }
+    },
+    {
+      "id": "south_terraces_message",
+      "neighborhood": "south_terraces",
+      "text": "With fewer hands, half our terraces are going wild. Rebuild the walls and we will plant them.",
+      "request": {
+        "type": "projectIn",
+        "project": "terrace_repair"
+      },
+      "reward": {
+        "budget": 350
+      }
+    },
+    {
+      "id": "bamboo_grove_message",
+      "neighborhood": "bamboo_grove",
+      "text": "The bamboo is swallowing the cedars. Cut it back and the wood will breathe again.",
+      "request": {
+        "type": "projectIn",
+        "project": "woodland_care"
+      },
+      "reward": {
+        "knowledge": 4
+      }
+    }
+  ]
+}

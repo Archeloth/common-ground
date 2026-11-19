@@ -31,7 +31,10 @@
         "ksar",
         "palm_gardens",
         "new_quarter",
-        "market_square"
+        "market_square",
+        "village_core",
+        "river_hamlet",
+        "rice_terraces"
       ],
       "visual": "garden",
       "buildDays": 14
@@ -59,7 +62,9 @@
         "retail_park",
         "new_quarter",
         "market_square",
-        "ksar"
+        "ksar",
+        "village_core",
+        "river_hamlet"
       ],
       "visual": "solar",
       "buildDays": 21
@@ -192,7 +197,11 @@
         "palm_gardens",
         "new_quarter",
         "market_square",
-        "herders_edge"
+        "herders_edge",
+        "village_core",
+        "rice_terraces",
+        "satoyama",
+        "river_hamlet"
       ],
       "visual": "compost",
       "buildDays": 10
@@ -224,7 +233,9 @@
         "retail_park",
         "farmland",
         "market_square",
-        "new_quarter"
+        "new_quarter",
+        "village_core",
+        "river_hamlet"
       ],
       "visual": "market",
       "buildDays": 14
@@ -309,7 +320,9 @@
         "retail_park",
         "market_square",
         "ksar",
-        "new_quarter"
+        "new_quarter",
+        "village_core",
+        "river_hamlet"
       ],
       "visual": "repairCafe",
       "buildDays": 21
@@ -337,7 +350,9 @@
         "retail_park",
         "farmland",
         "market_square",
-        "new_quarter"
+        "new_quarter",
+        "village_core",
+        "river_hamlet"
       ],
       "visual": "recycling",
       "buildDays": 10
@@ -450,7 +465,9 @@
         "suburb",
         "ksar",
         "new_quarter",
-        "market_square"
+        "market_square",
+        "village_core",
+        "river_hamlet"
       ],
       "visual": "workshop",
       "buildDays": 7
@@ -761,6 +778,257 @@
       ],
       "visual": "minigrid",
       "buildDays": 45
+    },
+    {
+      "id": "woodland_care",
+      "name": "Woodland care days",
+      "explain": "Thin and coppice the village wood with the old hands showing the young ones how.",
+      "cost": 300,
+      "time": 2,
+      "engagement": 6,
+      "requiresTech": "satoyama_care",
+      "durationMonths": 36,
+      "effects": [
+        {
+          "need": "green",
+          "change": 0.12
+        },
+        {
+          "need": "energy",
+          "change": 0.03
+        }
+      ],
+      "allowedKinds": [
+        "satoyama",
+        "village_core"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "coppice",
+      "buildDays": 10
+    },
+    {
+      "id": "terrace_repair",
+      "name": "Terrace repair",
+      "explain": "Rebuild the stone walls and channels of an abandoned terrace.",
+      "cost": 700,
+      "time": 3,
+      "engagement": 5,
+      "requiresTech": "terrace_restoration",
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.12
+        },
+        {
+          "need": "green",
+          "change": 0.05
+        }
+      ],
+      "allowedKinds": [
+        "rice_terraces"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "terrace",
+      "buildDays": 30
+    },
+    {
+      "id": "rice_fish_paddies",
+      "name": "Rice-fish paddies",
+      "explain": "Stock the paddies with fish that weed and feed the rice.",
+      "cost": 450,
+      "time": 2,
+      "engagement": 4,
+      "requiresTech": "rice_fish",
+      "durationMonths": 36,
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.1
+        },
+        {
+          "need": "waste",
+          "change": 0.04
+        },
+        {
+          "need": "green",
+          "change": 0.03
+        }
+      ],
+      "allowedKinds": [
+        "rice_terraces"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "paddyFish",
+      "buildDays": 14
+    },
+    {
+      "id": "micro_hydro_plant",
+      "name": "Micro-hydro turbine",
+      "explain": "A small turbine house on the mountain stream.",
+      "cost": 1400,
+      "time": 2,
+      "engagement": 4,
+      "requiresTech": "micro_hydro",
+      "effects": [
+        {
+          "need": "energy",
+          "change": 0.22
+        }
+      ],
+      "allowedKinds": [
+        "river_hamlet",
+        "satoyama"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "waterwheel",
+      "buildDays": 45
+    },
+    {
+      "id": "biogas_digester",
+      "name": "Biogas digester",
+      "explain": "A shared digester turns manure and scraps into cooking gas.",
+      "cost": 700,
+      "time": 2,
+      "engagement": 3,
+      "requiresTech": "biogas",
+      "effects": [
+        {
+          "need": "energy",
+          "change": 0.08
+        },
+        {
+          "need": "waste",
+          "change": 0.12
+        }
+      ],
+      "allowedKinds": [
+        "rice_terraces",
+        "river_hamlet",
+        "village_core"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "biogas",
+      "buildDays": 21
+    },
+    {
+      "id": "solar_heaters",
+      "name": "Solar water heaters",
+      "explain": "Collectors on the roofs heat water for the baths.",
+      "cost": 600,
+      "time": 1,
+      "engagement": 2,
+      "requiresTech": "solar_water_heaters",
+      "effects": [
+        {
+          "need": "energy",
+          "change": 0.1
+        },
+        {
+          "need": "housing",
+          "change": 0.05
+        }
+      ],
+      "allowedKinds": [
+        "village_core",
+        "river_hamlet"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "solarHeater",
+      "buildDays": 14
+    },
+    {
+      "id": "teikei_box",
+      "name": "Teikei vegetable boxes",
+      "explain": "Families in the hamlet share the farmers' risk and their harvest.",
+      "cost": 300,
+      "time": 2,
+      "engagement": 6,
+      "requiresTech": "teikei",
+      "durationMonths": 24,
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.08
+        }
+      ],
+      "allowedKinds": [
+        "village_core",
+        "river_hamlet",
+        "rice_terraces"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "veggieBoxes",
+      "buildDays": 7
+    },
+    {
+      "id": "akiya_homes",
+      "name": "Empty-house renovation",
+      "explain": "Repair an empty house together and welcome a young family into it.",
+      "cost": 900,
+      "time": 3,
+      "engagement": 8,
+      "requiresTech": "akiya_renovation",
+      "effects": [
+        {
+          "need": "housing",
+          "change": 0.12
+        }
+      ],
+      "allowedKinds": [
+        "village_core",
+        "river_hamlet"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "akiyaHouse",
+      "buildDays": 45
+    },
+    {
+      "id": "sponge_lane",
+      "name": "Water-retaining lane",
+      "explain": "Permeable paving and planted ditches along the lane.",
+      "cost": 700,
+      "time": 2,
+      "engagement": 3,
+      "requiresTech": "sponge_streets",
+      "effects": [
+        {
+          "need": "green",
+          "change": 0.06
+        },
+        {
+          "need": "housing",
+          "change": 0.04
+        },
+        {
+          "need": "mobility",
+          "change": 0.03
+        }
+      ],
+      "allowedKinds": [
+        "village_core",
+        "river_hamlet"
+      ],
+      "regions": [
+        "east_asia"
+      ],
+      "visual": "spongeLane",
+      "buildDays": 21
     }
   ]
 }

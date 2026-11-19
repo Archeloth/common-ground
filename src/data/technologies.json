@@ -544,6 +544,236 @@
           "url": "https://en.wikipedia.org/wiki/Share_taxi"
         }
       ]
+    },
+    {
+      "id": "satoyama_care",
+      "name": "Woodland care (satoyama)",
+      "branch": "ecology",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "sponge_streets"
+      ],
+      "benefit": "Coppicing, thinning and clearing the village woods, as the older residents have always done: wood, mushrooms and a richer forest.",
+      "limit": "Needs steady hands every year; once a wood is left to grow over, bringing it back is slow and hard work.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Satoyama",
+          "url": "https://en.wikipedia.org/wiki/Satoyama"
+        }
+      ]
+    },
+    {
+      "id": "terrace_restoration",
+      "name": "Terrace restoration",
+      "branch": "food",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "rice_fish"
+      ],
+      "benefit": "Rebuild dry-stone walls and channels so abandoned terraces can be farmed again.",
+      "limit": "Terraces need constant upkeep and a lot of labour; volunteers and newcomers help, but cannot replace a farming family.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Terrace (earthworks)",
+          "url": "https://en.wikipedia.org/wiki/Terrace_(earthworks)"
+        },
+        {
+          "title": "Rice",
+          "url": "https://en.wikipedia.org/wiki/Rice"
+        }
+      ]
+    },
+    {
+      "id": "rice_fish",
+      "name": "Rice-fish farming",
+      "branch": "food",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 15,
+      "prerequisites": [
+        "terrace_restoration"
+      ],
+      "unlocks": [],
+      "benefit": "Raise fish in the flooded paddies: they eat pests and weeds, and become a second harvest.",
+      "limit": "Needs reliable water and care to keep fish alive through the season; yields vary.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Rice-fish system",
+          "url": "https://en.wikipedia.org/wiki/Rice-fish_system"
+        }
+      ]
+    },
+    {
+      "id": "micro_hydro",
+      "name": "Micro-hydro",
+      "branch": "energy",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 25,
+      "prerequisites": [
+        "energy_audits"
+      ],
+      "unlocks": [],
+      "benefit": "A small turbine in a mountain stream gives the village steady power, day and night.",
+      "limit": "Only where there is a good drop and steady flow; intakes need clearing after storms, and fish need a way past.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Micro hydro",
+          "url": "https://en.wikipedia.org/wiki/Micro_hydro"
+        }
+      ]
+    },
+    {
+      "id": "solar_water_heaters",
+      "name": "Solar water heaters",
+      "branch": "energy",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 10,
+      "prerequisites": [
+        "energy_audits"
+      ],
+      "unlocks": [],
+      "benefit": "Rooftop collectors heat bath and kitchen water, the biggest energy use in many homes.",
+      "limit": "Weak in the snowy months; a backup heater is still needed.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Solar water heating",
+          "url": "https://en.wikipedia.org/wiki/Solar_water_heating"
+        }
+      ]
+    },
+    {
+      "id": "biogas",
+      "name": "Biogas",
+      "branch": "circular",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 20,
+      "prerequisites": [
+        "composting"
+      ],
+      "unlocks": [],
+      "benefit": "Digest manure and kitchen scraps into cooking gas and fertiliser.",
+      "limit": "Needs a steady feed of waste and warm temperatures; small digesters fail without upkeep.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Biogas",
+          "url": "https://en.wikipedia.org/wiki/Biogas"
+        }
+      ]
+    },
+    {
+      "id": "teikei",
+      "name": "Teikei partnerships",
+      "branch": "food",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 20,
+      "prerequisites": [
+        "community_gardens"
+      ],
+      "unlocks": [],
+      "benefit": "Households in town pay a farmer in advance for a share of the harvest, sharing the risk.",
+      "limit": "Depends on trust and on members who stay for years; boxes of whatever is in season do not suit everyone.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Community-supported agriculture",
+          "url": "https://en.wikipedia.org/wiki/Community-supported_agriculture"
+        }
+      ]
+    },
+    {
+      "id": "akiya_renovation",
+      "name": "Renovating empty houses",
+      "branch": "community",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 15,
+      "prerequisites": [],
+      "unlocks": [],
+      "benefit": "Match empty houses with newcomers and repair them together, so young families can move in.",
+      "limit": "Old houses can hide costly problems, and newcomers need work and welcome, not just a roof.",
+      "confidence": "emerging",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Akiya",
+          "url": "https://en.wikipedia.org/wiki/Akiya"
+        }
+      ]
+    },
+    {
+      "id": "sponge_streets",
+      "name": "Water-retaining streets",
+      "branch": "ecology",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 25,
+      "prerequisites": [
+        "satoyama_care"
+      ],
+      "unlocks": [],
+      "benefit": "Permeable paving, swales and planted ditches hold heavy rain and release it slowly.",
+      "limit": "Helps with everyday downpours, not with the largest floods; needs space and maintenance.",
+      "confidence": "emerging",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Sponge city",
+          "url": "https://en.wikipedia.org/wiki/Sponge_city"
+        }
+      ]
+    },
+    {
+      "id": "demand_bus",
+      "name": "Community bus on demand",
+      "branch": "mobility",
+      "regions": [
+        "east_asia"
+      ],
+      "cost": 15,
+      "prerequisites": [],
+      "unlocks": [],
+      "benefit": "Unlocks bus lines that run when residents book a ride, between neighbouring parts of the village.",
+      "limit": "Booking by phone or app can be hard for the oldest residents; volunteer drivers are needed.",
+      "confidence": "emerging",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Demand-responsive transport",
+          "url": "https://en.wikipedia.org/wiki/Demand-responsive_transport"
+        }
+      ]
     }
   ]
 }

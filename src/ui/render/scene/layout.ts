@@ -15,9 +15,11 @@ export type BuildingStyle =
   | 'terrace' | 'block' | 'house' | 'shed' | 'store' | 'barn'
   // Milestone 10 regions
   | 'mudhouse' | 'ksarTower' | 'tent'
+  | 'minka' | 'tiledHouse' | 'kura'
 export type GreeneryStyle =
   | 'tree' | 'conifer' | 'reeds' | 'field'
   | 'palm' | 'acacia' | 'millet'
+  | 'pine' | 'cherry' | 'bamboo' | 'paddy'
 
 export interface Plot {
   x: number

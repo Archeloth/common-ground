@@ -1,6 +1,7 @@
 import type { Ctx } from './kit'
 import { PALETTE, circle, fillOutlined } from './kit'
 import { SAHEL_SPECIES } from './regions/sahel'
+import { EAST_ASIA_SPECIES } from './regions/eastAsia'
 
 // Wildlife sprites (post-Milestone 9): one small, code-drawn animal per
 // species in the journal. Each draws around a ground point (x, y) at scale s
@@ -303,6 +304,7 @@ export const SPECIES_SPRITES: Record<string, SpeciesSprite> = {
   stag_beetle: stagBeetle,
   peregrine,
   ...SAHEL_SPECIES,
+  ...EAST_ASIA_SPECIES,
 }
 
 // Birds in flight are drawn well above their ground point, on a loop. For a

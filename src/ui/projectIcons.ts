@@ -29,6 +29,15 @@ export const PROJECT_ICONS: Record<string, string> = {
   cookstove: '🍲',
   dripLines: '💦',
   minigrid: '🔋',
+  coppice: '🪵',
+  terrace: '🪨',
+  paddyFish: '🐟',
+  waterwheel: '🛞',
+  biogas: '🔥',
+  solarHeater: '🚿',
+  veggieBoxes: '📦',
+  akiyaHouse: '🏠',
+  spongeLane: '🌧️',
 }
 
 export function projectIcon(visual: string): string {

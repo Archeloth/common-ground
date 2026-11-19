@@ -14,6 +14,9 @@ import willowbrookStories from '../data/scenarios/willowbrook/stories.json'
 import hollinTown from '../data/scenarios/hollin_green/town.json'
 import hollinMilestones from '../data/scenarios/hollin_green/milestones.json'
 import hollinMessages from '../data/scenarios/hollin_green/messages.json'
+import kumoTown from '../data/scenarios/kumonotani/town.json'
+import kumoMilestones from '../data/scenarios/kumonotani/milestones.json'
+import kumoMessages from '../data/scenarios/kumonotani/messages.json'
 import talaTown from '../data/scenarios/tala_ifri/town.json'
 import talaMilestones from '../data/scenarios/tala_ifri/milestones.json'
 import talaMessages from '../data/scenarios/tala_ifri/messages.json'
@@ -168,6 +171,11 @@ const SCENARIOS: Record<string, ScenarioContent> = {
     town: hollinTown,
     milestones: hollinMilestones,
     messages: hollinMessages,
+  },
+  kumonotani: {
+    town: kumoTown,
+    milestones: kumoMilestones,
+    messages: kumoMessages,
   },
   tala_ifri: {
     town: talaTown,

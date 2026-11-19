@@ -1,0 +1,127 @@
+{
+  "milestones": [
+    {
+      "id": "kumo_terraces",
+      "name": "Terraces again",
+      "chapter": 1,
+      "goal": "Average food coverage 0.8",
+      "explain": "The terraces are the village. Repair two of them, hold a woodland care day, and bring average food coverage to 0.8.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "terrace_repair",
+          "min": 2
+        },
+        {
+          "type": "projectCount",
+          "project": "woodland_care",
+          "min": 1
+        },
+        {
+          "type": "needsAverage",
+          "need": "food",
+          "min": 0.8
+        }
+      ],
+      "reward": {
+        "knowledge": 8
+      }
+    },
+    {
+      "id": "kumo_getting_about",
+      "name": "Getting about",
+      "chapter": 2,
+      "goal": "Average mobility 0.6",
+      "explain": "Most residents no longer drive. Run two community bus lines and lift average mobility to 0.6.",
+      "conditions": [
+        {
+          "type": "busLineCount",
+          "min": 2
+        },
+        {
+          "type": "needsAverage",
+          "need": "mobility",
+          "min": 0.6
+        }
+      ],
+      "reward": {
+        "knowledge": 10
+      }
+    },
+    {
+      "id": "kumo_warm_houses",
+      "name": "Warm houses",
+      "chapter": 3,
+      "goal": "Average housing comfort 0.65",
+      "explain": "Old houses are cold in winter. Put solar water heaters on two hamlets, renovate one empty house, and reach average housing comfort of 0.65.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "solar_heaters",
+          "min": 2
+        },
+        {
+          "type": "projectCount",
+          "project": "akiya_homes",
+          "min": 1
+        },
+        {
+          "type": "needsAverage",
+          "need": "housing",
+          "min": 0.65
+        }
+      ],
+      "reward": {
+        "knowledge": 12
+      }
+    },
+    {
+      "id": "kumo_power",
+      "name": "Power from the valley",
+      "chapter": 4,
+      "goal": "Average energy coverage 0.72",
+      "explain": "Turn the stream and the farm waste into energy: build a micro-hydro turbine and a biogas digester, and reach average energy coverage of 0.72.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "micro_hydro_plant",
+          "min": 1
+        },
+        {
+          "type": "projectCount",
+          "project": "biogas_digester",
+          "min": 1
+        },
+        {
+          "type": "needsAverage",
+          "need": "energy",
+          "min": 0.72
+        }
+      ],
+      "reward": {
+        "knowledge": 12
+      }
+    },
+    {
+      "id": "kumo_newcomers",
+      "name": "Room for newcomers",
+      "chapter": 5,
+      "goal": "Town satisfaction 66",
+      "explain": "Renovate three empty houses for young families and reach town satisfaction 66.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "akiya_homes",
+          "min": 3
+        },
+        {
+          "type": "townSatisfaction",
+          "min": 66
+        }
+      ],
+      "reward": {
+        "knowledge": 15
+      }
+    }
+  ]
+}
