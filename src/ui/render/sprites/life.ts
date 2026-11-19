@@ -1,3 +1,4 @@
+import type { TransportMode } from '../../../game/types'
 import type { Ctx } from './kit'
 import { PALETTE, circle, fillOutlined, roundRect } from './kit'
 
@@ -126,6 +127,77 @@ export function bus(ctx: Ctx, x: number, y: number, s: number, facing: number, t
   ctx.fill()
   ctx.restore()
 }
+
+// A shared minibus (Milestone 10): shorter, taller, with a roof rack.
+export function minibus(ctx: Ctx, x: number, y: number, s: number, facing: number, t: number): void {
+  const bob = Math.sin(t * 14) * 0.3 * s
+  ctx.save()
+  ctx.translate(x, y + bob)
+  ctx.scale(facing, 1)
+  ctx.beginPath()
+  ctx.ellipse(0, 3.2 * s, 4.6 * s, 1.1 * s, 0, 0, Math.PI * 2)
+  ctx.fillStyle = PALETTE.shadow
+  ctx.fill()
+  roundRect(ctx, -4.6 * s, -3.4 * s, 9.2 * s, 6.2 * s, 1.8 * s)
+  fillOutlined(ctx, '#e8e4d8', s, 0.5)
+  roundRect(ctx, -4.6 * s, 0.4 * s, 9.2 * s, 1 * s, 0.4 * s)
+  ctx.fillStyle = '#d9822b'
+  ctx.fill()
+  // Roof rack with a bundle on it.
+  roundRect(ctx, -3.4 * s, -4.6 * s, 6.8 * s, 0.7 * s, 0.3 * s)
+  ctx.fillStyle = '#5b4a3a'
+  ctx.fill()
+  roundRect(ctx, -2.2 * s, -5.8 * s, 3 * s, 1.3 * s, 0.5 * s)
+  ctx.fillStyle = '#b5523b'
+  ctx.fill()
+  for (let i = 0; i < 2; i++) {
+    roundRect(ctx, -3.6 * s + i * 2.8 * s, -2.5 * s, 2.2 * s, 2 * s, 0.4 * s)
+    ctx.fillStyle = PALETTE.window
+    ctx.fill()
+  }
+  roundRect(ctx, 2.6 * s, -2.5 * s, 1.5 * s, 2.4 * s, 0.4 * s)
+  ctx.fillStyle = PALETTE.window
+  ctx.fill()
+  ctx.fillStyle = '#3d3a3a'
+  circle(ctx, -2.6 * s, 2.9 * s, 1.1 * s)
+  ctx.fill()
+  circle(ctx, 2.6 * s, 2.9 * s, 1.1 * s)
+  ctx.fill()
+  ctx.restore()
+}
+
+// A river boat (Milestone 10): a long wooden hull with a shade roof,
+// rocking gently instead of bobbing on a road.
+export function boat(ctx: Ctx, x: number, y: number, s: number, facing: number, t: number): void {
+  const rock = Math.sin(t * 3) * 0.06
+  ctx.save()
+  ctx.translate(x, y)
+  ctx.rotate(rock)
+  ctx.scale(facing, 1)
+  ctx.beginPath()
+  ctx.ellipse(0, 2.6 * s, 7.5 * s, 1.3 * s, 0, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.35)'
+  ctx.fill()
+  ctx.beginPath()
+  ctx.moveTo(-7 * s, -0.6 * s)
+  ctx.lineTo(7.5 * s, -1.2 * s)
+  ctx.quadraticCurveTo(6 * s, 2.4 * s, 3.5 * s, 2.4 * s)
+  ctx.lineTo(-5 * s, 2.4 * s)
+  ctx.quadraticCurveTo(-6.6 * s, 1.6 * s, -7 * s, -0.6 * s)
+  ctx.closePath()
+  fillOutlined(ctx, '#8a5a35', s, 0.5)
+  ctx.fillStyle = '#5b3a22'
+  ctx.fillRect(-4 * s, -4.4 * s, 0.6 * s, 3.8 * s)
+  ctx.fillRect(3 * s, -4.4 * s, 0.6 * s, 3.8 * s)
+  roundRect(ctx, -5 * s, -5.4 * s, 9.6 * s, 1.4 * s, 0.6 * s)
+  fillOutlined(ctx, '#2f8f83', s, 0.4)
+  ctx.restore()
+}
+
+export type VehicleDrawer = (ctx: Ctx, x: number, y: number, s: number, facing: number, t: number) => void
+
+// The vehicle for each transport mode (Milestone 10).
+export const VEHICLES: Record<TransportMode, VehicleDrawer> = { bus, minibus, boat }
 
 // Sparkles around a project as it pops in; progress 0..1.
 export function sparkles(ctx: Ctx, x: number, y: number, s: number, progress: number): void {

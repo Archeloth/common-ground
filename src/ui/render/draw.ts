@@ -206,7 +206,7 @@ export function drawBusLine(
   ctx: CanvasRenderingContext2D,
   cam: Camera,
   route: readonly Point[],
-  color = COLORS.bus,
+  color: string = COLORS.bus,
 ): void {
   const pts = route.map((p) => worldToScreen(cam, p.x, p.y))
   ctx.save()

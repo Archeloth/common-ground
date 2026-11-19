@@ -5,6 +5,7 @@ import { loadScenario, neighborhoodById } from '../game/scenario'
 import { loadProjects, projectById } from '../game/projects'
 import { t } from './i18n'
 import { needLabel } from './needLabel'
+import { transportText } from './transportText'
 
 // Player-facing wording for one milestone task with its live progress, e.g.
 // "Safe streets: 1 of 3 running" (shared by the goal tracker; Milestone 8.6).
@@ -27,7 +28,7 @@ export function taskText(state: GameState, condition: MilestoneCondition): strin
     case 'slotsFilled':
       return t('town.task.slots', { current: progress.current, target: progress.target })
     case 'busLineCount':
-      return t('town.task.bus', { current: progress.current, target: progress.target })
+      return transportText('task', { current: progress.current, target: progress.target })
     case 'townSatisfaction':
       return t('town.task.satisfaction', { current: Math.round(progress.current), target: progress.target })
     case 'needsAverage':

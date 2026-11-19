@@ -12,6 +12,7 @@ import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import './TownPanel.css'
 import { needLabel } from './needLabel'
+import { transportText } from './transportText'
 
 
 interface TownPanelProps {
@@ -81,7 +82,7 @@ export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPane
           </dd>
         </div>
         <div className="town-stat">
-          <dt>{t('town.busLines')}</dt>
+          <dt>{transportText('count')}</dt>
           <dd>{state.busLines.length}</dd>
         </div>
         <div className="town-stat">

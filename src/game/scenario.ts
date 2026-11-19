@@ -1,4 +1,5 @@
 import type { CrossingDef, ScenarioDef, NeighborhoodDef } from './types'
+import { TRANSPORT_MODES } from './transport'
 import { CROSSING_KINDS, WATER_KINDS, crossingsBetween, isPool, linkCrossesWater, waterById } from './water'
 import { districtOutline, outlineBox } from './outline'
 import { kindById, loadKinds } from './kinds'
@@ -86,6 +87,10 @@ export function validateScenario(s: ScenarioDef): void {
       if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) fail('water points must be finite', w.id)
     }
     if (!isPool(w) && !(w.halfDepth > 0)) fail('halfDepth must be positive', w.id)
+  }
+
+  if (s.transport !== undefined && !(TRANSPORT_MODES as readonly string[]).includes(s.transport.mode)) {
+    fail(`unknown transport mode "${s.transport.mode}"`, s.id)
   }
 
   const crossingKeys = new Set<string>()

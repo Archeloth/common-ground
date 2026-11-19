@@ -2,6 +2,7 @@ import type { NeedId, NeighborhoodDef, ScenarioDef } from '../../../game/types'
 import type { Point } from '../../../game/geometry'
 import { neighborhoodById } from '../../../game/scenario'
 import { crossingFrame, crossingsBetween, waterById } from '../../../game/water'
+import { transportOf } from '../../../game/transport'
 import { districtOutline } from '../../../game/outline'
 import type { Camera } from '../camera'
 import { worldToScreen } from '../camera'
@@ -11,7 +12,7 @@ import { CHIMNEY_TOP } from '../sprites/buildings'
 import { drawBuildRing, drawDecoration, turbineHub } from '../sprites/decorations'
 import type { VisualId } from '../sprites/decorations'
 import { SPRITE_SCALE } from '../sprites/kit'
-import { bees, bird, bus, butterfly, floatingLabel, popScale, ripple, smoke, sparkles, turbineBlades, valuePill } from '../sprites/life'
+import { VEHICLES, bees, bird, butterfly, floatingLabel, popScale, ripple, smoke, sparkles, turbineBlades, valuePill } from '../sprites/life'
 import { drawSpecies } from '../sprites/wildlife'
 import type { DistrictCache, DistrictLook } from './district'
 import { renderDistrict } from './district'
@@ -170,7 +171,8 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): boolean
 
   // Bus routes go over the districts they link: districts share borders now,
   // so there are no gaps left for a route drawn underneath to show through.
-  for (const [a, b] of f.busLines) drawBusLine(ctx, cam, routeOf(scenario, a, b))
+  const mode = transportOf(scenario).mode
+  for (const [a, b] of f.busLines) drawBusLine(ctx, cam, routeOf(scenario, a, b), COLORS[mode])
 
   // Buses drive along their lines, over the crossings.
   for (const [a, b] of f.busLines) {
@@ -182,7 +184,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): boolean
     const u = ((bt * speed) / Math.max(1, total) + seed / 10) % 2
     const pos = alongRoute(route, u)
     const screen = worldToScreen(cam, pos.x, pos.y)
-    bus(ctx, screen.x, screen.y - 3 * s, s, pos.dir, bt)
+    VEHICLES[mode](ctx, screen.x, screen.y - 3 * s, s, pos.dir, bt)
   }
 
   for (const id of f.expiredIds) {

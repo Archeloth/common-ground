@@ -3,6 +3,7 @@ import { visibleNeeds } from './satisfaction'
 import { loadScenario, neighborhoodById } from './scenario'
 import { projectById } from './projects'
 import { projectsFor } from './regionContent'
+import { LINE_NAMES, transportOf } from './transport'
 import { loadMilestones } from './milestones'
 import type { MilestoneCondition, MilestoneDef } from './milestones'
 import { messageCatalog, messageFulfilled } from './messages'
@@ -23,7 +24,6 @@ import { allExpired, countStarted } from './expiry'
 // Suggestions that need a project are only returned when applyCommand would
 // accept the start, so the hint never sends the player into a refusal banner.
 
-const t_busLine = 'bus line'
 
 export interface NextAction {
   kind: 'tutorial' | 'renew' | 'milestone' | 'message' | 'need'
@@ -179,15 +179,16 @@ function suggestionForCondition(
     }
     case 'busLineCount': {
       if (state.busLines.length >= condition.min) return null
-      if (!state.research.includes('public_transport')) {
-        return researchHint(state, def, 'public_transport', t_busLine)
+      const transport = transportOf(scenario)
+      if (!state.research.includes(transport.requiresTech)) {
+        return researchHint(state, def, transport.requiresTech, LINE_NAMES[transport.mode])
       }
       for (const n of scenario.neighborhoods) {
         for (const other of n.neighbors) {
           if (applyCommand(state, { type: 'startBusLine', from: n.id, to: other }).ok) {
             return {
               kind: 'milestone',
-              textKey: 'guide.busLine',
+              textKey: `transport.${transport.mode}.guide`,
               params: { goal: def.name, from: n.name, to: neighborhoodById(scenario, other).name },
               neighborhoodId: n.id,
             }

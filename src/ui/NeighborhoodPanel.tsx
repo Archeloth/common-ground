@@ -13,6 +13,7 @@ import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import './NeighborhoodPanel.css'
 import { needLabel } from './needLabel'
+import { transportText } from './transportText'
 
 const kinds = loadKinds()
 
@@ -201,7 +202,7 @@ export default function NeighborhoodPanel({
         </section>
 
         <section className="panel-section">
-          <h3>{t('panel.busLines')}</h3>
+          <h3>{transportText('lines')}</h3>
           {linesHere.length > 0 && (
             <ul className="panel-neighbors">
               {linesHere.map(([a, b]) => {
@@ -210,7 +211,7 @@ export default function NeighborhoodPanel({
                 return (
                   <li key={other}>
                     {n.name}
-                    <span className="bridge-tag">🚌</span>
+                    <span className="bridge-tag">{transportText('icon')}</span>
                   </li>
                 )
               })}
@@ -221,7 +222,7 @@ export default function NeighborhoodPanel({
               <select
                 value={busTarget}
                 onChange={(event) => setChosenBusTarget(event.target.value)}
-                aria-label={t('panel.busLineStart')}
+                aria-label={transportText('start')}
               >
                 {candidates.map((n) => (
                   <option key={n.id} value={n.id}>
@@ -236,14 +237,14 @@ export default function NeighborhoodPanel({
                 data-sound="none"
                 onClick={() => onStartBusLine(neighborhood.id, busTarget)}
               >
-                {t('panel.busLineStart')}
+                {transportText('start')}
               </button>
               {busMeeting && !busMeeting.ok && (
                 <p className="tech-blocked">{t(`reason.${busMeeting.reason}`)}</p>
               )}
             </div>
           ) : (
-            <p className="panel-reasons-empty">{t('panel.busNone')}</p>
+            <p className="panel-reasons-empty">{transportText('none')}</p>
           )}
         </section>
 

@@ -11,6 +11,7 @@ import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
 import { projectsFor, techTreeFor } from './regionContent'
+import { transportOf } from './transport'
 import { TUTORIAL_DONE } from './tutorial'
 import { expiryNoticeKey, isRenewable, projectEndsAt, allExpired } from './expiry'
 import { satisfactionOf, shortfalls } from './satisfaction'
@@ -324,7 +325,7 @@ function applyStartBusLine(state: GameState, from: string, to: string): CommandR
   if (state.busLines.some(([a, b]) => a === pair[0] && b === pair[1])) {
     return refusal('bus_line_exists')
   }
-  if (!state.research.includes('public_transport')) return refusal('prerequisites_not_met')
+  if (!state.research.includes(transportOf(scenario).requiresTech)) return refusal('prerequisites_not_met')
   if (state.budget < BUS_LINE_COST) return refusal('insufficient_budget')
   return {
     ok: true,

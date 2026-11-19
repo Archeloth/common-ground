@@ -2,6 +2,7 @@ import type { ProjectDef, ScenarioDef } from './types'
 import type { TechDef } from './technologies'
 import { loadTechnologies } from './technologies'
 import { loadProjects } from './projects'
+import { transportOf } from './transport'
 
 // Which research and projects a town has (Milestone 10). Catalog entries list
 // their regions, or none for "every region"; a town takes those that fit its
@@ -50,6 +51,8 @@ export function regionContentProblems(scenario: ScenarioDef): string[] {
       if (!techIds.has(pre)) problems.push(`technology "${tech.id}" needs "${pre}", which this town does not have`)
     }
   }
+  const transport = transportOf(scenario).requiresTech
+  if (!techIds.has(transport)) problems.push(`transport needs "${transport}", which this town cannot research`)
   for (const id of scenario.start.unlockedTech) {
     if (!techIds.has(id)) problems.push(`starting technology "${id}" is not in this town's tree`)
   }

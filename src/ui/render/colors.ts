@@ -21,6 +21,8 @@ export const COLORS = {
   selectedStroke: '#1f2b1c',
   labelBackground: 'rgba(255, 255, 255, 0.92)',
   bus: '#46618f', // dashed bus-line strokes (Milestone 7)
+  minibus: '#9a5b25', // shared minibus routes (Milestone 10)
+  boat: '#2c7a8c', // boat routes (Milestone 10)
   pulse: '#c4592b', // pulsing tutorial highlight rings (Milestone 8)
   badge: '#b4561f', // expired-project badge (Milestone 8.5)
 } as const

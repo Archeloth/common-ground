@@ -63,6 +63,9 @@ export interface WaterFeature {
 // Where a link between two districts crosses a river or wadi.
 export type CrossingKind = 'bridge' | 'ford' | 'ferry'
 
+// How districts are linked (Milestone 10); same rules for every mode.
+export type TransportMode = 'bus' | 'minibus' | 'boat'
+
 export interface CrossingDef {
   from: string
   to: string
@@ -102,6 +105,8 @@ export interface ScenarioDef {
   needLabels?: { housing?: 'cooling' }
   // Shared research or projects this town leaves out (Milestone 10).
   research?: { exclude?: string[] }
+  // Buses by default, unlocked by public_transport (Milestone 10).
+  transport?: { mode: TransportMode; requiresTech?: string }
   // Whether the scripted first-steps tutorial runs (default true). Its
   // steps name Willowbrook districts, so other towns switch it off.
   tutorial?: boolean

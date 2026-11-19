@@ -3,6 +3,7 @@ import { loadScenario, neighborhoodById } from '../game/scenario'
 import { loadProjects, projectById } from '../game/projects'
 import { loadTechnologies, technologyById } from '../game/technologies'
 import { t } from './i18n'
+import { transportText } from './transportText'
 
 // What the undo toast says about the action it can take back.
 export function undoText(command: Command, projectAtSlot?: string | null): string {
@@ -21,7 +22,7 @@ export function undoText(command: Command, projectAtSlot?: string | null): strin
     case 'research':
       return t('undo.researched', { tech: technologyById(loadTechnologies(), command.tech).name })
     case 'startBusLine':
-      return t('undo.busLine', { from: place(command.from), to: place(command.to) })
+      return transportText('undo', { from: place(command.from), to: place(command.to) })
     case 'townMeeting':
       return t('undo.meeting', { neighborhood: place(command.neighborhood) })
     default:
