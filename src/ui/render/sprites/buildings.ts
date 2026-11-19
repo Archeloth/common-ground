@@ -296,7 +296,7 @@ function conifer(ctx: Ctx, x: number, y: number, s: number, variant: number): vo
     ctx.lineTo(x + half, base)
     ctx.closePath()
     ctx.lineJoin = 'round'
-    fillOutlined(ctx, i === 2 ? '#4f9466' : PALETTE.conifer, s, 0.5)
+    fillOutlined(ctx, i === 2 ? PALETTE.coniferTop : PALETTE.conifer, s, 0.5)
     snowOnPath(ctx, base - 5.6 * s * tall, base - 3.6 * s * tall)
   }
 }
@@ -309,12 +309,12 @@ function reeds(ctx: Ctx, x: number, y: number, s: number, variant: number): void
     ctx.beginPath()
     ctx.moveTo(x + dx, y)
     ctx.quadraticCurveTo(x + dx + lean * 0.3, y - 4 * s, x + dx + lean, y - 7 * s)
-    ctx.strokeStyle = '#6f9a4f'
+    ctx.strokeStyle = PALETTE.reedStem
     ctx.lineWidth = Math.max(0.6, 0.6 * s)
     ctx.stroke()
     if (i % 2 === 0) {
       roundRect(ctx, x + dx + lean - 0.5 * s, y - 8.6 * s, 1 * s, 2.4 * s, 0.5 * s)
-      ctx.fillStyle = '#8a5a3c'
+      ctx.fillStyle = PALETTE.reedHead
       ctx.fill()
     }
   }

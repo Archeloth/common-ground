@@ -76,7 +76,7 @@ function lilypad(ctx: Ctx, x: number, y: number, s: number, variant: number, lif
   ctx.moveTo(x, y)
   ctx.ellipse(x, y, r, r * 0.55, 0, 0.35, Math.PI * 2 - 0.1)
   ctx.closePath()
-  ctx.fillStyle = mix(PALETTE.leaf, '#3f7d55', 0.4)
+  ctx.fillStyle = mix(PALETTE.leaf, PALETTE.lilypadShade, 0.4)
   ctx.fill()
   if (life >= 1 && variant > 0.55) {
     circle(ctx, x + r * 0.2, y - 0.6 * s, 0.7 * s)

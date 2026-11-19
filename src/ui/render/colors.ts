@@ -82,7 +82,9 @@ export function applyNeedPalette(palette: NeedPalette): void {
   Object.assign(NEED_COLORS, NEED_PALETTES[palette])
 }
 
-export const KIND_COLORS: Record<NeighborhoodKind, string> = {
+// The live kind colours: the temperate values below, replaced in place by
+// the town's RegionTheme (Milestone 10). A region's own kinds come from its theme.
+export const KIND_COLORS: Partial<Record<NeighborhoodKind, string>> = {
   old_town: '#c98f6b', // warm terracotta
   apartments: '#9aaab3', // slate blue
   suburb: '#a8bd84', // soft green

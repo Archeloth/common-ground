@@ -9,7 +9,8 @@ import { setAmbienceWind } from './ambience'
 // starts from the first click (uiSounds.ts). Volume follows Master x Music,
 // fades smoothly, and drops while the game is paused.
 
-const TRACK = 'audio/music/peaceful-village-compressed.mp3'
+export const DEFAULT_TRACK = 'audio/music/peaceful-village-compressed.mp3'
+let track = DEFAULT_TRACK
 const BASE_LEVEL = 0.55 // music sits under the interface and game sounds
 const PAUSED_FACTOR = 0.55
 const FADE_STEP_MS = 50
@@ -46,7 +47,7 @@ function fadeToTarget(): void {
 export function startMusic(): void {
   if (failed || typeof Audio === 'undefined') return
   if (!element) {
-    element = new Audio(`${import.meta.env.BASE_URL}${TRACK}`)
+    element = new Audio(`${import.meta.env.BASE_URL}${track}`)
     element.loop = true
     element.preload = 'none'
     element.volume = 0
@@ -76,4 +77,15 @@ export function refreshMusic(mood?: { paused?: boolean }): void {
 
 export function musicElement(): HTMLAudioElement | null {
   return element
+}
+
+// Each region has its own track (Milestone 10, set by its RegionTheme). A
+// playing track switches straight away; otherwise the next start picks it up.
+export function setMusicTrack(next: string): void {
+  if (next === track) return
+  track = next
+  if (!element) return
+  const playing = !element.paused
+  element.src = `${import.meta.env.BASE_URL}${track}`
+  if (playing) void element.play().catch(() => undefined)
 }

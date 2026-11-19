@@ -87,7 +87,7 @@ export function districtLook(state: GameState, n: NeighborhoodDef): DistrictLook
 
 // The district's ground colour: dusty when unhappy, vivid when content.
 export function groundColour(n: NeighborhoodDef, satisfaction: number): string {
-  const vivid = KIND_COLORS[n.kind]
+  const vivid = KIND_COLORS[n.kind] ?? '#b9b5a6'
   const dusty = mix(vivid, '#b9b5a6', 0.55)
   const t = Math.min(1, Math.max(0, (satisfaction - 40) / 35))
   return mix(dusty, vivid, t)

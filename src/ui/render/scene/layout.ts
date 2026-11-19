@@ -36,14 +36,16 @@ export interface SceneLayout {
   cars: Plot[] // parked cars; how many show depends on mobility
 }
 
-interface KindRecipe {
+export interface KindRecipe {
   buildings: Array<{ style: BuildingStyle; count: number; size: number }>
   greenery: Array<{ style: GreeneryStyle; count: number; size: number }>
   cars: number
 }
 
 // Each kind's look: what it is built from (plan: "the kind sets ... the sprite set").
-const RECIPES: Record<NeighborhoodKind, KindRecipe> = {
+// The live table: these temperate recipes, replaced in place by the town's
+// RegionTheme (Milestone 10).
+export const RECIPES: Partial<Record<NeighborhoodKind, KindRecipe>> = {
   old_town: { buildings: [{ style: 'terrace', count: 7, size: 9 }], greenery: [{ style: 'tree', count: 2, size: 6 }], cars: 3 },
   apartments: { buildings: [{ style: 'block', count: 4, size: 12 }], greenery: [{ style: 'tree', count: 3, size: 6 }], cars: 4 },
   suburb: { buildings: [{ style: 'house', count: 7, size: 8 }], greenery: [{ style: 'tree', count: 4, size: 6 }], cars: 5 },
@@ -122,6 +124,7 @@ export function sceneLayout(n: NeighborhoodDef, outline: readonly Point[] = dist
   }
 
   const recipe = RECIPES[n.kind]
+  if (!recipe) throw new Error(`No layout recipe for district kind "${n.kind}" in this theme`)
   const buildings: Building[] = []
   for (const spec of recipe.buildings) {
     for (let i = 0; i < spec.count; i++) {

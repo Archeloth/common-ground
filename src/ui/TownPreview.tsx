@@ -2,7 +2,8 @@ import type { ScenarioDef, WaterFeature } from '../game/types'
 import { districtOutline } from '../game/outline'
 import { scenarioBounds } from '../game/scenario'
 import { crossingFrame } from '../game/water'
-import { COLORS, KIND_COLORS, shade } from './render/colors'
+import { COLORS, shade } from './render/colors'
+import { themeById } from './render/theme'
 
 // A small map of a town for the main menu's picker (Milestone 10): the real
 // district outlines in their kind colours, the water and its crossings. Drawn
@@ -31,6 +32,7 @@ function Water({ w }: { w: WaterFeature }) {
 
 export default function TownPreview({ town }: { town: ScenarioDef }) {
   const box = scenarioBounds(town)
+  const kindColors = themeById(town.theme).kindColors
   const viewBox = `${box.minX - PAD} ${box.minY - PAD} ${box.width + PAD * 2} ${box.height + PAD * 2}`
   return (
     <svg className="town-preview" viewBox={viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
@@ -56,10 +58,11 @@ export default function TownPreview({ town }: { town: ScenarioDef }) {
       })}
       {town.neighborhoods.map((n) => {
         const d = path(districtOutline(town, n.id))
+        const colour = kindColors[n.kind] ?? '#b9b5a6'
         return (
           <g key={n.id}>
-            <path d={d} transform="translate(0 6)" fill={shade(KIND_COLORS[n.kind], -25)} />
-            <path d={d} fill={KIND_COLORS[n.kind]} />
+            <path d={d} transform="translate(0 6)" fill={shade(colour, -25)} />
+            <path d={d} fill={colour} />
           </g>
         )
       })}

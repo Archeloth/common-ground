@@ -639,16 +639,30 @@ lines) per region.
    Each town is a folder under `src/data/scenarios/<id>/` holding `town.json`,
    `milestones.json`, `messages.json` and an optional `stories.json`; shared
    catalogs (technologies, projects, wildlife, district kinds) stay global.
-2. Region-tagged district kinds, and a check that every kind a scenario uses has
-   colours and a layout recipe.
-3. The water need and satisfaction weights per scenario.
-4. Region tags on technologies and projects; each scenario lists its tree.
-5. Water features and crossings instead of the fixed river and bridges.
-6. Transport mode per scenario.
-7. Season sets per scenario.
-8. A `RegionTheme` (palette, kind colours, building and tree recipes, wildlife,
-   season looks, ambient track, a UI accent colour), with Willowbrook as the
-   first theme.
+2. **(Done)** Region-tagged district kinds, and a check that every kind a scenario uses has
+   colours and a layout recipe. A scenario names its `theme` (region); kinds
+   list their `regions`.
+3. **(Done)** The water need and satisfaction weights per scenario. Water has weight 0
+   (hidden, fully covered) unless a town sets `needWeights`; `needLabels` can
+   read housing comfort as cooling. Saves v11 fill water in.
+4. **(Done)** Region tags on technologies and projects; each scenario lists its tree.
+   Untagged entries are shared; a town can `exclude` shared ones, and its tree
+   is checked for reachability on load.
+5. **(Done)** Water features and crossings instead of the fixed river and bridges:
+   river, wadi and oasis pool, crossed by bridge, ford or ferry. Coast is
+   deferred to the later coastal towns.
+6. **(Done)** Transport mode per scenario: bus, shared minibus or river boat, each
+   with its texts, route colour and vehicle; same rules and save fields.
+7. **(Done)** Season sets per scenario: temperate, Sahel, monsoon and floodplain (first
+   drafts to check with each region's readers). Season looks carry birdsong
+   and a water level, so a wadi runs only in wet seasons.
+8. **(Done)** A `RegionTheme` (palette, kind colours, building and tree recipes,
+   season looks, music track, a UI accent colour), with Willowbrook as the
+   first theme (`temperate`). Wildlife stays content: a region adds its own
+   species and sprites. Each new region adds its theme to `THEMES`.
+
+   Items 2-8 are proven by unit tests and fixtures; their first real use is
+   step 10.1.
 9. **(Done)** A scenario picker on the main menu, and a test mini region of four districts
    to prove the plumbing. The mini region is Hollin Green, a playable quick game
    (three chapters, no tutorial) built from the temperate district kinds.

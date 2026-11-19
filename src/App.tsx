@@ -12,6 +12,7 @@ import { getScenario } from './game/scenario'
 import { t } from './ui/i18n'
 import { installUiSounds } from './ui/uiSounds'
 import { refreshMusic } from './ui/music'
+import { TEMPERATE, applyTheme, themeById } from './ui/render/theme'
 import { applyUpdate, useUpdateReady } from './ui/offline'
 import './App.css'
 import './ui/mobile.css'
@@ -44,6 +45,16 @@ function App() {
 
   // Button clicks and the audio unlock on the first gesture (Milestone 9).
   useEffect(() => installUiSounds(), [])
+
+  // Milestone 10: the game wears its town's RegionTheme, the menu the default
+  // one. Loading or starting a town goes through the store, so following it
+  // keeps the look in step.
+  useEffect(() => {
+    const sync = () =>
+      applyTheme(screen === 'game' ? themeById(getScenario(store.getState().scenarioId).theme) : TEMPERATE)
+    sync()
+    return store.subscribe(sync)
+  }, [screen])
 
   const enterGame = useCallback(() => {
     saves.setSessionActive(true)

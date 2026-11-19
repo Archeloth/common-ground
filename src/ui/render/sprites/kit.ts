@@ -33,6 +33,10 @@ export const PALETTE = {
   leafDark: '#4a8a4f',
   trunk: '#8a5a3c',
   conifer: '#3f7d55',
+  coniferTop: '#4f9466',
+  reedStem: '#6f9a4f',
+  reedHead: '#8a5a3c',
+  lilypadShade: '#3f7d55',
   soil: '#9a6b47',
   soilDark: '#7c5236',
   path: '#d9d3c4',
@@ -53,8 +57,16 @@ export const PALETTE = {
   binColors: ['#4f8fd6', '#5fae5a', '#f2c94c'],
 } as const
 
-export const WALLS = [PALETTE.wallCream, PALETTE.wallSand, PALETTE.wallPeach, PALETTE.wallSky, PALETTE.wallMint]
-export const ROOFS = [PALETTE.roofRed, PALETTE.roofTerracotta, PALETTE.roofSlate, PALETTE.roofMoss, PALETTE.roofPlum]
+export const WALLS: string[] = []
+export const ROOFS: string[] = []
+
+// The wall and roof swatches buildings pick from. A RegionTheme (Milestone
+// 10) changes PALETTE, then calls this to refill them in place.
+export function rebuildSwatches(): void {
+  WALLS.splice(0, WALLS.length, PALETTE.wallCream, PALETTE.wallSand, PALETTE.wallPeach, PALETTE.wallSky, PALETTE.wallMint)
+  ROOFS.splice(0, ROOFS.length, PALETTE.roofRed, PALETTE.roofTerracotta, PALETTE.roofSlate, PALETTE.roofMoss, PALETTE.roofPlum)
+}
+rebuildSwatches()
 
 export function pick<T>(list: readonly T[], variant: number): T {
   return list[Math.min(list.length - 1, Math.floor(variant * list.length))]
