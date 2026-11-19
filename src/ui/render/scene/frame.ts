@@ -18,7 +18,8 @@ import { layoutFor } from './layout'
 import { SEASON_LOOKS, applySeason, seasonalGround } from './season'
 import type { SeasonLook } from './season'
 import { alongRiver, wildsFor } from './wilds'
-import { drawWild, duck, leapingFish } from '../sprites/wilds'
+import { duck, leapingFish } from '../sprites/wilds'
+import { drawCountryside } from './countryside'
 
 // One frame of the town (Milestone 9). The static part of each district comes
 // from its cache; everything that moves is drawn live on top.
@@ -107,7 +108,9 @@ function alongRoute(route: Point[], u: number): { x: number; y: number; dir: num
   return { x: route[0].x, y: route[0].y, dir: 1 }
 }
 
-export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
+// Returns false when the frame is still incomplete (countryside tiles being
+// built), so a loop that only draws when dirty knows to draw again.
+export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): boolean {
   const { cam, scenario } = f
   const t = f.reducedMotion ? 3 : f.now / 1000
   const s = cam.zoom * SPRITE_SCALE
@@ -116,7 +119,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
   // Every district shares the season; the live layer draws in it too.
   const season = f.looks.values().next().value?.season ?? SEASON_LOOKS.summer
   applySeason(season)
-  drawBackground(ctx, f, season)
+  const complete = drawBackground(ctx, f, season)
   drawRiverLife(ctx, f, season, t, s)
 
   // Districts back to front, each from its cache (rebuilt when its look changes).
@@ -219,41 +222,19 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): void {
     const y = screen.y - (f.lifts.get(n.id) ?? 0) - floater.row * 17
     floatingLabel(ctx, screen.x, y, floater.text, floater.colour, progress)
   }
+  return complete
 }
 
-// The ground, the river, the bridges and the countryside never move on their
-// own, so they are painted once into a screen-sized canvas and copied each
-// frame. Panning, zooming, resizing or a new season repaints it, drawing only
-// the countryside items in view.
-let background: { canvas: HTMLCanvasElement; key: string } | null = null
-
-function drawBackground(ctx: CanvasRenderingContext2D, f: FrameInput, season: SeasonLook): void {
+// The ground, the river and the bridges are a few shapes, drawn directly; the
+// countryside's sprites come from tiles cached per zoom bucket (countryside.ts).
+// Returns false while countryside tiles are still being built.
+function drawBackground(ctx: CanvasRenderingContext2D, f: FrameInput, season: SeasonLook): boolean {
   const { cam, scenario } = f
-  const key = `${cam.x}|${cam.y}|${cam.zoom}|${f.cssWidth}x${f.cssHeight}@${f.dpr}|${season.season}`
-  if (!background || background.key !== key) {
-    const canvas = background?.canvas ?? document.createElement('canvas')
-    const width = Math.max(1, Math.ceil(f.cssWidth * f.dpr))
-    const height = Math.max(1, Math.ceil(f.cssHeight * f.dpr))
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width
-      canvas.height = height
-    }
-    const g = canvas.getContext('2d')!
-    g.setTransform(f.dpr, 0, 0, f.dpr, 0, 0)
-    g.fillStyle = seasonalGround(COLORS.ground, season)
-    g.fillRect(0, 0, f.cssWidth, f.cssHeight)
-    drawRiver(g, cam, scenario.river.points, scenario.river.halfDepth)
-    for (const bridge of scenario.bridges) drawBridge(g, cam, bridge.point, scenario.river.halfDepth)
-    const s = cam.zoom * SPRITE_SCALE
-    const tallest = 30 * s
-    for (const item of wildsFor(scenario).items) {
-      const p = worldToScreen(cam, item.x, item.y)
-      if (p.x < -20 * s || p.x > f.cssWidth + 20 * s || p.y < -10 * s || p.y > f.cssHeight + tallest) continue
-      drawWild(g, item, p.x, p.y, s, season.life)
-    }
-    background = { canvas, key }
-  }
-  ctx.drawImage(background.canvas, 0, 0, f.cssWidth, f.cssHeight)
+  ctx.fillStyle = seasonalGround(COLORS.ground, season)
+  ctx.fillRect(0, 0, f.cssWidth, f.cssHeight)
+  drawRiver(ctx, cam, scenario.river.points, scenario.river.halfDepth)
+  for (const bridge of scenario.bridges) drawBridge(ctx, cam, bridge.point, scenario.river.halfDepth)
+  return drawCountryside(ctx, scenario, cam, zoomBucket(cam.zoom), f.cssWidth, f.cssHeight, f.dpr, season)
 }
 
 // Fish leaping and ducks paddling (they rest in winter).

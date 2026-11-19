@@ -8,8 +8,9 @@ import catalog from '../data/stories.json'
 
 // Citizen stories (post-Milestone 9): a handful of recurring residents whose
 // short notes change as their district improves. Each chapter has conditions
-// checked against the resident's own district. Once a month at most one new
-// chapter arrives, introductions first, so the notes never pile up.
+// checked against the resident's own district. Every STORY_EVERY_MONTHS months
+// at most one new chapter arrives, introductions first, so the notes never
+// pile up.
 
 export type Accessory = 'none' | 'cap' | 'hat' | 'helmet' | 'glasses' | 'scarf' | 'apron'
 

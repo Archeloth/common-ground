@@ -346,7 +346,7 @@ export default function TownMap({
       const dpr = window.devicePixelRatio || 1
       const cssWidth = canvas.width / dpr
       const cssHeight = canvas.height / dpr
-      drawFrame(ctx, {
+      const complete = drawFrame(ctx, {
         scenario,
         cam: cameraRef.current,
         cssWidth,
@@ -365,6 +365,8 @@ export default function TownMap({
         floaters: floatersRef.current,
         highlightNeed: highlightRef.current,
       })
+      // Countryside tiles still being built: draw again next frame.
+      if (!complete) dirtyRef.current = true
       placeBubbles(cssWidth)
 
       if (DEBUG) {

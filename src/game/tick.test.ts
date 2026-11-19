@@ -280,6 +280,14 @@ describe('tutorial auto-advance (Milestone 8)', function () {
     const next = runTicks({ ...full, day: TICKS_PER_MONTH * 300 }, 1)
     expect(next.history).toHaveLength(240)
   })
+
+  it('sends at most four resident postcards a year (playtest pacing)', () => {
+    // Late in the game every introduction is due, so only the pacing holds them back.
+    const s = runTicks({ ...initialState(scenario), day: 400 }, TICKS_PER_MONTH * 12)
+    const sent = Object.values(s.stories).reduce((a, b) => a + b, 0)
+    expect(sent).toBeGreaterThan(0)
+    expect(sent).toBeLessThanOrEqual(4)
+  })
 })
 
 describe('engagement fades (playtest)', () => {

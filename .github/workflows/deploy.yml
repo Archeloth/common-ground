@@ -1,5 +1,7 @@
 # Build, test and publish the game to GitHub Pages on every push to main.
-# Enable it once under Settings -> Pages -> Source: "GitHub Actions".
+# Enable it once under Settings -> Pages -> Source: "GitHub Actions". Until then
+# the deploy job fails with "Failed to create deployment (status: 404)". Pages
+# on a private repository needs a paid GitHub plan; a public one works on Free.
 name: Deploy to GitHub Pages
 
 on:
@@ -20,8 +22,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: yarn
@@ -32,7 +34,7 @@ jobs:
         env:
           # The site lives at https://<user>.github.io/common-ground/
           BASE_PATH: /common-ground/
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -44,4 +46,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

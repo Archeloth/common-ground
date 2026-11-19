@@ -502,8 +502,9 @@ Discovered species are drawn on the map wherever their home is right for them
 now, so the map shows what is living there, not just what was once seen.
 
 **Citizen stories.** Eight fictional residents, three chapters each, whose
-conditions are checked against their own district. At most one postcard a
-month, introductions before follow-ups, and none in the first two months. The
+conditions are checked against their own district. At most one postcard every
+three months (four a year; one a month felt like constant pop-ups at 4x
+speed), introductions before follow-ups, and none before the third month. The
 postcard never pauses the game and waits for the tutorial card to finish, so
 the bottom-left corner never holds two things at once. Leo's last chapter
 waits for the otter in the journal: the two features tell one story.

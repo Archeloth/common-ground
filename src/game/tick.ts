@@ -22,6 +22,7 @@ import {
   HISTORY_MAX_POINTS,
   NEED_DRIFT_PER_TICK,
   SATISFACTION_SMOOTH_PER_TICK,
+  STORY_EVERY_MONTHS,
   TICKS_PER_MONTH,
   TOP_REASONS,
 } from './constants'
@@ -226,10 +227,11 @@ export function tick(state: GameState): GameState {
 
   let next: GameState = { ...withNewSim, knowledge, engagement, messages, milestones, milestoneNotices, history }
 
-  // Post-Milestone 9: once a month, a new species may turn up in the journal
-  // and a resident may send a postcard (at most one of each).
+  // Post-Milestone 9: once a month a new species may turn up in the journal,
+  // and once a season a resident may send a postcard (at most one of each).
   if (day > 1 && (day - 1) % TICKS_PER_MONTH === 0) {
-    next = advanceStories(discoverWildlife(next, scenario), scenario)
+    next = discoverWildlife(next, scenario)
+    if (((day - 1) / TICKS_PER_MONTH) % STORY_EVERY_MONTHS === 0) next = advanceStories(next, scenario)
   }
 
   return advanceTutorial(next, scenario)

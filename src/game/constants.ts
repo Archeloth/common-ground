@@ -48,6 +48,10 @@ export const TOWN_MEETING_COOLDOWN_DAYS = 60
 // action can be taken back within this many real-time milliseconds.
 export const UNDO_WINDOW_MS = 8000
 
+// Citizen stories: a postcard check every this many months, so at most four
+// arrive a year (playtest: at 4x speed they popped up constantly at one a month).
+export const STORY_EVERY_MONTHS = 3
+
 // Town history (one point per month) is capped at 20 years so saves stay small.
 export const HISTORY_MAX_POINTS = 240
 export const ENGAGEMENT_MAX = 100
