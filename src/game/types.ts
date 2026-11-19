@@ -72,6 +72,9 @@ export interface ScenarioDef {
   region: string
   tagline: string
   blurb: string
+  // The region and look (Milestone 10), e.g. "temperate": which district
+  // kinds, research and projects fit, and which RegionTheme draws the town.
+  theme: string
   // Whether the scripted first-steps tutorial runs (default true). Its
   // steps name Willowbrook districts, so other towns switch it off.
   tutorial?: boolean

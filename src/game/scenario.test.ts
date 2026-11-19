@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { bridgeBetween, loadScenario, scenarioBounds, neighborhoodById, validateScenario } from './scenario'
 import type { ScenarioDef } from './types'
+import { loadKinds } from './kinds'
 
 const scenario = loadScenario()
 
@@ -108,6 +109,24 @@ describe('river crossings (bus lines cross only at bridges)', () => {
     const broken: ScenarioDef = structuredClone(scenario)
     broken.river.points = [{ x: 0, y: 0 }]
     expect(() => validateScenario(broken)).toThrow(/river/)
+  })
+})
+
+describe('regions (Milestone 10)', () => {
+  it('every district kind is tagged with at least one region', () => {
+    for (const kind of loadKinds()) expect(kind.regions.length).toBeGreaterThan(0)
+  })
+
+  it('refuses a town that uses a kind from another region', () => {
+    const broken: ScenarioDef = structuredClone(scenario)
+    broken.theme = 'sahel'
+    expect(() => validateScenario(broken)).toThrow(/not part of the "sahel" region/)
+  })
+
+  it('refuses a town without a theme', () => {
+    const broken: ScenarioDef = structuredClone(scenario)
+    broken.theme = ''
+    expect(() => validateScenario(broken)).toThrow(/needs a theme/)
   })
 })
 

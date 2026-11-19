@@ -7,6 +7,9 @@ export interface KindDef {
   name: string
   description: string
   defaultSlots: number
+  // Regions this kind belongs to (Milestone 10): a scenario may only use
+  // kinds tagged with its theme, e.g. "temperate".
+  regions: string[]
 }
 
 function fail(what: string): never {
@@ -29,7 +32,7 @@ export function loadKinds(): KindDef[] {
 
 function buildLoadKinds(): KindDef[] {
   const raw = kindsCatalog as unknown as {
-    kinds: Array<{ id: string; name?: string; description?: string; defaultSlots?: number }>
+    kinds: Array<{ id: string; name?: string; description?: string; defaultSlots?: number; regions?: string[] }>
   }
 
   const kinds: KindDef[] = raw.kinds.map((k) => ({
@@ -37,6 +40,7 @@ function buildLoadKinds(): KindDef[] {
     name: k.name ?? '',
     description: k.description ?? '',
     defaultSlots: k.defaultSlots ?? 0,
+    regions: k.regions ?? [],
   }))
 
   const ids = new Set<string>()
@@ -46,6 +50,9 @@ function buildLoadKinds(): KindDef[] {
     if (!kind.name.trim()) fail(`kind "${kind.id}" needs a name`)
     if (!kind.description.trim()) fail(`kind "${kind.id}" needs a description`)
     if (!(kind.defaultSlots > 0)) fail(`kind "${kind.id}" needs a positive defaultSlots`)
+    if (kind.regions.length === 0 || kind.regions.some((r) => typeof r !== 'string' || !r.trim())) {
+      fail(`kind "${kind.id}" needs at least one region`)
+    }
   }
 
   for (const unionId of NEIGHBORHOOD_KINDS) {

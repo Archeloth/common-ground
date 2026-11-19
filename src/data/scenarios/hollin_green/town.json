@@ -3,6 +3,7 @@
   "name": "Hollin Green",
   "region": "A temperate village",
   "tagline": "A quick game: four corners of a village by a brook.",
+  "theme": "temperate",
   "blurb": "A square, a chapel row, the meadows and a hazel copse, joined by two footbridges. Three short chapters, no tutorial, about half an hour of play.",
   "tutorial": false,
   "start": {

@@ -3,6 +3,7 @@
   "name": "Willowbrook",
   "region": "A temperate river town",
   "tagline": "Sixteen neighbourhoods on both banks of a river.",
+  "theme": "temperate",
   "blurb": "Draughty terraces, busy roads and a town split by the water. Retrofit homes, plant gardens and link both banks with buses over five chapters. Starts with a short tutorial.",
   "start": {
     "budget": 10000,

@@ -1,6 +1,7 @@
 import type { BridgeDef, ScenarioDef, NeighborhoodDef } from './types'
 import { segmentHitsPolyline } from './geometry'
 import { districtOutline, outlineBox } from './outline'
+import { kindById, loadKinds } from './kinds'
 import willowbrookTown from '../data/scenarios/willowbrook/town.json'
 import willowbrookMilestones from '../data/scenarios/willowbrook/milestones.json'
 import willowbrookMessages from '../data/scenarios/willowbrook/messages.json'
@@ -18,7 +19,7 @@ function fail(what: string, detail = ''): never {
 }
 
 export function validateScenario(s: ScenarioDef): void {
-  for (const [field, value] of [['name', s.name], ['region', s.region], ['tagline', s.tagline], ['blurb', s.blurb]] as const) {
+  for (const [field, value] of [['name', s.name], ['region', s.region], ['tagline', s.tagline], ['blurb', s.blurb], ['theme', s.theme]] as const) {
     if (typeof value !== 'string' || !value.trim()) fail(`the scenario needs a ${field}`, s.id)
   }
   const seenIds = new Set<string>()
@@ -44,6 +45,10 @@ export function validateScenario(s: ScenarioDef): void {
     if (!(n.slots > 0)) fail('slots must be positive', n.id)
     if (!(n.residents > 0)) fail('residents must be positive', n.id)
     if (n.engagement < 0 || n.engagement > 100) fail('engagement must be in [0, 100]', n.id)
+    // Milestone 10: a town only uses district kinds from its own region.
+    if (!kindById(loadKinds(), n.kind).regions.includes(s.theme)) {
+      fail(`district kind "${n.kind}" is not part of the "${s.theme}" region`, n.id)
+    }
   }
   if (seenIds.size !== s.neighborhoods.length) fail('all neighborhoods must have ids')
 
