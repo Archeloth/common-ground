@@ -55,6 +55,51 @@
       "description": "A habitat reserve that quietly protects its neighbours' biodiversity.",
       "defaultSlots": 2,
       "regions": ["temperate"]
+    },
+    {
+      "id": "ksar",
+      "name": "Ksar",
+      "description": "The old fortified village of earth houses and narrow shaded lanes; cool walls, but crumbling where nobody lives any more.",
+      "defaultSlots": 4,
+      "regions": [
+        "sahel"
+      ]
+    },
+    {
+      "id": "palm_gardens",
+      "name": "Palm gardens",
+      "description": "Gardens in layers under the date palms, watered by channels the families have kept for generations.",
+      "defaultSlots": 3,
+      "regions": [
+        "sahel"
+      ]
+    },
+    {
+      "id": "new_quarter",
+      "name": "New quarter",
+      "description": "Newer concrete houses along the road: easy to build, but hot in summer and hungry for water and power.",
+      "defaultSlots": 4,
+      "regions": [
+        "sahel"
+      ]
+    },
+    {
+      "id": "market_square",
+      "name": "Market square",
+      "description": "The souk, the minibus stop and the cafés: where everyone passes through.",
+      "defaultSlots": 3,
+      "regions": [
+        "sahel"
+      ]
+    },
+    {
+      "id": "herders_edge",
+      "name": "Herders' edge",
+      "description": "Where the oasis meets the open land: herders, goats, and fields that need every drop of rain.",
+      "defaultSlots": 2,
+      "regions": [
+        "sahel"
+      ]
     }
   ]
 }

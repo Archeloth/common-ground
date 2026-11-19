@@ -1,0 +1,148 @@
+{
+  "messages": [
+    {
+      "id": "dune_edge_message",
+      "neighborhood": "dune_edge",
+      "text": "Our goats strip every shoot. If we agree which stumps to protect, the trees will come back by themselves.",
+      "request": {
+        "type": "projectIn",
+        "project": "regreening"
+      },
+      "reward": {
+        "knowledge": 4
+      }
+    },
+    {
+      "id": "old_ksar_message",
+      "neighborhood": "old_ksar",
+      "text": "Half the houses in the ksar stand empty. Our grandparents built them with earth; we can still repair them.",
+      "request": {
+        "type": "projectIn",
+        "project": "earth_houses"
+      },
+      "reward": {
+        "knowledge": 5
+      }
+    },
+    {
+      "id": "ksar_gate_message",
+      "neighborhood": "ksar_gate",
+      "text": "A windcatcher on the gate tower would cool the whole lane, like it used to.",
+      "request": {
+        "type": "projectIn",
+        "project": "shade_and_wind"
+      },
+      "reward": {
+        "time": 2
+      }
+    },
+    {
+      "id": "camel_track_message",
+      "neighborhood": "camel_track",
+      "text": "We carry water from the town every day. A solar pump at the old well would change our lives.",
+      "request": {
+        "type": "projectIn",
+        "project": "solar_pump"
+      },
+      "reward": {
+        "budget": 400
+      }
+    },
+    {
+      "id": "souk_message",
+      "neighborhood": "souk",
+      "text": "The market fountain runs dry by noon. A cistern under the square would keep it going.",
+      "request": {
+        "type": "projectIn",
+        "project": "cistern"
+      },
+      "reward": {
+        "budget": 300
+      }
+    },
+    {
+      "id": "north_gardens_message",
+      "neighborhood": "north_gardens",
+      "text": "The foggara channel silted up after the last flood. Clear it with us and the north gardens will drink again.",
+      "request": {
+        "type": "projectIn",
+        "project": "foggara_repair"
+      },
+      "reward": {
+        "knowledge": 6
+      }
+    },
+    {
+      "id": "spring_gardens_message",
+      "neighborhood": "spring_gardens",
+      "text": "Our grandmothers grew three harvests on one plot: palms, figs and beans below. Help us bring that back.",
+      "request": {
+        "type": "projectIn",
+        "project": "oasis_garden"
+      },
+      "reward": {
+        "time": 3
+      }
+    },
+    {
+      "id": "school_quarter_message",
+      "neighborhood": "school_quarter",
+      "text": "The school kitchen burns a cartload of wood a week. Better stoves would save it and the children's lungs.",
+      "request": {
+        "type": "projectIn",
+        "project": "cookstoves"
+      },
+      "reward": {
+        "knowledge": 4
+      }
+    },
+    {
+      "id": "station_road_message",
+      "neighborhood": "station_road",
+      "text": "Our flat roofs get sun all day. Panels on them would keep the fans running.",
+      "request": {
+        "type": "projectIn",
+        "project": "rooftop_solar"
+      },
+      "reward": {
+        "budget": 400
+      }
+    },
+    {
+      "id": "wadi_gardens_message",
+      "neighborhood": "wadi_gardens",
+      "text": "The fields by the wadi are crusted hard. Pits and half-moons would hold the rain when it comes.",
+      "request": {
+        "type": "projectIn",
+        "project": "zai_fields"
+      },
+      "reward": {
+        "time": 2
+      }
+    },
+    {
+      "id": "south_gardens_message",
+      "neighborhood": "south_gardens",
+      "text": "We pour water on the paths more than on the plants. Drip lines would stretch what the channel brings.",
+      "request": {
+        "type": "projectIn",
+        "project": "drip_lines"
+      },
+      "reward": {
+        "knowledge": 5
+      }
+    },
+    {
+      "id": "well_quarter_message",
+      "neighborhood": "well_quarter",
+      "text": "Every roof here could fill a tank in the rains. A shared cistern would see us through the hot months.",
+      "request": {
+        "type": "projectIn",
+        "project": "cistern"
+      },
+      "reward": {
+        "budget": 350
+      }
+    }
+  ]
+}

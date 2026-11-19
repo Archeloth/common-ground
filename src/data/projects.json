@@ -27,7 +27,11 @@
         "industrial_edge",
         "retail_park",
         "farmland",
-        "woodland"
+        "woodland",
+        "ksar",
+        "palm_gardens",
+        "new_quarter",
+        "market_square"
       ],
       "visual": "garden",
       "buildDays": 14
@@ -52,7 +56,10 @@
         "suburb",
         "riverside",
         "industrial_edge",
-        "retail_park"
+        "retail_park",
+        "new_quarter",
+        "market_square",
+        "ksar"
       ],
       "visual": "solar",
       "buildDays": 21
@@ -180,7 +187,12 @@
         "industrial_edge",
         "retail_park",
         "farmland",
-        "woodland"
+        "woodland",
+        "ksar",
+        "palm_gardens",
+        "new_quarter",
+        "market_square",
+        "herders_edge"
       ],
       "visual": "compost",
       "buildDays": 10
@@ -210,7 +222,9 @@
         "suburb",
         "riverside",
         "retail_park",
-        "farmland"
+        "farmland",
+        "market_square",
+        "new_quarter"
       ],
       "visual": "market",
       "buildDays": 14
@@ -292,7 +306,10 @@
         "suburb",
         "riverside",
         "industrial_edge",
-        "retail_park"
+        "retail_park",
+        "market_square",
+        "ksar",
+        "new_quarter"
       ],
       "visual": "repairCafe",
       "buildDays": 21
@@ -318,7 +335,9 @@
         "riverside",
         "industrial_edge",
         "retail_park",
-        "farmland"
+        "farmland",
+        "market_square",
+        "new_quarter"
       ],
       "visual": "recycling",
       "buildDays": 10
@@ -428,10 +447,320 @@
       "allowedKinds": [
         "old_town",
         "apartments",
-        "suburb"
+        "suburb",
+        "ksar",
+        "new_quarter",
+        "market_square"
       ],
       "visual": "workshop",
       "buildDays": 7
+    },
+    {
+      "id": "foggara_repair",
+      "name": "Foggara repair",
+      "explain": "Clear the shafts and channel of the old foggara so water reaches the gardens again.",
+      "cost": 500,
+      "time": 3,
+      "engagement": 6,
+      "requiresTech": "foggara_care",
+      "effects": [
+        {
+          "need": "water",
+          "change": 0.15
+        },
+        {
+          "need": "food",
+          "change": 0.04
+        }
+      ],
+      "allowedKinds": [
+        "palm_gardens",
+        "ksar"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "channel",
+      "buildDays": 30
+    },
+    {
+      "id": "cistern",
+      "name": "Rainwater cistern",
+      "explain": "A covered tank fed from roofs and yards: water for the dry months.",
+      "cost": 450,
+      "time": 1,
+      "engagement": 2,
+      "requiresTech": "rainwater_cisterns",
+      "effects": [
+        {
+          "need": "water",
+          "change": 0.12
+        }
+      ],
+      "allowedKinds": [
+        "ksar",
+        "new_quarter",
+        "market_square",
+        "palm_gardens"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "cistern",
+      "buildDays": 21
+    },
+    {
+      "id": "solar_pump",
+      "name": "Solar water pump",
+      "explain": "A solar pump fills a raised tank for the gardens and the herds.",
+      "cost": 900,
+      "time": 1,
+      "engagement": 2,
+      "requiresTech": "solar_water_pumping",
+      "effects": [
+        {
+          "need": "water",
+          "change": 0.18
+        }
+      ],
+      "allowedKinds": [
+        "palm_gardens",
+        "herders_edge",
+        "new_quarter"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "solarPump",
+      "buildDays": 21
+    },
+    {
+      "id": "drip_lines",
+      "name": "Drip irrigation",
+      "explain": "Drip lines along the garden beds: the same harvest from far less water.",
+      "cost": 600,
+      "time": 2,
+      "engagement": 3,
+      "requiresTech": "drip_irrigation",
+      "durationMonths": 48,
+      "effects": [
+        {
+          "need": "water",
+          "change": 0.06
+        },
+        {
+          "need": "food",
+          "change": 0.08
+        }
+      ],
+      "allowedKinds": [
+        "palm_gardens"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "dripLines",
+      "buildDays": 14
+    },
+    {
+      "id": "zai_fields",
+      "name": "Zaï pits and half-moons",
+      "explain": "Dig planting pits and crescent bunds on the crusted fields before the rains.",
+      "cost": 300,
+      "time": 3,
+      "engagement": 5,
+      "requiresTech": "zai_half_moons",
+      "durationMonths": 36,
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.1
+        },
+        {
+          "need": "green",
+          "change": 0.05
+        }
+      ],
+      "allowedKinds": [
+        "herders_edge",
+        "palm_gardens"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "halfMoons",
+      "buildDays": 14
+    },
+    {
+      "id": "regreening",
+      "name": "Tree regeneration",
+      "explain": "Protect and prune the shoots growing from old stumps until they are trees again.",
+      "cost": 250,
+      "time": 2,
+      "engagement": 5,
+      "requiresTech": "fmnr",
+      "durationMonths": 48,
+      "effects": [
+        {
+          "need": "green",
+          "change": 0.12
+        },
+        {
+          "need": "housing",
+          "change": 0.03
+        }
+      ],
+      "allowedKinds": [
+        "herders_edge",
+        "palm_gardens",
+        "new_quarter"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "saplings",
+      "buildDays": 10
+    },
+    {
+      "id": "oasis_garden",
+      "name": "Layered oasis garden",
+      "explain": "Restore a shared plot in three layers: palms, fruit trees and vegetables.",
+      "cost": 400,
+      "time": 2,
+      "engagement": 5,
+      "requiresTech": "layered_oasis_gardens",
+      "durationMonths": 36,
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.12
+        },
+        {
+          "need": "green",
+          "change": 0.08
+        },
+        {
+          "need": "water",
+          "change": -0.03
+        }
+      ],
+      "allowedKinds": [
+        "palm_gardens",
+        "ksar"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "oasisGarden",
+      "buildDays": 14
+    },
+    {
+      "id": "earth_houses",
+      "name": "Earth-block homes",
+      "explain": "Repair empty ksar houses and build new ones with compressed earth blocks.",
+      "cost": 800,
+      "time": 2,
+      "engagement": 3,
+      "requiresTech": "earth_building",
+      "effects": [
+        {
+          "need": "housing",
+          "change": 0.15
+        },
+        {
+          "need": "energy",
+          "change": 0.05
+        }
+      ],
+      "allowedKinds": [
+        "ksar",
+        "new_quarter"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "earthHouse",
+      "buildDays": 45
+    },
+    {
+      "id": "shade_and_wind",
+      "name": "Windcatchers and shade",
+      "explain": "Windcatchers, shade sails and planted lanes keep the houses cool.",
+      "cost": 600,
+      "time": 1,
+      "engagement": 3,
+      "requiresTech": "windcatchers_shade",
+      "effects": [
+        {
+          "need": "housing",
+          "change": 0.12
+        }
+      ],
+      "allowedKinds": [
+        "ksar",
+        "new_quarter",
+        "market_square"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "windcatcher",
+      "buildDays": 30
+    },
+    {
+      "id": "cookstoves",
+      "name": "Clean cookstoves",
+      "explain": "Local potters build efficient stoves with the families who will use them.",
+      "cost": 250,
+      "time": 1,
+      "engagement": 4,
+      "requiresTech": "clean_cookstoves",
+      "durationMonths": 36,
+      "effects": [
+        {
+          "need": "energy",
+          "change": 0.1
+        },
+        {
+          "need": "green",
+          "change": 0.03
+        }
+      ],
+      "allowedKinds": [
+        "ksar",
+        "new_quarter",
+        "herders_edge"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "cookstove",
+      "buildDays": 7
+    },
+    {
+      "id": "minigrid",
+      "name": "Solar mini-grid",
+      "explain": "A cooperative solar plant with batteries for the evening.",
+      "cost": 1500,
+      "time": 2,
+      "engagement": 4,
+      "requiresTech": "solar_minigrid",
+      "effects": [
+        {
+          "need": "energy",
+          "change": 0.2
+        }
+      ],
+      "allowedKinds": [
+        "new_quarter",
+        "market_square",
+        "ksar"
+      ],
+      "regions": [
+        "sahel"
+      ],
+      "visual": "minigrid",
+      "buildDays": 45
     }
   ]
 }

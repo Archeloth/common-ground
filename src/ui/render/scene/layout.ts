@@ -11,8 +11,13 @@ import { mulberry32 } from '../../../game/random'
 // never reshuffles and the layout is unit-tested in Node. Coordinates are in
 // world units; a plot's (x, y) is the point where a sprite touches the ground.
 
-export type BuildingStyle = 'terrace' | 'block' | 'house' | 'shed' | 'store' | 'barn'
-export type GreeneryStyle = 'tree' | 'conifer' | 'reeds' | 'field'
+export type BuildingStyle =
+  | 'terrace' | 'block' | 'house' | 'shed' | 'store' | 'barn'
+  // Milestone 10 regions
+  | 'mudhouse' | 'ksarTower' | 'tent'
+export type GreeneryStyle =
+  | 'tree' | 'conifer' | 'reeds' | 'field'
+  | 'palm' | 'acacia' | 'millet'
 
 export interface Plot {
   x: number

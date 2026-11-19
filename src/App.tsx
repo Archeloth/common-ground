@@ -47,14 +47,10 @@ function App() {
   useEffect(() => installUiSounds(), [])
 
   // Milestone 10: the game wears its town's RegionTheme, the menu the default
-  // one. Loading or starting a town goes through the store, so following it
-  // keeps the look in step.
-  useEffect(() => {
-    const sync = () =>
-      applyTheme(screen === 'game' ? themeById(getScenario(store.getState().scenarioId).theme) : TEMPERATE)
-    sync()
-    return store.subscribe(sync)
-  }, [screen])
+  // one. Applied while rendering, not in an effect: the map's own effects run
+  // before App's and draw straight away, so the theme must already be on.
+  // Cheap and idempotent when the theme is already worn.
+  applyTheme(screen === 'game' ? themeById(getScenario(state.scenarioId).theme) : TEMPERATE)
 
   const enterGame = useCallback(() => {
     saves.setSessionActive(true)

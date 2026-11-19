@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
-import { loadTechnologies } from './technologies'
 import { loadMilestones } from './milestones'
 import { TUTORIAL_DONE } from './tutorial'
 import { validateGameState } from './validate'
 import type { GameState } from './types'
+import { techTreeFor } from './regionContent'
 
 const scenario = loadScenario()
 
@@ -85,7 +85,7 @@ describe('validateGameState', () => {
     s.milestoneNotices = ['first_steps']
     // Loaders agree with the catalog (valid ids), so validation stays quiet.
     expect(validateGameState(s)).toEqual([])
-    expect(loadTechnologies().length).toBe(16)
+    expect(techTreeFor(scenario).length).toBe(16)
     expect(loadMilestones().length).toBe(5)
   })
 })

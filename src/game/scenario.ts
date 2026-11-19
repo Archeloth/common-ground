@@ -14,6 +14,9 @@ import willowbrookStories from '../data/scenarios/willowbrook/stories.json'
 import hollinTown from '../data/scenarios/hollin_green/town.json'
 import hollinMilestones from '../data/scenarios/hollin_green/milestones.json'
 import hollinMessages from '../data/scenarios/hollin_green/messages.json'
+import talaTown from '../data/scenarios/tala_ifri/town.json'
+import talaMilestones from '../data/scenarios/tala_ifri/milestones.json'
+import talaMessages from '../data/scenarios/tala_ifri/messages.json'
 
 // Content validation lives here so a typo in a scenario JSON fails loudly
 // with the offending id instead of drawing a wrong map or crashing later.
@@ -165,6 +168,11 @@ const SCENARIOS: Record<string, ScenarioContent> = {
     town: hollinTown,
     milestones: hollinMilestones,
     messages: hollinMessages,
+  },
+  tala_ifri: {
+    town: talaTown,
+    milestones: talaMilestones,
+    messages: talaMessages,
   },
 }
 

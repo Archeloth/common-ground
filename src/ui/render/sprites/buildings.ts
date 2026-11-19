@@ -1,6 +1,7 @@
 import type { Ctx } from './kit'
 import { PALETTE, ROOFS, WALLS, circle, fillOutlined, groundShadow, mix, pick, roundRect } from './kit'
-import type { Building, Greenery, GreeneryStyle, Plot } from '../scene/layout'
+import type { Building, BuildingStyle, Greenery, GreeneryStyle, Plot } from '../scene/layout'
+import { acacia, ksarTower, millet, mudhouse, palm, tent } from './regions/sahel'
 import { snowOnPath } from '../scene/season'
 
 // Buildings and greenery for the districts (Milestone 9). Every sprite is drawn
@@ -250,7 +251,9 @@ function barn(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays): 
   void b
 }
 
-const BUILDERS = { house, terrace, block, shed, store, barn } as const
+type Builder = (ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays) => void
+
+const BUILDERS: Record<BuildingStyle, Builder> = { house, terrace, block, shed, store, barn, mudhouse, ksarTower, tent }
 
 export function drawBuilding(ctx: Ctx, b: Building, x: number, y: number, s: number, o: Overlays = NONE): void {
   ctx.save()
@@ -351,6 +354,9 @@ const GREENERY: Record<GreeneryStyle, GreeneryDrawer> = {
   conifer,
   reeds,
   field,
+  palm,
+  acacia,
+  millet,
 }
 
 export function drawGreenery(ctx: Ctx, g: Greenery, x: number, y: number, s: number): void {

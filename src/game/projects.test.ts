@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
+import { projectsFor } from './regionContent'
+import { getScenario, listScenarios } from './scenario'
+import { transportOf } from './transport'
 import { NEIGHBORHOOD_KINDS } from './types'
 
 describe('projects catalog', () => {
   const projects = loadProjects()
 
-  it('has the fifteen projects of the Milestone 8.5 catalog', () => {
-    expect(projects.map((p) => p.id).sort()).toEqual([
+  it("Willowbrook has the fifteen projects of the Milestone 8.5 catalog", () => {
+    expect(projectsFor(getScenario('willowbrook')).map((p) => p.id).sort()).toEqual([
       'bike_car_share',
       'community_garden',
       'compost_point',
@@ -42,7 +45,7 @@ describe('projects catalog', () => {
   })
 
   it('does something: need effects, engagement or Knowledge, all valid', () => {
-    const needs = new Set(['energy', 'food', 'mobility', 'green', 'waste', 'housing'])
+    const needs = new Set(['energy', 'food', 'mobility', 'green', 'waste', 'housing', 'water'])
     for (const p of projects) {
       expect(p.effects.length + p.engagement + p.knowledgePerMonth, p.id).toBeGreaterThan(0)
       for (const effect of p.effects) {
@@ -57,10 +60,11 @@ describe('projects catalog', () => {
     for (const p of projects) {
       expect(p.requiresTech && techIds.has(p.requiresTech), p.id).toBe(true)
     }
-    // Every tech except public transport (which unlocks bus lines, not a slot
+    // Every tech except a town's transport (which unlocks lines, not a slot
     // project) unlocks at least one project: research always pays off in play.
+    const transport = new Set(listScenarios().map((s) => transportOf(s).requiresTech))
     for (const id of techIds) {
-      if (id === 'public_transport') continue
+      if (transport.has(id)) continue
       expect(projects.some((p) => p.requiresTech === id), id).toBe(true)
     }
   })

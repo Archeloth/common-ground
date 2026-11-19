@@ -1,6 +1,7 @@
 import type { Ctx } from './kit'
 import { PALETTE, circle, fillOutlined, groundShadow, pick, roundRect } from './kit'
 import { tree } from './buildings'
+import { SAHEL_DECORATIONS } from './regions/sahel'
 
 // One small scene per project, drawn on the project's own plot (Milestone 9:
 // "progress should be visible"). Some projects also change the buildings
@@ -24,6 +25,18 @@ export const VISUAL_IDS = [
   'streetTrees',
   'rainGarden',
   'workshop',
+  // Milestone 10 regions
+  'channel',
+  'cistern',
+  'solarPump',
+  'halfMoons',
+  'saplings',
+  'oasisGarden',
+  'earthHouse',
+  'windcatcher',
+  'cookstove',
+  'dripLines',
+  'minigrid',
 ] as const
 
 export type VisualId = (typeof VISUAL_IDS)[number]
@@ -509,6 +522,7 @@ export const DECORATIONS: Record<VisualId, Draw> = {
   streetTrees,
   rainGarden,
   workshop,
+  ...SAHEL_DECORATIONS,
 }
 
 export function drawDecoration(ctx: Ctx, visual: VisualId, x: number, y: number, s: number, variant: number): void {

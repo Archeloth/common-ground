@@ -17,6 +17,18 @@ export const PROJECT_ICONS: Record<string, string> = {
   streetTrees: '🌳',
   rainGarden: '💧',
   workshop: '💡',
+  // Milestone 10 regions
+  channel: '🚰',
+  cistern: '🛢️',
+  solarPump: '🔆',
+  halfMoons: '🌙',
+  saplings: '🌱',
+  oasisGarden: '🌴',
+  earthHouse: '🧱',
+  windcatcher: '🌀',
+  cookstove: '🍲',
+  dripLines: '💦',
+  minigrid: '🔋',
 }
 
 export function projectIcon(visual: string): string {

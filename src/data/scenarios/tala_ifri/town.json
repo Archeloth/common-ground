@@ -1,0 +1,480 @@
+{
+  "id": "tala_ifri",
+  "name": "Tala Ifri",
+  "region": "An oasis at the desert edge",
+  "theme": "sahel",
+  "tagline": "Twelve quarters around a spring, a palm grove and a dry riverbed.",
+  "blurb": "Water is the town's first need: keep the old channels flowing, store the short rains, keep houses cool and bring the edge of the oasis back to life. Five chapters, no tutorial.",
+  "tutorial": false,
+  "preview": true,
+  "seasons": "sahel",
+  "transport": {
+    "mode": "minibus",
+    "requiresTech": "shared_minibus"
+  },
+  "needWeights": {
+    "energy": 0.15,
+    "food": 0.15,
+    "mobility": 0.1,
+    "green": 0.1,
+    "waste": 0.1,
+    "housing": 0.15,
+    "water": 0.25
+  },
+  "needLabels": {
+    "housing": "cooling"
+  },
+  "start": {
+    "budget": 9000,
+    "time": 6,
+    "knowledge": 12,
+    "unlockedTech": [
+      "energy_audits",
+      "community_gardens",
+      "foggara_care",
+      "earth_building"
+    ]
+  },
+  "neighborhoods": [
+    {
+      "id": "dune_edge",
+      "name": "Dune Edge",
+      "kind": "herders_edge",
+      "residents": 150,
+      "slots": 2,
+      "engagement": 45,
+      "needs": {
+        "energy": 0.45,
+        "food": 0.55,
+        "mobility": 0.35,
+        "green": 0.3,
+        "waste": 0.6,
+        "housing": 0.48,
+        "water": 0.35
+      },
+      "shape": {
+        "x": 155,
+        "y": 115,
+        "radius": 62,
+        "seed": 1409
+      },
+      "neighbors": [
+        "old_ksar",
+        "souk"
+      ]
+    },
+    {
+      "id": "old_ksar",
+      "name": "Old Ksar",
+      "kind": "ksar",
+      "residents": 700,
+      "slots": 4,
+      "engagement": 55,
+      "needs": {
+        "energy": 0.5,
+        "food": 0.62,
+        "mobility": 0.5,
+        "green": 0.4,
+        "waste": 0.55,
+        "housing": 0.5,
+        "water": 0.45
+      },
+      "shape": {
+        "x": 390,
+        "y": 105,
+        "radius": 72,
+        "seed": 1201
+      },
+      "neighbors": [
+        "ksar_gate",
+        "north_gardens",
+        "souk",
+        "dune_edge"
+      ]
+    },
+    {
+      "id": "ksar_gate",
+      "name": "Gate Quarter",
+      "kind": "ksar",
+      "residents": 500,
+      "slots": 3,
+      "engagement": 50,
+      "needs": {
+        "energy": 0.52,
+        "food": 0.6,
+        "mobility": 0.55,
+        "green": 0.38,
+        "waste": 0.5,
+        "housing": 0.52,
+        "water": 0.42
+      },
+      "shape": {
+        "x": 630,
+        "y": 105,
+        "radius": 70,
+        "seed": 1307
+      },
+      "neighbors": [
+        "camel_track",
+        "spring_gardens",
+        "old_ksar"
+      ]
+    },
+    {
+      "id": "camel_track",
+      "name": "Camel Track",
+      "kind": "herders_edge",
+      "residents": 120,
+      "slots": 2,
+      "engagement": 48,
+      "needs": {
+        "energy": 0.42,
+        "food": 0.58,
+        "mobility": 0.38,
+        "green": 0.32,
+        "waste": 0.62,
+        "housing": 0.5,
+        "water": 0.32
+      },
+      "shape": {
+        "x": 870,
+        "y": 120,
+        "radius": 64,
+        "seed": 1511
+      },
+      "neighbors": [
+        "school_quarter",
+        "ksar_gate"
+      ]
+    },
+    {
+      "id": "souk",
+      "name": "Souk Square",
+      "kind": "market_square",
+      "residents": 300,
+      "slots": 3,
+      "engagement": 40,
+      "needs": {
+        "energy": 0.55,
+        "food": 0.75,
+        "mobility": 0.6,
+        "green": 0.32,
+        "waste": 0.42,
+        "housing": 0.55,
+        "water": 0.5
+      },
+      "shape": {
+        "x": 150,
+        "y": 295,
+        "radius": 66,
+        "seed": 1613
+      },
+      "neighbors": [
+        "north_gardens",
+        "station_road",
+        "dune_edge",
+        "old_ksar"
+      ]
+    },
+    {
+      "id": "north_gardens",
+      "name": "North Gardens",
+      "kind": "palm_gardens",
+      "residents": 250,
+      "slots": 3,
+      "engagement": 60,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.82,
+        "mobility": 0.48,
+        "green": 0.7,
+        "waste": 0.6,
+        "housing": 0.55,
+        "water": 0.62
+      },
+      "shape": {
+        "x": 370,
+        "y": 295,
+        "radius": 70,
+        "seed": 1717
+      },
+      "neighbors": [
+        "wadi_gardens",
+        "old_ksar",
+        "souk"
+      ]
+    },
+    {
+      "id": "spring_gardens",
+      "name": "Spring Gardens",
+      "kind": "palm_gardens",
+      "residents": 220,
+      "slots": 3,
+      "engagement": 58,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.8,
+        "mobility": 0.46,
+        "green": 0.72,
+        "waste": 0.6,
+        "housing": 0.56,
+        "water": 0.65
+      },
+      "shape": {
+        "x": 760,
+        "y": 295,
+        "radius": 70,
+        "seed": 1819
+      },
+      "neighbors": [
+        "school_quarter",
+        "south_gardens",
+        "ksar_gate"
+      ]
+    },
+    {
+      "id": "school_quarter",
+      "name": "School Quarter",
+      "kind": "new_quarter",
+      "residents": 650,
+      "slots": 4,
+      "engagement": 35,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.66,
+        "mobility": 0.55,
+        "green": 0.35,
+        "waste": 0.45,
+        "housing": 0.48,
+        "water": 0.5
+      },
+      "shape": {
+        "x": 960,
+        "y": 295,
+        "radius": 68,
+        "seed": 1921
+      },
+      "neighbors": [
+        "well_quarter",
+        "camel_track",
+        "spring_gardens"
+      ]
+    },
+    {
+      "id": "station_road",
+      "name": "Station Road",
+      "kind": "new_quarter",
+      "residents": 600,
+      "slots": 4,
+      "engagement": 32,
+      "needs": {
+        "energy": 0.62,
+        "food": 0.68,
+        "mobility": 0.6,
+        "green": 0.34,
+        "waste": 0.42,
+        "housing": 0.46,
+        "water": 0.48
+      },
+      "shape": {
+        "x": 180,
+        "y": 560,
+        "radius": 70,
+        "seed": 2027
+      },
+      "neighbors": [
+        "wadi_gardens",
+        "souk"
+      ]
+    },
+    {
+      "id": "wadi_gardens",
+      "name": "Wadi Gardens",
+      "kind": "palm_gardens",
+      "residents": 200,
+      "slots": 3,
+      "engagement": 55,
+      "needs": {
+        "energy": 0.58,
+        "food": 0.78,
+        "mobility": 0.42,
+        "green": 0.66,
+        "waste": 0.58,
+        "housing": 0.55,
+        "water": 0.55
+      },
+      "shape": {
+        "x": 420,
+        "y": 560,
+        "radius": 68,
+        "seed": 2131
+      },
+      "neighbors": [
+        "south_gardens",
+        "north_gardens",
+        "station_road"
+      ]
+    },
+    {
+      "id": "south_gardens",
+      "name": "South Gardens",
+      "kind": "palm_gardens",
+      "residents": 210,
+      "slots": 3,
+      "engagement": 55,
+      "needs": {
+        "energy": 0.58,
+        "food": 0.8,
+        "mobility": 0.42,
+        "green": 0.68,
+        "waste": 0.58,
+        "housing": 0.55,
+        "water": 0.57
+      },
+      "shape": {
+        "x": 650,
+        "y": 560,
+        "radius": 68,
+        "seed": 2237
+      },
+      "neighbors": [
+        "well_quarter",
+        "spring_gardens",
+        "wadi_gardens"
+      ]
+    },
+    {
+      "id": "well_quarter",
+      "name": "Well Quarter",
+      "kind": "new_quarter",
+      "residents": 550,
+      "slots": 4,
+      "engagement": 36,
+      "needs": {
+        "energy": 0.6,
+        "food": 0.65,
+        "mobility": 0.5,
+        "green": 0.36,
+        "waste": 0.44,
+        "housing": 0.47,
+        "water": 0.46
+      },
+      "shape": {
+        "x": 880,
+        "y": 560,
+        "radius": 70,
+        "seed": 2339
+      },
+      "neighbors": [
+        "school_quarter",
+        "south_gardens"
+      ]
+    }
+  ],
+  "water": [
+    {
+      "id": "spring",
+      "kind": "oasis",
+      "halfDepth": 0,
+      "points": [
+        {
+          "x": 510,
+          "y": 275
+        },
+        {
+          "x": 560,
+          "y": 262
+        },
+        {
+          "x": 615,
+          "y": 272
+        },
+        {
+          "x": 632,
+          "y": 300
+        },
+        {
+          "x": 605,
+          "y": 328
+        },
+        {
+          "x": 555,
+          "y": 336
+        },
+        {
+          "x": 510,
+          "y": 322
+        }
+      ]
+    },
+    {
+      "id": "wadi",
+      "kind": "wadi",
+      "halfDepth": 20,
+      "points": [
+        {
+          "x": 20,
+          "y": 430
+        },
+        {
+          "x": 300,
+          "y": 446
+        },
+        {
+          "x": 560,
+          "y": 424
+        },
+        {
+          "x": 820,
+          "y": 440
+        },
+        {
+          "x": 1090,
+          "y": 428
+        }
+      ]
+    }
+  ],
+  "crossings": [
+    {
+      "from": "souk",
+      "to": "station_road",
+      "point": {
+        "x": 166,
+        "y": 438
+      },
+      "kind": "bridge",
+      "water": "wadi"
+    },
+    {
+      "from": "north_gardens",
+      "to": "wadi_gardens",
+      "point": {
+        "x": 397,
+        "y": 438
+      },
+      "kind": "ford",
+      "water": "wadi"
+    },
+    {
+      "from": "spring_gardens",
+      "to": "south_gardens",
+      "point": {
+        "x": 703,
+        "y": 433
+      },
+      "kind": "ford",
+      "water": "wadi"
+    },
+    {
+      "from": "school_quarter",
+      "to": "well_quarter",
+      "point": {
+        "x": 918,
+        "y": 436
+      },
+      "kind": "ford",
+      "water": "wadi"
+    }
+  ]
+}

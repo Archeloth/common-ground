@@ -18,6 +18,11 @@ export const NEIGHBORHOOD_KINDS = [
   'retail_park',
   'farmland',
   'woodland',
+  'ksar',
+  'palm_gardens',
+  'new_quarter',
+  'market_square',
+  'herders_edge',
 ] as const
 
 export type NeighborhoodKind = (typeof NEIGHBORHOOD_KINDS)[number]

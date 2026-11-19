@@ -256,6 +256,294 @@
       "confidence": "context",
       "sources": [],
       "readMore": [{ "title": "Community education", "url": "https://en.wikipedia.org/wiki/Community_education" }]
+    },
+    {
+      "id": "foggara_care",
+      "name": "Foggara care",
+      "branch": "water",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "rainwater_cisterns"
+      ],
+      "benefit": "The underground channels that carry water from the hills to the gardens, kept clear by the families who share them.",
+      "limit": "Only as good as the groundwater behind them; deep wells pumping nearby can dry them, and clearing the shafts is hard work.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Qanat",
+          "url": "https://en.wikipedia.org/wiki/Qanat"
+        }
+      ]
+    },
+    {
+      "id": "earth_building",
+      "name": "Earth building",
+      "branch": "energy",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "windcatchers_shade"
+      ],
+      "benefit": "Thick walls of earth and compressed earth blocks: cool by day, warm at night, built from the ground they stand on.",
+      "limit": "Needs upkeep after heavy rain, and skilled builders are getting fewer; not for every soil.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Compressed earth block",
+          "url": "https://en.wikipedia.org/wiki/Compressed_earth_block"
+        },
+        {
+          "title": "Mudbrick",
+          "url": "https://en.wikipedia.org/wiki/Mudbrick"
+        }
+      ]
+    },
+    {
+      "id": "rainwater_cisterns",
+      "name": "Rainwater cisterns",
+      "branch": "water",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 10,
+      "prerequisites": [
+        "foggara_care"
+      ],
+      "unlocks": [],
+      "benefit": "Collect the short rains from roofs and yards in covered tanks, for the dry months.",
+      "limit": "Only stores what falls: in a dry year the tanks stay low. Covers and cleaning keep the water safe.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Rainwater harvesting",
+          "url": "https://en.wikipedia.org/wiki/Rainwater_harvesting"
+        }
+      ]
+    },
+    {
+      "id": "solar_water_pumping",
+      "name": "Solar water pumping",
+      "branch": "water",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 25,
+      "prerequisites": [
+        "energy_audits"
+      ],
+      "unlocks": [
+        "drip_irrigation"
+      ],
+      "benefit": "Solar panels lift water from wells without fuel, for gardens and herds.",
+      "limit": "Cheap pumping makes it easy to over-pump; without shared rules the water table can fall.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Solar-powered pump",
+          "url": "https://en.wikipedia.org/wiki/Solar-powered_pump"
+        }
+      ]
+    },
+    {
+      "id": "drip_irrigation",
+      "name": "Drip irrigation",
+      "branch": "water",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 30,
+      "prerequisites": [
+        "solar_water_pumping"
+      ],
+      "unlocks": [],
+      "benefit": "Water dripped straight to the roots: more food from less water.",
+      "limit": "Pipes clog and need care; saved water is often used to grow more, so total use may not fall.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Drip irrigation",
+          "url": "https://en.wikipedia.org/wiki/Drip_irrigation"
+        }
+      ]
+    },
+    {
+      "id": "zai_half_moons",
+      "name": "Zaï pits and half-moons",
+      "branch": "food",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 15,
+      "prerequisites": [
+        "community_gardens"
+      ],
+      "unlocks": [
+        "fmnr"
+      ],
+      "benefit": "Small planting pits and crescent bunds catch rain and compost, bringing crusted land back into use.",
+      "limit": "Hand-digging takes a lot of labour, and the gains depend on rain and on manure to fill the pits.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Zaï",
+          "url": "https://en.wikipedia.org/wiki/Za%C3%AF"
+        }
+      ]
+    },
+    {
+      "id": "fmnr",
+      "name": "Farmer-managed natural regeneration",
+      "branch": "ecology",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 20,
+      "prerequisites": [
+        "zai_half_moons"
+      ],
+      "unlocks": [],
+      "benefit": "Let trees regrow from the living stumps and roots already in the fields, pruning and protecting them.",
+      "limit": "Needs agreement on grazing and on who may cut wood; slow to show in the first years.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Farmer-managed natural regeneration",
+          "url": "https://en.wikipedia.org/wiki/Farmer-managed_natural_regeneration"
+        }
+      ]
+    },
+    {
+      "id": "layered_oasis_gardens",
+      "name": "Layered oasis gardens",
+      "branch": "food",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 10,
+      "prerequisites": [
+        "community_gardens"
+      ],
+      "unlocks": [],
+      "benefit": "Palms shade fruit trees, which shade vegetables and grain: three harvests from one watered plot.",
+      "limit": "Depends on reliable water; salt builds up where drainage is poor.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Oasis",
+          "url": "https://en.wikipedia.org/wiki/Oasis"
+        },
+        {
+          "title": "Forest gardening",
+          "url": "https://en.wikipedia.org/wiki/Forest_gardening"
+        }
+      ]
+    },
+    {
+      "id": "windcatchers_shade",
+      "name": "Windcatchers and shade",
+      "branch": "energy",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 20,
+      "prerequisites": [
+        "earth_building"
+      ],
+      "unlocks": [],
+      "benefit": "Towers that catch the breeze, shaded lanes and courtyards: cooling without air conditioning.",
+      "limit": "Work best in dry heat and in dense old layouts; less effective in detached new houses.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Windcatcher",
+          "url": "https://en.wikipedia.org/wiki/Windcatcher"
+        }
+      ]
+    },
+    {
+      "id": "clean_cookstoves",
+      "name": "Clean cookstoves",
+      "branch": "energy",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 10,
+      "prerequisites": [
+        "energy_audits"
+      ],
+      "unlocks": [
+        "solar_minigrid"
+      ],
+      "benefit": "Efficient stoves burn less wood and fill kitchens with less smoke.",
+      "limit": "Only helps if people like cooking on them; many projects failed when stoves did not fit local cooking.",
+      "confidence": "emerging",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Rocket stove",
+          "url": "https://en.wikipedia.org/wiki/Rocket_stove"
+        }
+      ]
+    },
+    {
+      "id": "solar_minigrid",
+      "name": "Solar mini-grid",
+      "branch": "energy",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 35,
+      "prerequisites": [
+        "clean_cookstoves"
+      ],
+      "unlocks": [],
+      "benefit": "A village solar plant with batteries, run by a local cooperative.",
+      "limit": "Batteries are costly and wear out; tariffs must cover upkeep, or the grid fails within years.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Microgrid",
+          "url": "https://en.wikipedia.org/wiki/Microgrid"
+        }
+      ]
+    },
+    {
+      "id": "shared_minibus",
+      "name": "Shared minibus routes",
+      "branch": "mobility",
+      "regions": [
+        "sahel"
+      ],
+      "cost": 15,
+      "prerequisites": [],
+      "unlocks": [],
+      "benefit": "Unlocks shared minibus routes between neighbouring quarters (they cross the wadi only at a ford or bridge).",
+      "limit": "Shared minibuses work because they are flexible and cheap; heavy regulation can price them out.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Share taxi",
+          "url": "https://en.wikipedia.org/wiki/Share_taxi"
+        }
+      ]
     }
   ]
 }

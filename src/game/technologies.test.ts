@@ -9,8 +9,8 @@ describe('research tree', () => {
   const techs = loadTechnologies()
   const ids = techs.map((t) => t.id)
 
-  it('has the 16 entries across all six branches', () => {
-    expect(ids.sort()).toEqual([
+  it("Willowbrook's tree has the 16 entries across six branches", () => {
+    expect(techTreeFor(scenario).map((t) => t.id).sort()).toEqual([
       'building_retrofits',
       'community_gardens',
       'community_learning',
@@ -28,7 +28,7 @@ describe('research tree', () => {
       'shared_mobility',
       'urban_trees',
     ])
-    expect(new Set(techs.map((tech) => tech.branch)).size).toBe(6)
+    expect(new Set(techTreeFor(scenario).map((tech) => tech.branch)).size).toBe(6)
   })
 
   it('has unique, non-empty ids, names, benefits and limits', () => {
@@ -48,7 +48,7 @@ describe('research tree', () => {
 
   it('uses valid branches and confidence tags', () => {
     for (const tech of techs) {
-      expect(['energy', 'food', 'mobility', 'circular', 'ecology', 'community']).toContain(tech.branch)
+      expect(['energy', 'food', 'mobility', 'circular', 'ecology', 'community', 'water']).toContain(tech.branch)
       expect(['established', 'emerging', 'context']).toContain(tech.confidence)
     }
   })

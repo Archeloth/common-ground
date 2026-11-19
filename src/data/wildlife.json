@@ -137,6 +137,58 @@
       "note": "Diving peregrine falcons are among the fastest animals on Earth. Tall buildings work like cliffs for them, and many cities now have nesting pairs.",
       "confidence": "established",
       "readMore": [{ "title": "Peregrine falcon", "url": "https://en.wikipedia.org/wiki/Peregrine_falcon" }]
+    },
+    {
+      "id": "white_stork",
+      "name": "White stork",
+      "where": [
+        "palm_gardens",
+        "ksar"
+      ],
+      "conditions": [
+        {
+          "type": "season",
+          "seasons": [
+            "cool_dry"
+          ]
+        },
+        {
+          "type": "need",
+          "need": "water",
+          "min": 0.6
+        }
+      ],
+      "hint": "Spends the cool months where water stands in the gardens.",
+      "note": "Many of Europe's white storks spend the northern winter in Africa, some of them in the Sahel, feeding in wetlands and watered fields. They also nest on towers and rooftops across North Africa.",
+      "confidence": "established",
+      "readMore": [
+        {
+          "title": "White stork",
+          "url": "https://en.wikipedia.org/wiki/White_stork"
+        }
+      ]
+    },
+    {
+      "id": "fennec_fox",
+      "name": "Fennec fox",
+      "where": [
+        "herders_edge"
+      ],
+      "conditions": [
+        {
+          "type": "project",
+          "project": "regreening"
+        }
+      ],
+      "hint": "Comes out at dusk where shrubs and trees grow back.",
+      "note": "The fennec is the smallest fox. Its huge ears shed heat and pick up prey moving under the sand, and it is mostly active at night.",
+      "confidence": "established",
+      "readMore": [
+        {
+          "title": "Fennec fox",
+          "url": "https://en.wikipedia.org/wiki/Fennec_fox"
+        }
+      ]
     }
   ]
 }

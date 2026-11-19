@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { loadScenario } from './scenario'
+import { listScenarios, loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
 import { discoverWildlife, habitatsFor, loadWildlife, speciesById, WILDLIFE_KNOWLEDGE } from './wildlife'
@@ -36,8 +36,8 @@ describe('wildlife catalog', () => {
     for (const s of species) expect(s.where.length, s.id).toBeGreaterThan(0)
   })
 
-  it('makes every species findable somewhere in Willowbrook', () => {
-    const kinds = new Set(scenario.neighborhoods.map((n) => n.kind))
+  it('makes every species findable in some town', () => {
+    const kinds = new Set(listScenarios().flatMap((town) => town.neighborhoods.map((n) => n.kind)))
     for (const s of loadWildlife()) expect(s.where.some((k) => kinds.has(k)), s.id).toBe(true)
   })
 })

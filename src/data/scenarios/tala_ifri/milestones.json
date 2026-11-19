@@ -1,0 +1,127 @@
+{
+  "milestones": [
+    {
+      "id": "tala_every_drop",
+      "name": "Every drop",
+      "chapter": 1,
+      "goal": "Average water coverage 0.6",
+      "explain": "Start with the water the town already knows how to find: repair a foggara, build two cisterns, and lift average water coverage to 0.6.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "foggara_repair",
+          "min": 1
+        },
+        {
+          "type": "projectCount",
+          "project": "cistern",
+          "min": 2
+        },
+        {
+          "type": "needsAverage",
+          "need": "water",
+          "min": 0.6
+        }
+      ],
+      "reward": {
+        "knowledge": 8
+      }
+    },
+    {
+      "id": "tala_cool_walls",
+      "name": "Cool walls",
+      "chapter": 2,
+      "goal": "Average cooling 0.6",
+      "explain": "The new concrete houses bake in the hot season. Raise windcatchers and shade in two quarters, rebuild one quarter in earth, and bring average cooling to 0.6.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "shade_and_wind",
+          "min": 2
+        },
+        {
+          "type": "projectCount",
+          "project": "earth_houses",
+          "min": 1
+        },
+        {
+          "type": "needsAverage",
+          "need": "housing",
+          "min": 0.6
+        }
+      ],
+      "reward": {
+        "knowledge": 10
+      }
+    },
+    {
+      "id": "tala_gardens",
+      "name": "Gardens under the palms",
+      "chapter": 3,
+      "goal": "Average food coverage 0.8",
+      "explain": "Bring two shared plots back to their three layers, dig pits and half-moons before the rains, and reach average food coverage of 0.8.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "oasis_garden",
+          "min": 2
+        },
+        {
+          "type": "projectCount",
+          "project": "zai_fields",
+          "min": 1
+        },
+        {
+          "type": "needsAverage",
+          "need": "food",
+          "min": 0.8
+        }
+      ],
+      "reward": {
+        "knowledge": 12
+      }
+    },
+    {
+      "id": "tala_across_the_wadi",
+      "name": "Across the wadi",
+      "chapter": 4,
+      "goal": "Average mobility 0.6",
+      "explain": "The wadi splits the town in two. Run two shared minibus routes and lift average mobility to 0.6.",
+      "conditions": [
+        {
+          "type": "busLineCount",
+          "min": 2
+        },
+        {
+          "type": "needsAverage",
+          "need": "mobility",
+          "min": 0.6
+        }
+      ],
+      "reward": {
+        "knowledge": 12
+      }
+    },
+    {
+      "id": "tala_greener_edge",
+      "name": "A greener edge",
+      "chapter": 5,
+      "goal": "Town satisfaction 65",
+      "explain": "Let the trees come back on the edge of the oasis in two places, and reach town satisfaction 65.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "regreening",
+          "min": 2
+        },
+        {
+          "type": "townSatisfaction",
+          "min": 65
+        }
+      ],
+      "reward": {
+        "knowledge": 15
+      }
+    }
+  ]
+}

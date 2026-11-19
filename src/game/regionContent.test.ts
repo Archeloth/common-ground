@@ -29,9 +29,9 @@ describe('region tags', () => {
     expect([...town.start.unlockedTech].sort()).toEqual(freeRoots.sort())
   })
 
-  it('temperate towns share the whole catalog today', () => {
-    expect(techTreeFor(willowbrook)).toHaveLength(loadTechnologies().length)
-    expect(projectsFor(willowbrook)).toHaveLength(loadProjects().length)
+  it('temperate towns get the shared core plus the temperate entries', () => {
+    expect(techTreeFor(willowbrook)).toEqual(loadTechnologies().filter((t) => fitsRegion(t, 'temperate')))
+    expect(projectsFor(willowbrook)).toEqual(loadProjects().filter((p) => fitsRegion(p, 'temperate')))
   })
 })
 

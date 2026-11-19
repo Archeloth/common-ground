@@ -12,6 +12,7 @@ import { drawConstruction, drawDecoration } from '../sprites/decorations'
 import type { VisualId } from '../sprites/decorations'
 import { SPRITE_SCALE, mix } from '../sprites/kit'
 import { layoutFor } from './layout'
+import { currentTheme } from '../theme'
 import type { SeasonLook } from './season'
 import { applySeason, seasonLook, seasonalGround } from './season'
 import { seasonOfDay } from '../../../game/calendar'
@@ -77,7 +78,7 @@ export function districtLook(state: GameState, n: NeighborhoodDef): DistrictLook
     .map((s) => (s ? `${s.building !== null ? 'build' : s.visual}${s.expired ? '~' : ''}` : '-'))
     .join(',')
   const season = seasonLook(seasonOfDay(state.day, loadScenario().seasons))
-  const key = `${slotKey}|${overlays.solar ? 1 : 0}${overlays.retrofit ? 1 : 0}${overlays.heatPump ? 1 : 0}|${band}|${carsShown}|${season.season}`
+  const key = `${slotKey}|${overlays.solar ? 1 : 0}${overlays.retrofit ? 1 : 0}${overlays.heatPump ? 1 : 0}|${band}|${carsShown}|${season.season}|${currentTheme().id}`
   const scenario = loadScenario()
   const species = loadWildlife()
     .filter((sp) => state.wildlife?.[sp.id] && habitatsFor(state, scenario, sp).includes(n.id))
