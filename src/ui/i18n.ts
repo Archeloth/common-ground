@@ -58,6 +58,7 @@ const MESSAGES: Record<string, string> = {
   'reason.unknown_project': 'That project does not exist.',
   'reason.project_already_active': 'This project is already running in this neighbourhood.',
   'reason.no_free_slot': 'There is no free project slot in this neighbourhood.',
+  'reason.not_in_this_town': 'That is not part of this town.',
   'reason.not_allowed_in_kind': 'This project cannot be built in this kind of neighbourhood.',
   'reason.insufficient_budget': 'Not enough budget remaining.',
   'reason.insufficient_time': 'Not enough volunteers available - more join each month.',

@@ -1,7 +1,7 @@
 import type { GameState, ScenarioDef } from './types'
 import type { PlaceCondition } from './conditions'
 import { allPlaceConditionsMet, placeConditionProblems } from './conditions'
-import { loadProjects } from './projects'
+import { projectsFor } from './regionContent'
 import { loadMilestones } from './milestones'
 import { loadWildlife } from './wildlife'
 import { scenarioContent } from './scenario'
@@ -60,7 +60,7 @@ function buildStories(scenario: ScenarioDef): ResidentDef[] {
   if (!catalog) return []
   const residents = (catalog.residents ?? []).map((r) => ({ ...r }))
   const ids = {
-    projects: new Set(loadProjects().map((p) => p.id)),
+    projects: new Set(projectsFor(scenario).map((p) => p.id)),
     species: new Set(loadWildlife().map((s) => s.id)),
     milestones: new Set(loadMilestones(scenario.id).map((m) => m.id)),
   }

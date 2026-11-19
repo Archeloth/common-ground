@@ -84,6 +84,8 @@ export interface ScenarioDef {
   needWeights: Record<NeedId, number>
   // Hot regions read housing comfort as cooling.
   needLabels?: { housing?: 'cooling' }
+  // Shared research or projects this town leaves out (Milestone 10).
+  research?: { exclude?: string[] }
   // Whether the scripted first-steps tutorial runs (default true). Its
   // steps name Willowbrook districts, so other towns switch it off.
   tutorial?: boolean
@@ -118,6 +120,7 @@ export interface ProjectDef {
   engagement: number // engagement delta (usually positive)
   effects: ProjectEffect[]
   allowedKinds: NeighborhoodKind[] // which kinds may host this project
+  regions?: string[] // Milestone 10: the regions it belongs to; missing means every region
   // Research gate (Milestone 8.5): the technology that must be researched
   // before this project can start (e.g. retrofit_program needs building_retrofits).
   requiresTech?: string
@@ -165,6 +168,7 @@ export type Reason =
   | 'project_already_active'
   | 'no_free_slot'
   | 'not_allowed_in_kind'
+  | 'not_in_this_town'
   | 'insufficient_budget'
   | 'insufficient_time'
   | 'invalid_slot'

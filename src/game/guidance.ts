@@ -1,7 +1,8 @@
 import type { GameState, NeedId, NeighborhoodDef, ProjectDef } from './types'
 import { visibleNeeds } from './satisfaction'
 import { loadScenario, neighborhoodById } from './scenario'
-import { loadProjects, projectById } from './projects'
+import { projectById } from './projects'
+import { projectsFor } from './regionContent'
 import { loadMilestones } from './milestones'
 import type { MilestoneCondition, MilestoneDef } from './milestones'
 import { messageCatalog, messageFulfilled } from './messages'
@@ -35,7 +36,7 @@ export interface NextAction {
 
 export function nextAction(state: GameState): NextAction | null {
   const scenario = loadScenario()
-  const projects = loadProjects()
+  const projects = projectsFor(scenario)
 
   const step = currentTutorialStep(state)
   if (step) {

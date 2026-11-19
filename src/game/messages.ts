@@ -1,6 +1,6 @@
 import type { GameState } from './types'
 import { activeScenarioId, getScenario, scenarioContent } from './scenario'
-import { loadProjects } from './projects'
+import { projectsFor } from './regionContent'
 import { activeProjectIds } from './expiry'
 
 // One resident message per neighborhood (Milestone 7): a simple request — start
@@ -50,7 +50,7 @@ export function loadMessages(scenarioId = activeScenarioId()): MessageDef[] {
   }))
 
   const scenario = getScenario(scenarioId)
-  const projectIds = new Set(loadProjects().map((p) => p.id))
+  const projectIds = new Set(projectsFor(scenario).map((p) => p.id))
   const neighborhoodIds = new Set(scenario.neighborhoods.map((n) => n.id))
 
   const ids = new Set<string>()

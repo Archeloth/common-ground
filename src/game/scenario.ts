@@ -4,6 +4,7 @@ import { districtOutline, outlineBox } from './outline'
 import { kindById, loadKinds } from './kinds'
 import { NEED_ORDER } from './needs'
 import { SATISFACTION_WEIGHTS } from './satisfaction'
+import { regionContentProblems } from './regionContent'
 import willowbrookTown from '../data/scenarios/willowbrook/town.json'
 import willowbrookMilestones from '../data/scenarios/willowbrook/milestones.json'
 import willowbrookMessages from '../data/scenarios/willowbrook/messages.json'
@@ -169,6 +170,8 @@ export function getScenario(id: string): ScenarioDef {
     scenario = withDefaults(scenarioContent(id).town as ScenarioDef)
     if (scenario.id !== id) fail('the town id must match its registry id', `${scenario.id} != ${id}`)
     validateScenario(scenario)
+    const problems = regionContentProblems(scenario)
+    if (problems.length > 0) fail(problems[0], id)
     cachedScenarios.set(id, scenario)
   }
   return scenario

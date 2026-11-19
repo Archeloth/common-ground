@@ -1,5 +1,7 @@
 import type { Command, GameState, NeighborhoodDef, ProjectDef, Reason } from '../game/types'
 import { loadProjects, projectById } from '../game/projects'
+import { projectsFor } from '../game/regionContent'
+import { loadScenario } from '../game/scenario'
 import { applyCommand, projectTimeCost } from '../game/state'
 import { expiryOf, isExpired, isRenewable, isUnderConstruction, readyDay } from '../game/expiry'
 import { t } from './i18n'
@@ -80,7 +82,7 @@ export default function ProjectSlots({ neighborhood, state, onStart, onRemove }:
   const freeCount = slots.filter((slot) => slot === null).length
   // The picker lists what can be built here; projects that still need research
   // are summarised in one line, so the list stays short as the tree grows.
-  const fitsHere = projects.filter((p) => p.allowedKinds.includes(neighborhood.kind))
+  const fitsHere = projectsFor(loadScenario()).filter((p) => p.allowedKinds.includes(neighborhood.kind))
   const offered = fitsHere.filter(
     (p) => (!p.requiresTech || state.research.includes(p.requiresTech)) && !slots.includes(p.id),
   )

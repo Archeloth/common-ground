@@ -10,6 +10,7 @@ import type {
 import { loadScenario } from './scenario'
 import { loadProjects } from './projects'
 import { loadTechnologies } from './technologies'
+import { projectsFor, techTreeFor } from './regionContent'
 import { TUTORIAL_DONE } from './tutorial'
 import { expiryNoticeKey, isRenewable, projectEndsAt, allExpired } from './expiry'
 import { satisfactionOf, shortfalls } from './satisfaction'
@@ -111,6 +112,7 @@ export function applyCommand(state: GameState, command: Command): CommandResult 
     if (!neighborhood) return refusal('unknown_neighborhood')
     const project = loadProjects().find((p) => p.id === command.project)
     if (!project) return refusal('unknown_project')
+    if (!projectsFor(scenario).includes(project)) return refusal('not_in_this_town')
 
     const slots = slotsOf(state, neighborhood)
     if (slots.includes(command.project)) return refusal('project_already_active')
@@ -341,6 +343,7 @@ function applyStartBusLine(state: GameState, from: string, to: string): CommandR
 function applyResearch(state: GameState, techId: string): CommandResult {
   const tech = loadTechnologies().find((t) => t.id === techId)
   if (!tech) return refusal('unknown_tech')
+  if (!techTreeFor(loadScenario()).includes(tech)) return refusal('not_in_this_town')
   if (state.research.includes(techId)) return refusal('already_researched')
   const missing = tech.prerequisites.filter((id) => !state.research.includes(id))
   if (missing.length > 0) return refusal('prerequisites_not_met')

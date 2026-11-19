@@ -1,6 +1,6 @@
 import type { GameState, NeedId, ScenarioDef } from './types'
 import { NEED_ORDER } from './needs'
-import { loadProjects } from './projects'
+import { projectsFor } from './regionContent'
 import { activeScenarioId, getScenario, scenarioContent } from './scenario'
 import { activeProjectIds, countActive } from './expiry'
 
@@ -69,7 +69,7 @@ function buildLoadMilestones(scenarioId: string): MilestoneDef[] {
   }))
 
   const scenario = getScenario(scenarioId)
-  const projects = loadProjects()
+  const projects = projectsFor(scenario)
   const projectIds = new Set(projects.map((p) => p.id))
   const neighborhoodIds = new Set(scenario.neighborhoods.map((n) => n.id))
 

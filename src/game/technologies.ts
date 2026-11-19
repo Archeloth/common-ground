@@ -33,6 +33,7 @@ export interface TechDef {
   confidence: Confidence
   sources: TechSource[]
   readMore: ReadMoreLink[] // Wikipedia articles for further reading
+  regions?: string[] // Milestone 10: the regions it belongs to; missing means every region
 }
 
 const BRANCHES: readonly TechBranch[] = ['energy', 'food', 'mobility', 'circular', 'ecology', 'community']
@@ -54,6 +55,7 @@ interface RawTech {
   confidence?: string
   sources?: Array<{ title?: string }>
   readMore?: ReadMoreLink[]
+  regions?: string[]
 }
 
 // Content is static, so it is parsed and validated once and then shared
@@ -80,6 +82,7 @@ function buildLoadTechnologies(): TechDef[] {
     confidence: (t.confidence ?? '') as Confidence,
     sources: (t.sources ?? []).map((s) => ({ title: s.title ?? '' })),
     readMore: t.readMore ?? [],
+    ...(t.regions !== undefined ? { regions: t.regions } : {}),
   }))
 
   const ids = new Set<string>()
@@ -94,6 +97,9 @@ function buildLoadTechnologies(): TechDef[] {
       fail(`technology "${tech.id}" cost must be a non-negative integer`)
     }
     if (!BRANCHES.includes(tech.branch)) fail(`technology "${tech.id}" has an unknown branch "${tech.branch}"`)
+    if (tech.regions !== undefined && (tech.regions.length === 0 || tech.regions.some((r) => !r?.trim()))) {
+      fail(`technology "${tech.id}" lists an empty region`)
+    }
     if (!CONFIDENCES.includes(tech.confidence)) {
       fail(`technology "${tech.id}" has an unknown confidence "${tech.confidence}"`)
     }

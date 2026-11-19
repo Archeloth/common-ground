@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import type { GameState, NeedId } from '../game/types'
 import { loadScenario } from '../game/scenario'
 import { loadMilestones, townNeedAverage, townSatisfaction } from '../game/milestones'
-import { loadTechnologies } from '../game/technologies'
+import { techTreeFor } from '../game/regionContent'
 import { allExpired, countActive } from '../game/expiry'
 import { visibleNeeds } from '../game/satisfaction'
 import { monthlyIncome, monthlyUpkeep } from '../game/economy'
@@ -13,7 +13,6 @@ import { t } from './i18n'
 import './TownPanel.css'
 import { needLabel } from './needLabel'
 
-const techCount = loadTechnologies().length
 
 interface TownPanelProps {
   state: GameState
@@ -88,7 +87,7 @@ export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPane
         <div className="town-stat">
           <dt>{t('town.research')}</dt>
           <dd>
-            {state.research.length}/{techCount}
+            {state.research.length}/{techTreeFor(scenario).length}
           </dd>
         </div>
         <div className="town-stat">

@@ -1,15 +1,13 @@
 import type { GameState, Reason } from '../game/types'
 import type { TechDef } from '../game/technologies'
 import { applyCommand } from '../game/state'
-import { loadTechnologies } from '../game/technologies'
-import { loadProjects } from '../game/projects'
+import { projectsFor, techTreeFor } from '../game/regionContent'
+import { loadScenario } from '../game/scenario'
 import { projectIcon } from './projectIcons'
 import ReadMore from './ReadMore'
 import { t } from './i18n'
 import './ResearchMenu.css'
 
-const technologies = loadTechnologies()
-const projectCatalog = loadProjects()
 
 interface ResearchMenuProps {
   state: GameState
@@ -29,7 +27,7 @@ function TechCard({
   const result = applyCommand(state, { type: 'research', tech: tech.id })
   const failure: Reason | null = result.ok ? null : result.reason
   const statusClass = researched ? 'researched' : failure === null ? 'ready' : 'locked'
-  const unlocksProjects = projectCatalog
+  const unlocksProjects = projectsFor(loadScenario())
     .filter((p) => p.requiresTech === tech.id)
     .map((p) => `${projectIcon(p.visual)} ${p.name}`)
 
@@ -73,6 +71,7 @@ function TechCard({
 // (applyCommand) for "can this be researched now?" so the UI cannot disagree
 // with the rules.
 export default function ResearchMenu({ state, onResearch }: ResearchMenuProps) {
+  const technologies = techTreeFor(loadScenario())
   const branches = [...new Set(technologies.map((t) => t.branch))]
 
   return (

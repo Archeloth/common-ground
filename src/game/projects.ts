@@ -3,6 +3,7 @@ import { NEIGHBORHOOD_KINDS } from './types'
 import projectsCatalog from '../data/projects.json'
 import { loadTechnologies } from './technologies'
 import { NEED_ORDER } from './needs'
+import { loadKinds } from './kinds'
 
 function fail(what: string): never {
   throw new Error(`Projects data error: ${what}`)
@@ -29,6 +30,7 @@ interface RawProject {
   knowledgePerMonth?: number
   visual?: string
   buildDays?: number
+  regions?: string[]
 }
 
 // The projects catalog is content (data/projects.json), not code. loadProjects
@@ -60,6 +62,7 @@ function buildLoadProjects(): ProjectDef[] {
     knowledgePerMonth: p.knowledgePerMonth ?? 0,
     visual: p.visual ?? '',
     buildDays: p.buildDays ?? 0,
+    ...(p.regions !== undefined ? { regions: p.regions } : {}),
   }))
   const techIds = new Set(loadTechnologies().map((tech) => tech.id))
 
@@ -100,10 +103,22 @@ function buildLoadProjects(): ProjectDef[] {
     }
   }
 
-  // Plan balance rule: every neighborhood kind keeps at least two project options.
-  for (const kind of NEIGHBORHOOD_KINDS) {
-    const options = projects.filter((p) => p.allowedKinds.includes(kind)).length
-    if (options < 2) fail(`kind "${kind}" has fewer than two project options`)
+  for (const p of projects) {
+    if (p.regions !== undefined && (p.regions.length === 0 || p.regions.some((r) => !r?.trim()))) {
+      fail(`project "${p.id}" lists an empty region`)
+    }
+  }
+
+  // Plan balance rule: every neighborhood kind keeps at least two project
+  // options in each region it belongs to (Milestone 10). Each town checks its
+  // own list again (regionContentProblems).
+  for (const kind of loadKinds()) {
+    for (const region of kind.regions) {
+      const options = projects.filter(
+        (p) => p.allowedKinds.includes(kind.id) && (p.regions === undefined || p.regions.includes(region)),
+      ).length
+      if (options < 2) fail(`kind "${kind.id}" has fewer than two project options in region "${region}"`)
+    }
   }
 
   if (projects.length === 0) fail('the catalog lists no projects')
