@@ -28,7 +28,6 @@ const FLY_MS = 700
 const DEBUG = typeof location !== 'undefined' && new URLSearchParams(location.search).has('debug')
 
 // Scenario content is static data (not save state), so load it once.
-const scenario = loadScenario()
 const projects = loadProjects()
 
 export interface FocusRequest {
@@ -73,6 +72,7 @@ export default function TownMap({
   focus,
   highlightNeed = null,
 }: TownMapProps) {
+  const scenario = loadScenario()
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const cameraRef = useRef<Camera>({ x: 0, y: 0, zoom: 1 })
@@ -113,7 +113,7 @@ export default function TownMap({
       pointsCacheRef.current.set(id, points)
     }
     return points
-  }, [])
+  }, [scenario])
 
   const toLocal = useCallback((clientX: number, clientY: number): Point => {
     const rect = canvasRef.current!.getBoundingClientRect()
@@ -128,7 +128,7 @@ export default function TownMap({
       }
       return null
     },
-    [pointsFor],
+    [pointsFor, scenario.neighborhoods],
   )
 
   // Pin each expiry bubble just above its district - or below it when there
@@ -151,7 +151,7 @@ export default function TownMap({
       el.classList.toggle('below', flip)
       el.style.transform = `translate(${Math.round(x - width / 2)}px, ${Math.round(top)}px)`
     }
-  }, [])
+  }, [scenario])
 
   // Size the canvas to the container. The whole town is framed only on the
   // first size; later resizes keep the player's view (same zoom, same point in
@@ -188,7 +188,7 @@ export default function TownMap({
     const observer = new ResizeObserver(resize)
     observer.observe(container)
     return () => observer.disconnect()
-  }, [])
+  }, [scenario])
 
   // The look of every district follows the simulation. New projects pop in
   // with sparkles and a floating label of what they will improve.
@@ -234,7 +234,7 @@ export default function TownMap({
       }
     }
     dirtyRef.current = true
-  }, [state])
+  }, [state, scenario.neighborhoods])
 
   useEffect(() => {
     selectedIdRef.current = selectedId
@@ -284,7 +284,7 @@ export default function TownMap({
     if (reducedMotionRef.current) cameraRef.current = to
     else flightRef.current = { from, to, start: performance.now() }
     dirtyRef.current = true
-  }, [focus])
+  }, [focus, scenario])
 
   // Esc closes the panel (an overlay above handles Esc first and marks it).
   useEffect(() => {
@@ -393,7 +393,7 @@ export default function TownMap({
     }
     frame = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(frame)
-  }, [placeBubbles])
+  }, [placeBubbles, scenario])
 
   // Pointer + wheel input: hover lift, drag-pan, click-select, wheel and pinch
   // zoom (development plan, "Input and controls": pointer events, not mouse).
@@ -515,7 +515,7 @@ export default function TownMap({
 
   return (
     <div ref={containerRef} className="town-map">
-      <canvas ref={canvasRef} className="town-map-canvas" aria-label={t('map.label')} />
+      <canvas ref={canvasRef} className="town-map-canvas" aria-label={t('map.label', { town: scenario.name })} />
       {bubbles.map((bubble) => (
         <div
           key={bubble.key}

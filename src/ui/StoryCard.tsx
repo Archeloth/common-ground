@@ -5,7 +5,6 @@ import ResidentAvatar from './ResidentAvatar'
 import { t } from './i18n'
 import './Journal.css'
 
-const scenario = loadScenario()
 
 interface StoryCardProps {
   state: GameState
@@ -17,6 +16,7 @@ interface StoryCardProps {
 // bottom-left corner. It never pauses the game; closing it files it in the
 // Journal's People tab.
 export default function StoryCard({ state, onShow, onClose }: StoryCardProps) {
+  const scenario = loadScenario()
   const key = state.storyNotices[0]
   const parsed = key ? parseStoryNoticeKey(key) : null
   const resident = parsed ? residentById(scenario, parsed.resident) : undefined

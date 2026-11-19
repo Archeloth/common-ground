@@ -348,3 +348,129 @@
   color: var(--ink-faint);
   animation: fade-in 400ms ease 300ms both;
 }
+
+/* The town picker (Milestone 10): a grid of towns, each with a small map
+   drawn from its data, then the regions still to come, greyed out. The menu
+   card widens while the picker is open. */
+.menu-card.wide {
+  width: min(68rem, 100%);
+}
+
+.menu-intro {
+  margin: 0 0 0.8rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.menu-towns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-towns > li {
+  display: flex;
+}
+
+.menu-town {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100%;
+  padding: 0.6rem 0.7rem 0.75rem;
+  border: 1px solid rgba(31, 43, 28, 0.15);
+  border-radius: 0.8rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button.menu-town:hover,
+button.menu-town:focus-visible {
+  border-color: var(--primary);
+  box-shadow: 0 6px 18px rgba(31, 43, 28, 0.16);
+  transform: translateY(-2px);
+}
+
+.town-preview {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 0.2rem;
+  border-radius: 0.55rem;
+  background: #dfe6cf;
+}
+
+.town-preview.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(31, 43, 28, 0.55);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* A hint of each future region's palette (plan: ochre and sand; terraces and
+   pine; bright river green). */
+.menu-town.soon.oasis .town-preview { background: linear-gradient(160deg, #e9d3a6, #d2a96c); }
+.menu-town.soon.mountain .town-preview { background: linear-gradient(160deg, #cfdcc0, #7f9d76); }
+.menu-town.soon.river .town-preview { background: linear-gradient(160deg, #a9d3b4, #4f9a83); }
+
+.menu-town-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.1rem 0.6rem;
+}
+
+.menu-town-head small,
+.menu-town-blurb {
+  color: var(--ink-soft);
+}
+
+.menu-town-tagline {
+  font-size: 0.95rem;
+}
+
+.menu-town-blurb {
+  font-size: 0.82rem;
+}
+
+.menu-town-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: auto;
+  padding-top: 0.2rem;
+}
+
+.menu-town-tags span {
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  font-size: 0.75rem;
+}
+
+.menu-town.soon .town-preview {
+  aspect-ratio: 16 / 7;
+}
+
+.menu-town.soon .menu-town-tagline {
+  font-size: 0.85rem;
+}
+
+.menu-town.soon {
+  cursor: default;
+  background: transparent;
+  border-style: dashed;
+  color: var(--ink-soft);
+}

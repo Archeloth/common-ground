@@ -1,5 +1,5 @@
 import type { GameState } from '../game/types'
-import { loadScenario } from '../game/scenario'
+import { getScenario } from '../game/scenario'
 import { validateGameState } from '../game/validate'
 import { TUTORIAL_DONE } from '../game/tutorial'
 import { loadProjects } from '../game/projects'
@@ -11,7 +11,7 @@ import { projectEndsAt } from '../game/expiry'
 // fails validation reports problems instead of crashing. All functions here
 // are pure, so the round-trip, migration and corrupt-save tests run in Node.
 
-export const CURRENT_SAVE_VERSION = 9
+export const CURRENT_SAVE_VERSION = 10
 
 export interface SaveFile {
   version: number
@@ -35,7 +35,7 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
       version: 2,
       state: {
         ...s.state,
-        research: [...loadScenario().start.unlockedTech],
+        research: [...getScenario('willowbrook').start.unlockedTech],
         milestones: [],
         milestoneNotices: [],
       },
@@ -46,7 +46,7 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
   // did not exist before, so the town starts with none.
   2: (save) => {
     const s = save as { state: GameState }
-    const scenario = loadScenario()
+    const scenario = getScenario('willowbrook') // every save this old is Willowbrook
     const engagement: Record<string, number> = {}
     const messages: Record<string, 'open' | 'done'> = {}
     for (const n of scenario.neighborhoods) {
@@ -112,6 +112,11 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
   8: (save) => {
     const s = save as { state: GameState }
     return { ...s, version: 9, state: { ...s.state, wildlife: {}, wildlifeNotices: [], stories: {}, storyNotices: [] } }
+  },
+  // 9 -> 10 (Milestone 10): more than one town. Every older save is Willowbrook.
+  9: (save) => {
+    const s = save as { state: GameState }
+    return { ...s, version: 10, state: { ...s.state, scenarioId: 'willowbrook' } }
   },
 }
 

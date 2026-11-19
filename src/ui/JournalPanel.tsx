@@ -10,7 +10,6 @@ import { formatGameDate } from './dates'
 import { t } from './i18n'
 import './Journal.css'
 
-const scenario = loadScenario()
 
 type Tab = 'wildlife' | 'people'
 
@@ -46,6 +45,7 @@ export default function JournalPanel({ state, onShow }: JournalPanelProps) {
 }
 
 function WildlifeTab({ state, onShow }: JournalPanelProps) {
+  const scenario = loadScenario()
   const species = loadWildlife()
   const found = species.filter((s) => state.wildlife[s.id]).length
   return (
@@ -87,6 +87,7 @@ function WildlifeTab({ state, onShow }: JournalPanelProps) {
 }
 
 function PeopleTab({ state, onShow }: JournalPanelProps) {
+  const scenario = loadScenario()
   const residents = loadStories(scenario).filter((r) => (state.stories[r.id] ?? 0) > 0)
   return (
     <div role="tabpanel">

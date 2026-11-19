@@ -1,5 +1,5 @@
 import type { Command, CommandResult, GameState } from './types'
-import { loadScenario } from './scenario'
+import { loadScenario, setActiveScenario } from './scenario'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
 import { MAX_TICKS_PER_FRAME, TICK_MS, UNDO_WINDOW_MS } from './constants'
@@ -51,6 +51,7 @@ export interface GameStore {
 }
 
 export function createGameStore(initial?: GameState): GameStore {
+  if (initial) setActiveScenario(initial.scenarioId)
   let current = initial ?? initialState(loadScenario())
   const listeners = new Set<() => void>()
   let acc = 0
@@ -111,6 +112,9 @@ export function createGameStore(initial?: GameState): GameStore {
   }
 
   function replaceState(state: GameState): void {
+    // Milestone 10: a new or loaded game decides which town everything else
+    // (map, chapters, messages, stories) follows.
+    setActiveScenario(state.scenarioId)
     current = state
     history = null // a loaded town has nothing to undo
     notify()

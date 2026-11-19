@@ -4,7 +4,7 @@ import { allPlaceConditionsMet, placeConditionProblems } from './conditions'
 import { loadProjects } from './projects'
 import { loadMilestones } from './milestones'
 import { loadWildlife } from './wildlife'
-import catalog from '../data/stories.json'
+import { scenarioContent } from './scenario'
 
 // Citizen stories (post-Milestone 9): a handful of recurring residents whose
 // short notes change as their district improves. Each chapter has conditions
@@ -42,19 +42,27 @@ function fail(what: string): never {
   throw new Error(`Stories data error: ${what}`)
 }
 
-let cached: ResidentDef[] | null = null
+// Milestone 10: stories are per town and optional (a quick game may have
+// none), cached per scenario id.
+const cached = new Map<string, ResidentDef[]>()
 
 export function loadStories(scenario: ScenarioDef): ResidentDef[] {
-  cached ??= buildStories(scenario)
-  return cached
+  let residents = cached.get(scenario.id)
+  if (!residents) {
+    residents = buildStories(scenario)
+    cached.set(scenario.id, residents)
+  }
+  return residents
 }
 
 function buildStories(scenario: ScenarioDef): ResidentDef[] {
-  const residents = ((catalog as unknown as { residents?: ResidentDef[] }).residents ?? []).map((r) => ({ ...r }))
+  const catalog = scenarioContent(scenario.id).stories as { residents?: ResidentDef[] } | undefined
+  if (!catalog) return []
+  const residents = (catalog.residents ?? []).map((r) => ({ ...r }))
   const ids = {
     projects: new Set(loadProjects().map((p) => p.id)),
     species: new Set(loadWildlife().map((s) => s.id)),
-    milestones: new Set(loadMilestones().map((m) => m.id)),
+    milestones: new Set(loadMilestones(scenario.id).map((m) => m.id)),
   }
   const seen = new Set<string>()
   for (const r of residents) {

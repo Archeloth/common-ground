@@ -50,6 +50,7 @@ export function initialState(scenario: ScenarioDef): GameState {
     messages[n.id] = 'open'
   }
   return {
+    scenarioId: scenario.id,
     budget: scenario.start.budget,
     time: scenario.start.time,
     knowledge: scenario.start.knowledge ?? 0,
@@ -69,7 +70,8 @@ export function initialState(scenario: ScenarioDef): GameState {
     history: [],
     busLines: [],
     messages,
-    tutorialStep: 0,
+    // Towns without the scripted tutorial start with it already finished.
+    tutorialStep: scenario.tutorial === false ? TUTORIAL_DONE : 0,
     wildlife: {},
     wildlifeNotices: [],
     stories: {},

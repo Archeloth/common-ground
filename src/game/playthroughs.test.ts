@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import { loadScenario } from './scenario'
+import { afterEach, describe, expect, it } from 'vitest'
+import { getScenario, loadScenario, setActiveScenario } from './scenario'
+import { loadMilestones } from './milestones'
 import { applyCommand, initialState } from './state'
 import { tick } from './tick'
 import type { Command, GameState } from './types'
@@ -33,7 +34,7 @@ function makeAct(order: Array<[string, string]>, research: string[] = ['building
       }
     }
     // Volunteers are the scarce resource: spend idle months on town meetings.
-    for (const n of scenario.neighborhoods) {
+    for (const n of loadScenario().neighborhoods) {
       const command: Command = { type: 'townMeeting', neighborhood: n.id }
       if (applyCommand(state, command).ok) return command
     }
@@ -69,8 +70,9 @@ function play(
   act: (state: GameState) => Command | null,
   goal = 'first_steps',
   maxDays = MAX_DAYS,
+  town = scenario,
 ): GameState {
-  let state = initialState(scenario)
+  let state = initialState(town)
   for (let day = 0; day < maxDays; day++) {
     if (day % 30 === 0) {
       // A few actions at the start of each month, while resources allow.
@@ -160,5 +162,35 @@ describe('chapter 2 is reachable with the new mobility content', () => {
     const state = play(act, 'getting_around', 6 * 12 * 30)
     expect(state.milestones).toContain('first_steps')
     expect(state.milestones).toContain('getting_around')
+  })
+})
+
+// Milestone 10 exit test: the plumbing works for a second town. A generic bot
+// (gardens, meadows and retrofits everywhere, then safe streets and a bus line
+// over a footbridge) plays Hollin Green through every chapter.
+describe('Hollin Green can be played from start to finish', () => {
+  afterEach(() => setActiveScenario('willowbrook'))
+
+  it('a simple bot completes all three chapters', () => {
+    setActiveScenario('hollin_green')
+    const town = getScenario('hollin_green')
+    const each = (project: string) => town.neighborhoods.map((n) => [n.id, project] as [string, string])
+    const act = makeAct(
+      [
+        ['hollin_square', 'community_garden'],
+        ['hazel_copse', 'pocket_meadow'],
+        ...each('retrofit_program'),
+        ...each('safe_streets'),
+        ...each('rooftop_solar'),
+        ...each('community_garden'),
+        ...each('compost_point'),
+      ],
+      ['building_retrofits', 'public_transport', 'community_learning', 'composting'],
+      [['hollin_square', 'brook_meadows']],
+    )
+    const chapters = loadMilestones('hollin_green')
+    const last = chapters[chapters.length - 1].id
+    const state = play(act, last, 4 * 12 * 30, town)
+    expect(state.milestones).toEqual(expect.arrayContaining(chapters.map((m) => m.id)))
   })
 })

@@ -635,7 +635,10 @@ lines) per region.
 
 **Step 10.0: Shared groundwork (2 to 3 weeks)**
 
-1. Scenario registry, active scenario, `scenarioId` in the save (v10 migration).
+1. **(Done)** Scenario registry, active scenario, `scenarioId` in the save (v10 migration).
+   Each town is a folder under `src/data/scenarios/<id>/` holding `town.json`,
+   `milestones.json`, `messages.json` and an optional `stories.json`; shared
+   catalogs (technologies, projects, wildlife, district kinds) stay global.
 2. Region-tagged district kinds, and a check that every kind a scenario uses has
    colours and a layout recipe.
 3. The water need and satisfaction weights per scenario.
@@ -646,8 +649,9 @@ lines) per region.
 8. A `RegionTheme` (palette, kind colours, building and tree recipes, wildlife,
    season looks, ambient track, a UI accent colour), with Willowbrook as the
    first theme.
-9. A scenario picker on the main menu, and a test mini region of four districts
-   to prove the plumbing.
+9. **(Done)** A scenario picker on the main menu, and a test mini region of four districts
+   to prove the plumbing. The mini region is Hollin Green, a playable quick game
+   (three chapters, no tutorial) built from the temperate district kinds.
 
 **Exit test:** Willowbrook is unchanged, and the bot plays the mini region from
 start to finish.

@@ -1,6 +1,6 @@
 import type { NeedId, NeighborhoodSimState } from './types'
 import { NEED_ORDER } from './needs'
-import { loadScenario } from './scenario'
+import { getScenario, hasScenario } from './scenario'
 import { loadProjects } from './projects'
 import { parseExpiryNoticeKey } from './expiry'
 import { loadTechnologies } from './technologies'
@@ -22,6 +22,14 @@ export function validateGameState(state: unknown): string[] {
   }
   const s = state as Record<string, unknown>
 
+  // Milestone 10: the town decides everything else (districts, chapters,
+  // stories), so an unknown town stops here. Validation never switches the
+  // active scenario: it is called for slot metadata while a game runs.
+  if (typeof s.scenarioId !== 'string' || !hasScenario(s.scenarioId)) {
+    return [`scenarioId names an unknown town "${String(s.scenarioId)}"`]
+  }
+  const scenario = getScenario(s.scenarioId)
+
   checkNumber(s.budget, 'budget', 0, Infinity, problems)
   checkNumber(s.time, 'time', 0, Infinity, problems)
   checkNumber(s.knowledge, 'knowledge', 0, Infinity, problems)
@@ -32,7 +40,6 @@ export function validateGameState(state: unknown): string[] {
     problems.push('speed must be 0, 1, 2 or 4')
   }
 
-  const scenario = loadScenario()
   const projects = loadProjects()
 
   if (s.projects === null || typeof s.projects !== 'object') {
@@ -98,7 +105,7 @@ export function validateGameState(state: unknown): string[] {
   // Milestone 6 collections: research ids, completed milestones and pending
   // notices must all reference content that actually exists.
   const techIds = new Set(loadTechnologies().map((t) => t.id))
-  const milestoneIds = new Set(loadMilestones().map((m) => m.id))
+  const milestoneIds = new Set(loadMilestones(scenario.id).map((m) => m.id))
   checkIdList(s.research, 'research', techIds, problems)
   checkIdList(s.milestones, 'milestones', milestoneIds, problems)
   checkIdList(s.milestoneNotices, 'milestoneNotices', milestoneIds, problems)

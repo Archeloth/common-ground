@@ -15,7 +15,6 @@ import { t } from './i18n'
 import './NeighborhoodPanel.css'
 
 const kinds = loadKinds()
-const scenario = loadScenario()
 
 
 type PanelTab = 'overview' | 'projects' | 'community'
@@ -49,6 +48,7 @@ export default function NeighborhoodPanel({
   onStartBusLine,
   onClose,
 }: NeighborhoodPanelProps) {
+  const scenario = loadScenario()
   const kind = kindById(kinds, neighborhood.kind)
   // Needs, satisfaction and reasons are dynamic simulation values (Milestone 4);
   // the static scenario values are only a fallback for a stale or missing entry.

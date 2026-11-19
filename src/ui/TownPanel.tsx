@@ -12,10 +12,7 @@ import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import './TownPanel.css'
 
-const scenario = loadScenario()
-const milestones = loadMilestones()
 const techCount = loadTechnologies().length
-const totalResidents = scenario.neighborhoods.reduce((sum, n) => sum + n.residents, 0)
 
 interface TownPanelProps {
   state: GameState
@@ -39,6 +36,9 @@ function weakestNeed(state: GameState, id: string): { need: NeedId; value: numbe
 // every neighbourhood ranked by satisfaction (worst first, click to open).
 // Chapter goals live in the always-visible GoalTracker (Milestone 8.6).
 export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPanelProps) {
+  const scenario = loadScenario()
+  const milestones = loadMilestones()
+  const totalResidents = scenario.neighborhoods.reduce((sum, n) => sum + n.residents, 0)
   // Never leave the map highlighted when the drawer closes.
   useEffect(() => () => onHighlightNeed?.(null), [onHighlightNeed])
   const satisfaction = townSatisfaction(state, scenario)

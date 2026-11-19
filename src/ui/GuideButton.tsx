@@ -5,7 +5,6 @@ import { loadScenario, neighborhoodById } from '../game/scenario'
 import { t } from './i18n'
 import './GuideButton.css'
 
-const scenario = loadScenario()
 
 interface GuideButtonProps {
   state: GameState
@@ -17,6 +16,7 @@ interface GuideButtonProps {
 // milestones, resident requests, need gaps). The button can fly the player
 // straight to the neighbourhood the hint is about.
 export default function GuideButton({ state, onShow }: GuideButtonProps) {
+  const scenario = loadScenario()
   const [open, setOpen] = useState(false)
   // Only work it out while the popover is open (Milestone 8.6 review).
   const action = useMemo(() => (open ? nextAction(state) : null), [open, state])

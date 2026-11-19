@@ -1,0 +1,32 @@
+{
+  "messages": [
+    {
+      "id": "hollin_square_message",
+      "neighborhood": "hollin_square",
+      "text": "The cottages round the square were built before anyone thought about insulation. A retrofit programme would keep the warmth in.",
+      "request": { "type": "projectIn", "project": "retrofit_program" },
+      "reward": { "knowledge": 5 }
+    },
+    {
+      "id": "chapel_row_message",
+      "neighborhood": "chapel_row",
+      "text": "Our roofs face the sun all afternoon. Could we put solar panels on them together?",
+      "request": { "type": "projectIn", "project": "rooftop_solar" },
+      "reward": { "budget": 400 }
+    },
+    {
+      "id": "brook_meadows_message",
+      "neighborhood": "brook_meadows",
+      "text": "The farms throw away a lot of green waste. A shared compost point would turn it back into soil.",
+      "request": { "type": "projectIn", "project": "compost_point" },
+      "reward": { "time": 2 }
+    },
+    {
+      "id": "hazel_copse_message",
+      "neighborhood": "hazel_copse",
+      "text": "The verges by the copse used to be full of wildflowers. A small meadow would bring the bees back.",
+      "request": { "type": "projectIn", "project": "pocket_meadow" },
+      "reward": { "knowledge": 4 }
+    }
+  ]
+}

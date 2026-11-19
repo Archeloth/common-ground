@@ -10,6 +10,7 @@ export const SLOT_KEYS = ['auto', 's1', 's2', 's3'] as const
 export type SlotKey = (typeof SLOT_KEYS)[number]
 
 export interface SlotMeta {
+  scenarioId: string // which town (Milestone 10), so the menu can name it
   day: number
   savedAt: string
 }
@@ -32,5 +33,5 @@ export async function loadSlot(db: SaveDb, key: string): Promise<SlotLoadResult>
 
 export async function readSlotMeta(db: SaveDb, key: string): Promise<SlotMeta | null> {
   const { save } = await loadSlot(db, key)
-  return save ? { day: save.state.day, savedAt: save.savedAt } : null
+  return save ? { scenarioId: save.state.scenarioId, day: save.state.day, savedAt: save.savedAt } : null
 }

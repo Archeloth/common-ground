@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { loadScenario } from '../game/scenario'
+import { afterEach, describe, expect, it } from 'vitest'
+import { activeScenarioId, getScenario, loadScenario, setActiveScenario } from '../game/scenario'
 import { applyCommand, initialState } from '../game/state'
 import { TUTORIAL_DONE } from '../game/tutorial'
 import {
@@ -85,9 +85,10 @@ describe('versioned save files', function () {
       6: function (s: unknown) { return { ...(s as object), version: 7, fromSix: true } },
       7: function (s: unknown) { return { ...(s as object), version: 8, fromSeven: true } },
       8: function (s: unknown) { return { ...(s as object), version: 9, fromEight: true } },
+      9: function (s: unknown) { return { ...(s as object), version: 10, fromNine: true } },
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(9)
+    expect(migrated.version).toBe(10)
     expect((migrated as unknown as { fromFour: boolean }).fromFour).toBe(true)
     expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
     expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
@@ -99,9 +100,9 @@ describe('versioned save files', function () {
     expect(function () { migrateSave({ version: 0 } as never) }).toThrow(/no migration/)
   })
 
-  it('the shipped migration table covers the earlier shapes (1 to 8)', function () {
-    expect(CURRENT_SAVE_VERSION).toBe(9)
-    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
+  it('the shipped migration table covers the earlier shapes (1 to 9)', function () {
+    expect(CURRENT_SAVE_VERSION).toBe(10)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9])
   })
 
   it('migrates a version-1 save to version 4, seeding research, engagement, messages and the finished tutorial', function () {
@@ -222,17 +223,18 @@ describe('versioned save files', function () {
     if (result.ok) expect(result.save.state.history).toEqual([])
   })
 
-  it('migrates a version-8 save to version 9 with an empty journal and no stories yet', function () {
+  it('migrates a version-8 save with an empty journal and no stories yet', function () {
     const v8 = createSave(playedState()) as unknown as { version: number; state: { [key: string]: unknown } }
     v8.version = 8
     delete v8.state.wildlife
     delete v8.state.wildlifeNotices
     delete v8.state.stories
     delete v8.state.storyNotices
+    delete v8.state.scenarioId
     const result = parseAndLoad(JSON.stringify(v8))
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.save.version).toBe(9)
+      expect(result.save.version).toBe(10)
       expect(result.save.state.wildlife).toEqual({})
       expect(result.save.state.wildlifeNotices).toEqual([])
       expect(result.save.state.stories).toEqual({})
@@ -245,5 +247,46 @@ describe('versioned save files', function () {
     save.state.wildlife = { dodo: { day: 3, neighborhood: 'old_town' } }
     const result = parseAndLoad(JSON.stringify(save))
     expect(result.ok).toBe(false)
+  })
+})
+
+describe('saves know their town (Milestone 10)', function () {
+  afterEach(function () {
+    setActiveScenario('willowbrook')
+  })
+
+  it('migrates a version-9 save to Willowbrook', function () {
+    const v9 = createSave(playedState()) as unknown as { version: number; state: { [key: string]: unknown } }
+    v9.version = 9
+    delete v9.state.scenarioId
+    const result = parseAndLoad(JSON.stringify(v9))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.save.version).toBe(10)
+      expect(result.save.state.scenarioId).toBe('willowbrook')
+    }
+  })
+
+  it('round-trips a Hollin Green town without switching the active town', function () {
+    const source = initialState(getScenario('hollin_green'))
+    const result = parseAndLoad(JSON.stringify(createSave(source)))
+    expect(result.ok).toBe(true)
+    if (result.ok) expect(result.save.state).toEqual(source)
+    // Reading a slot (for the menu's metadata) must never change the town in play.
+    expect(activeScenarioId()).toBe('willowbrook')
+  })
+
+  it('refuses a save from an unknown town', function () {
+    const save = createSave(playedState()) as unknown as { state: { scenarioId: string } }
+    save.state.scenarioId = 'atlantis'
+    const result = parseAndLoad(JSON.stringify(save))
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.problems.join(' ')).toMatch(/unknown town/)
+  })
+
+  it('refuses a Willowbrook town that claims to be Hollin Green', function () {
+    const save = createSave(playedState()) as unknown as { state: { scenarioId: string } }
+    save.state.scenarioId = 'hollin_green'
+    expect(parseAndLoad(JSON.stringify(save)).ok).toBe(false)
   })
 })

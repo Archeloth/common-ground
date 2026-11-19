@@ -4,6 +4,7 @@ import type { PlaceCondition } from './conditions'
 import { allPlaceConditionsMet, placeConditionProblems } from './conditions'
 import { loadProjects } from './projects'
 import { loadMilestones } from './milestones'
+import { scenarioIds } from './scenario'
 import type { ReadMoreLink } from './readMore'
 import { readMoreProblems } from './readMore'
 import catalog from '../data/wildlife.json'
@@ -58,7 +59,8 @@ function buildWildlife(): SpeciesDef[] {
   const ids = {
     projects: new Set(loadProjects().map((p) => p.id)),
     species: new Set(species.map((s) => s.id)),
-    milestones: new Set(loadMilestones().map((m) => m.id)),
+    // Shared across towns, so a chapter condition may name any town's chapter.
+    milestones: new Set(scenarioIds().flatMap((id) => loadMilestones(id).map((m) => m.id))),
   }
   const seen = new Set<string>()
   for (const s of species) {

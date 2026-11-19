@@ -1,8 +1,7 @@
 import type { GameState, NeedId, ScenarioDef } from './types'
 import { NEED_ORDER } from './needs'
 import { loadProjects } from './projects'
-import { loadScenario } from './scenario'
-import milestonesCatalog from '../data/milestones.json'
+import { activeScenarioId, getScenario, scenarioContent } from './scenario'
 import { activeProjectIds, countActive } from './expiry'
 
 // The five chapter milestones (Milestone 6), as content: each is a list of
@@ -45,15 +44,20 @@ interface RawMilestone {
 // Content is static, so it is parsed and validated once and then shared
 // (callers must not mutate the result). Milestone 8.6 review: this used to
 // re-validate on every call, from tick(), applyCommand() and each render.
-let cachedLoadMilestones: MilestoneDef[] | null = null
+// Milestone 10: each town has its own chapters, cached per scenario id.
+const cachedMilestones = new Map<string, MilestoneDef[]>()
 
-export function loadMilestones(): MilestoneDef[] {
-  cachedLoadMilestones ??= buildLoadMilestones()
-  return cachedLoadMilestones
+export function loadMilestones(scenarioId = activeScenarioId()): MilestoneDef[] {
+  let milestones = cachedMilestones.get(scenarioId)
+  if (!milestones) {
+    milestones = buildLoadMilestones(scenarioId)
+    cachedMilestones.set(scenarioId, milestones)
+  }
+  return milestones
 }
 
-function buildLoadMilestones(): MilestoneDef[] {
-  const raw = milestonesCatalog as unknown as { milestones?: RawMilestone[] }
+function buildLoadMilestones(scenarioId: string): MilestoneDef[] {
+  const raw = scenarioContent(scenarioId).milestones as { milestones?: RawMilestone[] }
   const milestones: MilestoneDef[] = (raw.milestones ?? []).map((m, index) => ({
     id: m.id ?? `#${index}`,
     name: m.name ?? '',
@@ -64,7 +68,7 @@ function buildLoadMilestones(): MilestoneDef[] {
     reward: { knowledge: m.reward?.knowledge ?? 0 },
   }))
 
-  const scenario = loadScenario()
+  const scenario = getScenario(scenarioId)
   const projects = loadProjects()
   const projectIds = new Set(projects.map((p) => p.id))
   const neighborhoodIds = new Set(scenario.neighborhoods.map((n) => n.id))

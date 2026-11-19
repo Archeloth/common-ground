@@ -1,7 +1,13 @@
 import type { BridgeDef, ScenarioDef, NeighborhoodDef } from './types'
 import { segmentHitsPolyline } from './geometry'
 import { districtOutline, outlineBox } from './outline'
-import willowbrook from '../data/scenarios/willowbrook.json'
+import willowbrookTown from '../data/scenarios/willowbrook/town.json'
+import willowbrookMilestones from '../data/scenarios/willowbrook/milestones.json'
+import willowbrookMessages from '../data/scenarios/willowbrook/messages.json'
+import willowbrookStories from '../data/scenarios/willowbrook/stories.json'
+import hollinTown from '../data/scenarios/hollin_green/town.json'
+import hollinMilestones from '../data/scenarios/hollin_green/milestones.json'
+import hollinMessages from '../data/scenarios/hollin_green/messages.json'
 
 // Content validation lives here so a typo in a scenario JSON fails loudly
 // with the offending id instead of drawing a wrong map or crashing later.
@@ -12,6 +18,9 @@ function fail(what: string, detail = ''): never {
 }
 
 export function validateScenario(s: ScenarioDef): void {
+  for (const [field, value] of [['name', s.name], ['region', s.region], ['tagline', s.tagline], ['blurb', s.blurb]] as const) {
+    if (typeof value !== 'string' || !value.trim()) fail(`the scenario needs a ${field}`, s.id)
+  }
   const seenIds = new Set<string>()
   const seenNames = new Set<string>()
   for (const n of s.neighborhoods) {
@@ -91,17 +100,90 @@ export function bridgeBetween(s: ScenarioDef, a: string, b: string): BridgeDef |
   return s.bridges.find((br) => (br.from === a && br.to === b) || (br.from === b && br.to === a)) ?? null
 }
 
-// The scenario is hand-tuned content; validating it on every load is cheap
-// (16 neighborhoods) and failing here beats failing at draw time. The result
-// is cached so App and TownMap can both use the same instance.
-let cachedScenario: ScenarioDef | null = null
+// The scenario registry (Milestone 10). Each town is a folder under
+// src/data/scenarios/<id>/: the map and start (town.json), its chapters,
+// its resident messages and, optionally, its citizen stories. Shared
+// catalogs (technologies, projects, wildlife, district kinds) stay global.
+// Everything is a static import, so offline play keeps working.
+
+export interface ScenarioContent {
+  town: unknown
+  milestones: unknown
+  messages: unknown
+  stories?: unknown
+}
+
+const SCENARIOS: Record<string, ScenarioContent> = {
+  willowbrook: {
+    town: willowbrookTown,
+    milestones: willowbrookMilestones,
+    messages: willowbrookMessages,
+    stories: willowbrookStories,
+  },
+  hollin_green: {
+    town: hollinTown,
+    milestones: hollinMilestones,
+    messages: hollinMessages,
+  },
+}
+
+export const DEFAULT_SCENARIO_ID = 'willowbrook'
+
+export function scenarioIds(): string[] {
+  return Object.keys(SCENARIOS)
+}
+
+export function hasScenario(id: string): boolean {
+  return Object.hasOwn(SCENARIOS, id)
+}
+
+export function scenarioContent(id: string): ScenarioContent {
+  if (!hasScenario(id)) fail('unknown town', id)
+  return SCENARIOS[id]
+}
+
+// The scenario is hand-tuned content; validating it on first use is cheap
+// and failing here beats failing at draw time. Each town is cached, so
+// every caller shares one instance per id.
+const cachedScenarios = new Map<string, ScenarioDef>()
+
+export function getScenario(id: string): ScenarioDef {
+  let scenario = cachedScenarios.get(id)
+  if (!scenario) {
+    scenario = scenarioContent(id).town as ScenarioDef
+    if (scenario.id !== id) fail('the town id must match its registry id', `${scenario.id} != ${id}`)
+    validateScenario(scenario)
+    cachedScenarios.set(id, scenario)
+  }
+  return scenario
+}
+
+// A save's town name for menus; an unknown id (a save from a newer build)
+// shows as itself rather than crashing the slot list.
+export function scenarioName(id: string): string {
+  return hasScenario(id) ? getScenario(id).name : id
+}
+
+// Every playable town, in registry order (the main menu's picker).
+export function listScenarios(): ScenarioDef[] {
+  return scenarioIds().map(getScenario)
+}
+
+// The town being played. Set when a game starts or loads (store.replaceState);
+// everything that asks loadScenario() follows it.
+let activeId = DEFAULT_SCENARIO_ID
+
+export function setActiveScenario(id: string): void {
+  getScenario(id) // fail loudly on an unknown id before switching
+  activeId = id
+}
+
+export function activeScenarioId(): string {
+  return activeId
+}
 
 export function loadScenario(): ScenarioDef {
-  if (!cachedScenario) {
-    cachedScenario = willowbrook as unknown as ScenarioDef
-    validateScenario(cachedScenario)
-  }
-  return cachedScenario
+  return getScenario(activeId)
 }
 
 export function neighborhoodById(s: ScenarioDef, id: string): NeighborhoodDef {

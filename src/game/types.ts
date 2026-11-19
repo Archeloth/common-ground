@@ -67,6 +67,14 @@ export interface NeighborhoodDef {
 export interface ScenarioDef {
   id: string
   name: string
+  // Picker texts (Milestone 10): where the town is, one line and a short
+  // paragraph. Content, so it lives in the scenario file, not in i18n.
+  region: string
+  tagline: string
+  blurb: string
+  // Whether the scripted first-steps tutorial runs (default true). Its
+  // steps name Willowbrook districts, so other towns switch it off.
+  tutorial?: boolean
   start: {
     budget: number
     time: number
@@ -183,6 +191,8 @@ export interface NeighborhoodSimState {
 // The entire mutable simulation state, as plain JSON-friendly data (coding
 // standard 6): a save file can be a JSON.stringify snapshot of this object.
 export interface GameState {
+  // Which town this is (Milestone 10): a key of the scenario registry.
+  scenarioId: string
   budget: number
   time: number // community time (volunteer effort)
   knowledge: number // earned from milestones now; schools/libraries arrive later

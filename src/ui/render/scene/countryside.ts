@@ -37,6 +37,7 @@ interface Bucket {
 
 const tiles = new Map<string, Tile>()
 let tileSeason = ''
+let tileScenario = '' // a different town (Milestone 10) has different countryside
 let stable: Bucket | null = null // the last bucket that filled the whole view
 let clock = 0
 
@@ -109,11 +110,12 @@ export function drawCountryside(
   season: SeasonLook,
 ): boolean {
   const items = wildsFor(scenario).items
-  if (tileSeason !== season.season) {
-    // A new season repaints everything; there is nothing older worth showing.
+  if (tileSeason !== season.season || tileScenario !== scenario.id) {
+    // A new season (or town) repaints everything; there is nothing older worth showing.
     tiles.clear()
     stable = null
     tileSeason = season.season
+    tileScenario = scenario.id
   }
   clock++
   const b = bucketOf(bucketZoom, dpr)

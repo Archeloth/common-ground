@@ -29,7 +29,7 @@ import { refreshMusic } from './music'
 import type { GameStore } from '../game/store'
 import type { Command, GameState, NeedId, Reason, Speed } from '../game/types'
 import { applyCommand } from '../game/state'
-import { loadScenario, neighborhoodById } from '../game/scenario'
+import { getScenario, neighborhoodById } from '../game/scenario'
 import { loadMilestones, milestoneById } from '../game/milestones'
 import { TUTORIAL_STEPS, currentTutorialStep } from '../game/tutorial'
 import JournalPanel from './JournalPanel'
@@ -38,8 +38,6 @@ import WildlifeNote from './WildlifeNote'
 import { allExpired } from '../game/expiry'
 import { townNeedAverage } from '../game/milestones'
 
-const scenario = loadScenario()
-const milestones = loadMilestones()
 const TOUCH = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
 
 // The sound each successful command makes (refusals play 'refuse').
@@ -91,6 +89,9 @@ export default function GameScreen({
   onLexicon,
   onMenu,
 }: GameScreenProps) {
+  // One town per game screen; memoised so the hooks below can depend on it.
+  const scenario = useMemo(() => getScenario(state.scenarioId), [state.scenarioId])
+  const milestones = loadMilestones(scenario.id)
   const settings = useSettings()
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('crash')) {
     throw new Error('Test crash (?crash in development)')
@@ -111,9 +112,9 @@ export default function GameScreen({
   // Lapsed projects (map badges) and pending expiry popups (Milestone 8.5).
   const expiredIds = useMemo(
     () => [...new Set(allExpired(state, scenario).map((entry) => entry.neighborhood))],
-    [state],
+    [state, scenario],
   )
-  const bubbles = useMemo(() => expiryBubbles(state, scenario), [state])
+  const bubbles = useMemo(() => expiryBubbles(state, scenario), [state, scenario])
   // Renew all (playtest): with two or more popups, one bar renews every lapsed
   // project the volunteers can cover, or hides the popups.
   const renewAll = useMemo(() => {
@@ -122,7 +123,7 @@ export default function GameScreen({
     const result = applyCommand(state, { type: 'renewAll' })
     if (!result.ok) return { lapsed, count: 0, cost: 0 }
     return { lapsed, count: lapsed - allExpired(result.state, scenario).length, cost: state.time - result.state.time }
-  }, [bubbles, state])
+  }, [bubbles, state, scenario])
   const [highlightNeed, setHighlightNeed] = useState<NeedId | null>(null)
 
   // Undo (Milestone 9 polish): a soft toast offers to take back the last action
@@ -368,7 +369,7 @@ export default function GameScreen({
         {renewAll && (
           <div className="renew-all" role="region" aria-label={t('renewAll.text', { count: renewAll.lapsed })}>
             <span>
-              <span aria-hidden="true">{'⌛'} </span>
+              <span aria-hidden="true">{'âŚ›'} </span>
               {t('renewAll.text', { count: renewAll.lapsed })}
             </span>
             <button
@@ -416,7 +417,7 @@ export default function GameScreen({
               }}
               aria-label={t('reason.dismiss')}
             >
-              ×
+              Ă—
             </button>
           </div>
         )}

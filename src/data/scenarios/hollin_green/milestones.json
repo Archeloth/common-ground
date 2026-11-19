@@ -1,0 +1,42 @@
+{
+  "milestones": [
+    {
+      "id": "hollin_roots",
+      "name": "Putting down roots",
+      "chapter": 1,
+      "goal": "Town satisfaction 62",
+      "explain": "Start where people meet: a community garden on Hollin Square, a wildflower meadow somewhere in the village, and a village that reaches satisfaction 62.",
+      "conditions": [
+        { "type": "projectIn", "neighborhood": "hollin_square", "project": "community_garden" },
+        { "type": "projectCount", "project": "pocket_meadow", "min": 1 },
+        { "type": "townSatisfaction", "min": 62 }
+      ],
+      "reward": { "knowledge": 8 }
+    },
+    {
+      "id": "hollin_warm_homes",
+      "name": "Warm homes",
+      "chapter": 2,
+      "goal": "Average energy coverage 0.7",
+      "explain": "Old cottages lose heat through every wall. Retrofit homes in two parts of the village and lift average energy coverage to 0.7.",
+      "conditions": [
+        { "type": "projectCount", "project": "retrofit_program", "min": 2 },
+        { "type": "needsAverage", "need": "energy", "min": 0.7 }
+      ],
+      "reward": { "knowledge": 10 }
+    },
+    {
+      "id": "hollin_across_the_brook",
+      "name": "Across the brook",
+      "chapter": 3,
+      "goal": "Town satisfaction 64",
+      "explain": "The footbridges are the village's lifelines. Run a bus line across the brook, make the streets safe in two places and reach town satisfaction 64.",
+      "conditions": [
+        { "type": "busLineCount", "min": 1 },
+        { "type": "projectCount", "project": "safe_streets", "min": 2 },
+        { "type": "townSatisfaction", "min": 64 }
+      ],
+      "reward": { "knowledge": 12 }
+    }
+  ]
+}

@@ -5,7 +5,6 @@ import { taskMet, taskText } from './goalText'
 import { t } from './i18n'
 import './GoalTracker.css'
 
-const milestones = loadMilestones()
 const STORAGE_KEY = 'common-ground.goalTracker'
 
 type TrackerMode = 'current' | 'all' | 'collapsed'
@@ -35,6 +34,7 @@ function writeMode(mode: TrackerMode): void {
 // chapters or collapse to a single line. The choice is a per-viewer
 // convenience kept in localStorage.
 export default function GoalTracker({ state }: { state: GameState }) {
+  const milestones = loadMilestones()
   const [mode, setMode] = useState<TrackerMode>(readMode)
   const current = milestones.find((m) => !state.milestones.includes(m.id))
   const change = (next: TrackerMode) => {

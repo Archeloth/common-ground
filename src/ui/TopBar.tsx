@@ -8,7 +8,6 @@ import type { GameState, Speed } from '../game/types'
 import SpeedControls from './SpeedControls'
 import './TopBar.css'
 
-const scenario = loadScenario()
 
 interface TopBarProps {
   state: GameState
@@ -30,9 +29,10 @@ interface Chip {
 // speed), the three resources on the right, each with its monthly change from
 // economy.ts. A chip opens its lexicon entry. All strings flow through t().
 export default function TopBar({ state, onSpeed, onLexicon }: TopBarProps) {
-  const income = useMemo(() => monthlyIncome(state, scenario), [state])
+  const scenario = loadScenario()
+  const income = useMemo(() => monthlyIncome(state, scenario), [state, scenario])
   const upkeep = useMemo(() => monthlyUpkeep(state), [state])
-  const cap = useMemo(() => volunteerCap(state, scenario), [state])
+  const cap = useMemo(() => volunteerCap(state, scenario), [state, scenario])
   const net = income.budget - upkeep
   const fmt = (n: number) => n.toLocaleString('en-GB')
   const chips: Chip[] = [

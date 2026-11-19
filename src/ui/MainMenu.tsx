@@ -2,7 +2,9 @@ import { useRef, useState } from 'react'
 import type { Saves } from './useSaves'
 import type { SlotMeta } from '../persistence/slots'
 import { SLOT_KEYS } from '../persistence/slots'
+import { listScenarios, scenarioName } from '../game/scenario'
 import SettingsScreen from './SettingsScreen'
+import TownPreview from './TownPreview'
 import { formatGameDate } from './dates'
 import { t } from './i18n'
 import { ISSUES_URL, SOUNDS_LICENSE_URL, SOUNDS_URL, SOURCE_URL } from './links'
@@ -13,20 +15,23 @@ interface MainMenuProps {
   notice: string | null
   onDismissNotice: () => void
   onContinue: () => void
-  onNewGame: () => void
+  onNewGame: (scenarioId: string) => void
   onLoad: (key: string) => void
   onImport: (file: File) => void
   onHowToPlay: () => void
 }
 
-type View = 'main' | 'load' | 'settings' | 'credits'
+type View = 'main' | 'newGame' | 'load' | 'settings' | 'credits'
+
+// The three regions Milestone 10 plans next, shown greyed out in the picker.
+const COMING_SOON = ['oasis', 'mountain', 'river'] as const
 
 function savedLine(meta: SlotMeta): string {
   const date = new Date(meta.savedAt)
   const time = Number.isNaN(date.getTime())
     ? '?'
     : date.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-  return t('menu.savedLine', { date: formatGameDate(meta.day), time })
+  return t('menu.savedLine', { town: scenarioName(meta.scenarioId), date: formatGameDate(meta.day), time })
 }
 
 // The main menu (Milestone 8.6): where players land, choose to continue their
@@ -58,7 +63,7 @@ export default function MainMenu({
         <span className="menu-river" />
       </div>
 
-      <main className="menu-card">
+      <main className={`menu-card${view === 'newGame' ? ' wide' : ''}`}>
         <h1 className="menu-title">{t('app.title')}</h1>
         <p className="menu-tagline">{t('menu.tagline')}</p>
 
@@ -88,9 +93,7 @@ export default function MainMenu({
               type="button"
               className={`menu-button${autosave ? '' : ' primary'}`}
               disabled={!saves.ready}
-              onClick={() => {
-                if (!autosave || window.confirm(t('menu.newGameConfirm'))) onNewGame()
-              }}
+              onClick={() => setView('newGame')}
             >
               <span>{t('menu.newGame')}</span>
               {!autosave && <small>{t('menu.newGameHint')}</small>}
@@ -105,6 +108,53 @@ export default function MainMenu({
               <span>{t('menu.howToPlay')}</span>
             </button>
           </nav>
+        )}
+
+        {view === 'newGame' && (
+          <section className="menu-panel" aria-label={t('menu.chooseTown')}>
+            <h2>{t('menu.chooseTown')}</h2>
+            <p className="menu-intro">{t('menu.chooseTownIntro')}</p>
+            <ul className="menu-towns">
+              {listScenarios().map((town) => (
+                <li key={town.id}>
+                  <button
+                    type="button"
+                    className="menu-town"
+                    onClick={() => {
+                      if (!autosave || window.confirm(t('menu.newGameConfirm'))) onNewGame(town.id)
+                    }}
+                  >
+                    <TownPreview town={town} />
+                    <span className="menu-town-head">
+                      <strong>{town.name}</strong>
+                      <small>{town.region}</small>
+                    </span>
+                    <span className="menu-town-tagline">{town.tagline}</span>
+                    <span className="menu-town-blurb">{town.blurb}</span>
+                    <span className="menu-town-tags">
+                      <span>{t('menu.townDistricts', { n: town.neighborhoods.length })}</span>
+                      <span>{town.tutorial === false ? t('menu.townQuick') : t('menu.townTutorial')}</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+              {COMING_SOON.map((id) => (
+                <li key={id} className={`menu-town soon ${id}`} aria-disabled="true">
+                  <span className="town-preview placeholder" aria-hidden="true">
+                    {t('menu.soon')}
+                  </span>
+                  <strong>{t(`menu.soon.${id}.name`)}</strong>
+                  <span className="menu-town-tagline">{t(`menu.soon.${id}.text`)}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="menu-row">
+              <span />
+              <button type="button" className="menu-link" onClick={() => setView('main')}>
+                {t('menu.back')}
+              </button>
+            </div>
+          </section>
         )}
 
         {view === 'load' && (

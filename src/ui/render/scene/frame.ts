@@ -67,10 +67,11 @@ const caches = new Map<string, DistrictCache>()
 const outlines = new Map<string, Point[]>()
 
 function outlineOf(scenario: ScenarioDef, n: NeighborhoodDef): Point[] {
-  let points = outlines.get(n.id)
+  const key = `${scenario.id}/${n.id}`
+  let points = outlines.get(key)
   if (!points) {
     points = districtOutline(scenario, n.id)
-    outlines.set(n.id, points)
+    outlines.set(key, points)
   }
   return points
 }
@@ -137,10 +138,11 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): boolean
     if (!look) continue
     const hidden = popping.get(n.id) ?? new Set<number>()
     const key = `${look.key}|${cacheScale.toFixed(3)}|${[...hidden].join('.')}`
-    let cache = caches.get(n.id)
+    const cacheId = `${scenario.id}/${n.id}`
+    let cache = caches.get(cacheId)
     if (!cache || cache.key !== key) {
       cache = renderDistrict(n, look, cacheScale, f.dpr, hidden, key, cache?.canvas)
-      caches.set(n.id, cache)
+      caches.set(cacheId, cache)
     }
     const lift = f.lifts.get(n.id) ?? 0
     const k = cam.zoom / bucket

@@ -3,7 +3,7 @@ import type { Point } from '../../../game/geometry'
 import { pointInPolygon } from '../../../game/geometry'
 import { BLOB_Y_SQUASH } from '../../../game/blob'
 import { districtOutline } from '../../../game/outline'
-import { loadScenario } from '../../../game/scenario'
+import { activeScenarioId, loadScenario } from '../../../game/scenario'
 import { mulberry32 } from '../../../game/random'
 
 // Where things stand inside a neighbourhood (Milestone 9 art). Pure and
@@ -150,11 +150,13 @@ export function sceneLayout(n: NeighborhoodDef, outline: readonly Point[] = dist
 const cache = new Map<string, SceneLayout>()
 
 // Layouts never change during a game; compute each one once.
+// Keyed by town and district (Milestone 10), so towns never share a layout.
 export function layoutFor(n: NeighborhoodDef): SceneLayout {
-  let layout = cache.get(n.id)
+  const key = `${activeScenarioId()}/${n.id}`
+  let layout = cache.get(key)
   if (!layout) {
     layout = sceneLayout(n)
-    cache.set(n.id, layout)
+    cache.set(key, layout)
   }
   return layout
 }

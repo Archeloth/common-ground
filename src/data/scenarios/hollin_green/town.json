@@ -1,0 +1,72 @@
+{
+  "id": "hollin_green",
+  "name": "Hollin Green",
+  "region": "A temperate village",
+  "tagline": "A quick game: four corners of a village by a brook.",
+  "blurb": "A square, a chapel row, the meadows and a hazel copse, joined by two footbridges. Three short chapters, no tutorial, about half an hour of play.",
+  "tutorial": false,
+  "start": {
+    "budget": 6000,
+    "time": 5,
+    "knowledge": 10,
+    "unlockedTech": ["energy_audits", "community_gardens", "safe_streets", "pollinator_meadows"]
+  },
+  "neighborhoods": [
+    {
+      "id": "hollin_square",
+      "name": "Hollin Square",
+      "kind": "old_town",
+      "residents": 900,
+      "slots": 4,
+      "engagement": 45,
+      "needs": { "energy": 0.52, "food": 0.74, "mobility": 0.48, "green": 0.55, "waste": 0.62, "housing": 0.5 },
+      "shape": { "x": 200, "y": 150, "radius": 74, "seed": 3301 },
+      "neighbors": ["chapel_row", "brook_meadows"]
+    },
+    {
+      "id": "chapel_row",
+      "name": "Chapel Row",
+      "kind": "suburb",
+      "residents": 500,
+      "slots": 3,
+      "engagement": 35,
+      "needs": { "energy": 0.58, "food": 0.76, "mobility": 0.42, "green": 0.6, "waste": 0.6, "housing": 0.6 },
+      "shape": { "x": 430, "y": 140, "radius": 70, "seed": 7717 },
+      "neighbors": ["hollin_square", "hazel_copse"]
+    },
+    {
+      "id": "brook_meadows",
+      "name": "Brook Meadows",
+      "kind": "farmland",
+      "residents": 200,
+      "slots": 3,
+      "engagement": 50,
+      "needs": { "energy": 0.66, "food": 0.92, "mobility": 0.5, "green": 0.72, "waste": 0.6, "housing": 0.64 },
+      "shape": { "x": 210, "y": 400, "radius": 64, "seed": 5150 },
+      "neighbors": ["hollin_square", "hazel_copse"]
+    },
+    {
+      "id": "hazel_copse",
+      "name": "Hazel Copse",
+      "kind": "woodland",
+      "residents": 80,
+      "slots": 2,
+      "engagement": 55,
+      "needs": { "energy": 0.68, "food": 0.6, "mobility": 0.46, "green": 0.9, "waste": 0.68, "housing": 0.6 },
+      "shape": { "x": 440, "y": 410, "radius": 62, "seed": 9091 },
+      "neighbors": ["chapel_row", "brook_meadows"]
+    }
+  ],
+  "river": {
+    "points": [
+      { "x": 40, "y": 270 },
+      { "x": 320, "y": 282 },
+      { "x": 600, "y": 266 }
+    ],
+    "halfDepth": 22
+  },
+  "bridges": [
+    { "from": "hollin_square", "to": "brook_meadows", "point": { "x": 205, "y": 277 } },
+    { "from": "chapel_row", "to": "hazel_copse", "point": { "x": 435, "y": 276 } }
+  ]
+}

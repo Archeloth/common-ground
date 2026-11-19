@@ -8,7 +8,7 @@ import { applySettingsToDocument, getSettings, useSettings } from './ui/settings
 import { useGame } from './ui/useGame'
 import { store } from './gameStore'
 import { initialState } from './game/state'
-import { loadScenario } from './game/scenario'
+import { getScenario } from './game/scenario'
 import { t } from './ui/i18n'
 import { installUiSounds } from './ui/uiSounds'
 import { refreshMusic } from './ui/music'
@@ -16,7 +16,6 @@ import { applyUpdate, useUpdateReady } from './ui/offline'
 import './App.css'
 import './ui/mobile.css'
 
-const scenario = loadScenario()
 applySettingsToDocument(getSettings())
 
 type Screen = 'menu' | 'game'
@@ -55,12 +54,18 @@ function App() {
     if (await saves.load('auto')) enterGame()
   }, [saves, enterGame])
 
-  const newGame = useCallback(() => {
-    store.replaceState(initialState(scenario))
-    setNotice(null)
-    enterGame()
-    setLexicon('welcome') // a fresh town opens the lexicon's welcome page
-  }, [enterGame])
+  const newGame = useCallback(
+    (scenarioId: string) => {
+      const scenario = getScenario(scenarioId)
+      store.replaceState(initialState(scenario))
+      setNotice(null)
+      enterGame()
+      // A fresh town with the tutorial opens the lexicon's welcome page; a
+      // quick game drops straight into the (paused) town.
+      if (scenario.tutorial !== false) setLexicon('welcome')
+    },
+    [enterGame],
+  )
 
   const loadSlot = useCallback(
     async (key: string) => {

@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { SLOT_KEYS } from '../persistence/slots'
 import type { SlotMeta } from '../persistence/slots'
+import { scenarioName } from '../game/scenario'
 import { t } from './i18n'
 import { formatGameDate } from './dates'
 import './SaveMenu.css'
@@ -20,7 +21,11 @@ function formatSavedAt(savedAt: string): string {
 }
 
 function metaLine(meta: SlotMeta): string {
-  return t('saves.lastSavedMeta', { date: formatGameDate(meta.day), time: formatSavedAt(meta.savedAt) })
+  return t('saves.lastSavedMeta', {
+    town: scenarioName(meta.scenarioId),
+    date: formatGameDate(meta.day),
+    time: formatSavedAt(meta.savedAt),
+  })
 }
 
 // Save/load drawer body (Milestone 5; opened from the toolbar since 8.5): the autosave row, three manual slots, .json

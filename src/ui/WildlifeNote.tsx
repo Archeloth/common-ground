@@ -6,7 +6,6 @@ import SpeciesThumb from './SpeciesThumb'
 import { t } from './i18n'
 import './Journal.css'
 
-const scenario = loadScenario()
 const SHOW_MS = 9000
 
 interface WildlifeNoteProps {
@@ -18,6 +17,7 @@ interface WildlifeNoteProps {
 // "New in your journal": a small note at the top of the map when a species is
 // spotted for the first time. It fades away by itself after a few seconds.
 export default function WildlifeNote({ state, onOpenJournal, onDismiss }: WildlifeNoteProps) {
+  const scenario = loadScenario()
   const id = state.wildlifeNotices[0]
   useEffect(() => {
     if (!id) return

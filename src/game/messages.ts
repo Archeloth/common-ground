@@ -1,7 +1,6 @@
 import type { GameState } from './types'
-import { loadScenario } from './scenario'
+import { activeScenarioId, getScenario, scenarioContent } from './scenario'
 import { loadProjects } from './projects'
-import messagesCatalog from '../data/messages.json'
 import { activeProjectIds } from './expiry'
 
 // One resident message per neighborhood (Milestone 7): a simple request — start
@@ -40,8 +39,8 @@ interface RawMessage {
   reward?: Record<string, unknown>
 }
 
-export function loadMessages(): MessageDef[] {
-  const raw = messagesCatalog as unknown as { messages?: RawMessage[] }
+export function loadMessages(scenarioId = activeScenarioId()): MessageDef[] {
+  const raw = scenarioContent(scenarioId).messages as { messages?: RawMessage[] }
   const messages: MessageDef[] = (raw.messages ?? []).map((m, index) => ({
     id: m.id ?? `#${index}`,
     neighborhood: m.neighborhood ?? '',
@@ -50,7 +49,7 @@ export function loadMessages(): MessageDef[] {
     reward: parseReward(m.reward ?? {}),
   }))
 
-  const scenario = loadScenario()
+  const scenario = getScenario(scenarioId)
   const projectIds = new Set(loadProjects().map((p) => p.id))
   const neighborhoodIds = new Set(scenario.neighborhoods.map((n) => n.id))
 
@@ -96,11 +95,16 @@ function parseReward(raw: Record<string, unknown>): MessageReward {
   return reward
 }
 
-let cached: MessageDef[] | null = null
+// Milestone 10: one catalog per town, cached per scenario id.
+const cached = new Map<string, MessageDef[]>()
 
-export function messageCatalog(): MessageDef[] {
-  if (!cached) cached = loadMessages()
-  return cached
+export function messageCatalog(scenarioId = activeScenarioId()): MessageDef[] {
+  let messages = cached.get(scenarioId)
+  if (!messages) {
+    messages = loadMessages(scenarioId)
+    cached.set(scenarioId, messages)
+  }
+  return messages
 }
 
 export function messageForNeighborhood(neighborhoodId: string): MessageDef {
