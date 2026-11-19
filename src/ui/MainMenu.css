@@ -407,23 +407,6 @@ button.menu-town:focus-visible {
   background: #dfe6cf;
 }
 
-.town-preview.placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(31, 43, 28, 0.55);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* A hint of each future region's palette (plan: ochre and sand; terraces and
-   pine; bright river green). */
-.menu-town.soon.oasis .town-preview { background: linear-gradient(160deg, #e9d3a6, #d2a96c); }
-.menu-town.soon.mountain .town-preview { background: linear-gradient(160deg, #cfdcc0, #7f9d76); }
-.menu-town.soon.river .town-preview { background: linear-gradient(160deg, #a9d3b4, #4f9a83); }
-
 .menu-town-head {
   display: flex;
   flex-wrap: wrap;
@@ -460,17 +443,7 @@ button.menu-town:focus-visible {
   font-size: 0.75rem;
 }
 
-.menu-town.soon .town-preview {
-  aspect-ratio: 16 / 7;
-}
-
-.menu-town.soon .menu-town-tagline {
-  font-size: 0.85rem;
-}
-
-.menu-town.soon {
-  cursor: default;
-  background: transparent;
-  border-style: dashed;
-  color: var(--ink-soft);
+.menu-town-tags span.preview {
+  background: var(--warn-soft);
+  color: var(--warn);
 }

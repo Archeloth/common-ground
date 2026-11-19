@@ -19,6 +19,7 @@
       "id": "building_retrofits",
       "name": "Building retrofits",
       "branch": "energy",
+      "regions": ["temperate"],
       "cost": 10,
       "prerequisites": [
         "energy_audits"
@@ -36,6 +37,7 @@
       "id": "heat_pumps",
       "name": "Heat pumps",
       "branch": "energy",
+      "regions": ["temperate"],
       "cost": 30,
       "prerequisites": [
         "building_retrofits"
@@ -53,6 +55,7 @@
       "id": "energy_cooperatives",
       "name": "Energy cooperatives",
       "branch": "energy",
+      "regions": ["temperate"],
       "cost": 45,
       "prerequisites": [
         "heat_pumps"
@@ -115,6 +118,7 @@
       "id": "safe_streets",
       "name": "Safe walking and cycling streets",
       "branch": "mobility",
+      "regions": ["temperate"],
       "cost": 0,
       "prerequisites": [],
       "unlocks": [
@@ -130,6 +134,7 @@
       "id": "public_transport",
       "name": "Frequent public transport",
       "branch": "mobility",
+      "regions": ["temperate"],
       "cost": 20,
       "prerequisites": [
         "safe_streets"
@@ -147,6 +152,7 @@
       "id": "shared_mobility",
       "name": "Shared mobility (car and bike sharing)",
       "branch": "mobility",
+      "regions": ["temperate"],
       "cost": 35,
       "prerequisites": [
         "public_transport"
@@ -192,6 +198,7 @@
       "id": "pollinator_meadows",
       "name": "Pollinator meadows",
       "branch": "ecology",
+      "regions": ["temperate"],
       "cost": 0,
       "prerequisites": [],
       "unlocks": [
@@ -207,6 +214,7 @@
       "id": "urban_trees",
       "name": "Urban trees and green roofs",
       "branch": "ecology",
+      "regions": ["temperate"],
       "cost": 20,
       "prerequisites": [
         "pollinator_meadows"
@@ -224,6 +232,7 @@
       "id": "rain_gardens",
       "name": "Rain gardens and wetlands",
       "branch": "ecology",
+      "regions": ["temperate"],
       "cost": 35,
       "prerequisites": [
         "urban_trees"

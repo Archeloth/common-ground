@@ -23,9 +23,6 @@ interface MainMenuProps {
 
 type View = 'main' | 'newGame' | 'load' | 'settings' | 'credits'
 
-// The three regions Milestone 10 plans next, shown greyed out in the picker.
-const COMING_SOON = ['oasis', 'mountain', 'river'] as const
-
 function savedLine(meta: SlotMeta): string {
   const date = new Date(meta.savedAt)
   const time = Number.isNaN(date.getTime())
@@ -134,17 +131,9 @@ export default function MainMenu({
                     <span className="menu-town-tags">
                       <span>{t('menu.townDistricts', { n: town.neighborhoods.length })}</span>
                       <span>{town.tutorial === false ? t('menu.townQuick') : t('menu.townTutorial')}</span>
+                      {town.preview && <span className="preview">{t('menu.townPreview')}</span>}
                     </span>
                   </button>
-                </li>
-              ))}
-              {COMING_SOON.map((id) => (
-                <li key={id} className={`menu-town soon ${id}`} aria-disabled="true">
-                  <span className="town-preview placeholder" aria-hidden="true">
-                    {t('menu.soon')}
-                  </span>
-                  <strong>{t(`menu.soon.${id}.name`)}</strong>
-                  <span className="menu-town-tagline">{t(`menu.soon.${id}.text`)}</span>
                 </li>
               ))}
             </ul>

@@ -114,6 +114,9 @@ export interface ScenarioDef {
   // Whether the scripted first-steps tutorial runs (default true). Its
   // steps name Willowbrook districts, so other towns switch it off.
   tutorial?: boolean
+  // An early sketch shown for playtesting (Milestone 10 regions): marked in
+  // the picker as rough and unbalanced.
+  preview?: boolean
   start: {
     budget: number
     time: number

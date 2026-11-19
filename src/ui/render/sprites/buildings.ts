@@ -1,6 +1,6 @@
 import type { Ctx } from './kit'
 import { PALETTE, ROOFS, WALLS, circle, fillOutlined, groundShadow, mix, pick, roundRect } from './kit'
-import type { Building, Greenery, Plot } from '../scene/layout'
+import type { Building, Greenery, GreeneryStyle, Plot } from '../scene/layout'
 import { snowOnPath } from '../scene/season'
 
 // Buildings and greenery for the districts (Milestone 9). Every sprite is drawn
@@ -344,12 +344,18 @@ function field(ctx: Ctx, x: number, y: number, s: number, variant: number): void
   ctx.stroke()
 }
 
+export type GreeneryDrawer = (ctx: Ctx, x: number, y: number, s: number, variant: number) => void
+
+const GREENERY: Record<GreeneryStyle, GreeneryDrawer> = {
+  tree: (ctx, x, y, s, variant) => tree(ctx, x, y, s, variant),
+  conifer,
+  reeds,
+  field,
+}
+
 export function drawGreenery(ctx: Ctx, g: Greenery, x: number, y: number, s: number): void {
   ctx.save()
-  if (g.style === 'tree') tree(ctx, x, y, s, g.variant)
-  else if (g.style === 'conifer') conifer(ctx, x, y, s, g.variant)
-  else if (g.style === 'reeds') reeds(ctx, x, y, s, g.variant)
-  else field(ctx, x, y, s, g.variant)
+  GREENERY[g.style](ctx, x, y, s, g.variant)
   ctx.restore()
 }
 

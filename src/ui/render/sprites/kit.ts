@@ -31,6 +31,7 @@ export const PALETTE = {
   leaf: '#69a85c',
   leafLight: '#86c271',
   leafDark: '#4a8a4f',
+  blossom: '#86c271', // cherry and other flowering trees; seasons set it
   trunk: '#8a5a3c',
   conifer: '#3f7d55',
   coniferTop: '#4f9466',

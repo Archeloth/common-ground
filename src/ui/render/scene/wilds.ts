@@ -5,6 +5,7 @@ import { districtOutline, outlineBox } from '../../../game/outline'
 import { scenarioBounds } from '../../../game/scenario'
 import { mulberry32 } from '../../../game/random'
 import { isPool, nearCrossing, ring, townWaterClearance } from '../../../game/water'
+import { themeById } from '../theme'
 
 // The countryside around the town (post-Milestone 9 playtest: "the world
 // outside the districts should have something to it"). Pure and seeded, like
@@ -107,6 +108,9 @@ export function wildsLayout(s: ScenarioDef): WildItem[] {
   const width = town.width + MARGIN_X * 2
   const height = town.height + MARGIN_Y * 2
 
+  // How much grows here is the region's (Milestone 10): sparse at a desert edge.
+  const density = themeById(s.theme).wilds.density
+
   // Woods and meadows: a smooth seeded field in -1..1.
   const phase = [rand(), rand(), rand()].map((v) => v * Math.PI * 2)
   const woods = (x: number, y: number) =>
@@ -207,7 +211,7 @@ export function wildsLayout(s: ScenarioDef): WildItem[] {
       style = pickRoll < 0.08 ? 'bush' : pickRoll < 0.3 ? 'flowers' : pickRoll < 0.38 ? 'rock' : 'tuft'
       keep = 0.22
     }
-    if (keepRoll > keep * (0.25 + 0.75 * fade)) continue
+    if (keepRoll > keep * density * (0.25 + 0.75 * fade)) continue
     const size = SIZE[style]
     if (townWaterClearance(s, { x, y }) < BANK + size + 2) continue
     if (!clearOfDistricts(x, y, WILD_HEIGHT[style])) continue

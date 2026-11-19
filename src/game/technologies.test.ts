@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { loadScenario } from './scenario'
 import { loadTechnologies, technologyById } from './technologies'
+import { techTreeFor } from './regionContent'
 
 const scenario = loadScenario()
 
@@ -60,11 +61,10 @@ describe('research tree', () => {
     }
   })
 
-  it('starts with every free root technology researched', () => {
-    const freeRoots = ids.filter((id) => {
-      const tech = technologyById(techs, id)
-      return tech.prerequisites.length === 0 && tech.cost === 0
-    })
+  it("starts with every free root of Willowbrook's tree researched", () => {
+    const freeRoots = techTreeFor(scenario)
+      .filter((tech) => tech.prerequisites.length === 0 && tech.cost === 0)
+      .map((tech) => tech.id)
     expect(freeRoots.sort()).toEqual(['community_gardens', 'energy_audits', 'pollinator_meadows', 'safe_streets'])
     expect([...scenario.start.unlockedTech].sort()).toEqual(freeRoots)
   })

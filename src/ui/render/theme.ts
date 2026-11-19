@@ -6,6 +6,8 @@ import { RECIPES } from './scene/layout'
 import type { SeasonLook } from './scene/season'
 import { SEASON_LOOKS } from './scene/season'
 import { DEFAULT_TRACK, setMusicTrack } from '../music'
+import type { GreeneryStyle } from './scene/layout'
+import type { WildStyle } from './scene/wilds'
 
 // A region's look (Milestone 10). Every sprite is drawn in code, so a region
 // is a theme object: palette overrides, kind colours and layout recipes,
@@ -27,6 +29,10 @@ export interface RegionTheme {
   seasonLooks: Record<string, SeasonLook>
   music: string
   accent: { primary: string; strong: string; soft: string }
+  // The countryside (Milestone 10): how much grows there (1 = Willowbrook's),
+  // and which regional plant stands in for a temperate one (an acacia for a
+  // tree, a palm for a conifer).
+  wilds: { density: number; swap: Partial<Record<WildStyle, GreeneryStyle>> }
 }
 
 // The base tables as first loaded: the temperate look.
@@ -43,6 +49,7 @@ export const TEMPERATE: RegionTheme = {
   seasonLooks: { ...SEASON_LOOKS },
   music: DEFAULT_TRACK,
   accent: { primary: '#3f6a3a', strong: '#345a30', soft: '#d6e8cc' },
+  wilds: { density: 1, swap: {} },
 }
 
 export const THEMES: Record<string, RegionTheme> = { temperate: TEMPERATE }

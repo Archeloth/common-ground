@@ -20,6 +20,8 @@ export interface SeasonLook {
   birds: number
   // How much water a wadi carries, and how high a river runs (Milestone 10).
   water: 'dry' | 'low' | 'normal' | 'high'
+  // Flowering trees (cherry, kapok); the leaf colour when nothing flowers.
+  blossom?: string
 }
 
 const SUMMER_LEAVES = { leaf: '#69a85c', leafLight: '#86c271', leafDark: '#4a8a4f' }
@@ -94,6 +96,7 @@ export function applySeason(look: SeasonLook): void {
   palette.conifer = look.conifer
   palette.wheat = look.fields.wheat
   palette.crop = look.fields.crop
+  palette.blossom = look.blossom ?? look.leaves.leafLight
 }
 
 export function snowing(): boolean {

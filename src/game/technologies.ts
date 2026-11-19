@@ -12,7 +12,7 @@ import { readMoreProblems } from './readMore'
 // rule — these are first-draft entries written from general knowledge, so they
 // start empty and must be filled before release (see DECISIONS.md).
 
-export type TechBranch = 'energy' | 'food' | 'mobility' | 'circular' | 'ecology' | 'community'
+export type TechBranch = 'energy' | 'food' | 'mobility' | 'circular' | 'ecology' | 'community' | 'water'
 export type Confidence = 'established' | 'emerging' | 'context'
 
 export interface TechSource {
@@ -36,7 +36,7 @@ export interface TechDef {
   regions?: string[] // Milestone 10: the regions it belongs to; missing means every region
 }
 
-const BRANCHES: readonly TechBranch[] = ['energy', 'food', 'mobility', 'circular', 'ecology', 'community']
+const BRANCHES: readonly TechBranch[] = ['energy', 'food', 'mobility', 'circular', 'ecology', 'community', 'water']
 const CONFIDENCES: readonly Confidence[] = ['established', 'emerging', 'context']
 
 function fail(what: string): never {

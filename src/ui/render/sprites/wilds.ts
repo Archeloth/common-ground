@@ -4,6 +4,7 @@ import { drawGreenery } from './buildings'
 import { snowOnPath, snowing } from '../scene/season'
 import type { WildItem } from '../scene/wilds'
 import { ripple } from './life'
+import { currentTheme } from '../theme'
 
 // Countryside sprites (post-Milestone 9): bushes, grass, wild flowers, rocks
 // and lily pads, plus the animated fish and ducks in the river. Trees,
@@ -87,6 +88,13 @@ function lilypad(ctx: Ctx, x: number, y: number, s: number, variant: number, lif
 
 export function drawWild(ctx: Ctx, item: WildItem, x: number, y: number, s: number, life: number): void {
   ctx.save()
+  // A region draws its own plants in place of the temperate ones (Milestone 10).
+  const swap = currentTheme().wilds.swap[item.style]
+  if (swap) {
+    drawGreenery(ctx, { ...item, style: swap }, x, y, s)
+    ctx.restore()
+    return
+  }
   switch (item.style) {
     case 'tree':
     case 'conifer':
