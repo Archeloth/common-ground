@@ -4,6 +4,7 @@ import { nextAction } from '../game/guidance'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { t } from './i18n'
 import './GuideButton.css'
+import { needLabel } from './needLabel'
 
 
 interface GuideButtonProps {
@@ -25,7 +26,7 @@ export default function GuideButton({ state, onShow }: GuideButtonProps) {
   const params = useMemo(function buildParams() {
     if (!action) return undefined
     const p = { ...action.params }
-    if (action.needId) p.need = t(`need.${action.needId}`)
+    if (action.needId) p.need = needLabel(action.needId)
     return p
   }, [action])
   const text = action ? t(action.textKey, params) : t('guide.none')

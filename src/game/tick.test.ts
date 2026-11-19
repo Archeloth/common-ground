@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { NEED_ORDER } from './needs'
 import { finishConstruction } from './testHelpers'
 import { loadScenario } from './scenario'
 import { applyCommand, initialState } from './state'
@@ -275,7 +276,7 @@ describe('tutorial auto-advance (Milestone 8)', function () {
     expect(s.history).toHaveLength(3)
     expect(s.history[0].day).toBe(TICKS_PER_MONTH + 1)
     expect(s.history[0].satisfaction).toBeGreaterThan(0)
-    expect(Object.keys(s.history[0].needs)).toHaveLength(6)
+    expect(Object.keys(s.history[0].needs)).toHaveLength(NEED_ORDER.length)
     const full = { ...s, history: Array.from({ length: 240 }, (_, i) => ({ ...s.history[0], day: i + 1 })) }
     const next = runTicks({ ...full, day: TICKS_PER_MONTH * 300 }, 1)
     expect(next.history).toHaveLength(240)

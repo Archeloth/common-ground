@@ -18,6 +18,8 @@ const PATHS: Record<NeedId, string> = {
     'M8 2.3 10.4 5H9v1.6A3.6 3.6 0 0 1 11.6 10H13a5 5 0 0 0-4-4.9V5H7.6zM4.4 6.8l-1.9 3.1 3.6.2-.7-1.2.8-.5A3.6 3.6 0 0 1 9.9 8l.7-1.2a5 5 0 0 0-5.4.4l-.1.1zM12 11.4H5.3L6 10H4.4l-1.6 2.6 1.7 2h1.2l-.7-1.2H12z',
   // house
   housing: 'M8 1.8 1.6 7.4l.9 1 .9-.8V14h3.5v-3.6h2.2V14h3.5V7.6l.9.8.9-1z',
+  // water drop
+  water: 'M8 1.5C6.2 4.4 3.6 7.3 3.6 9.9a4.4 4.4 0 0 0 8.8 0C12.4 7.3 9.8 4.4 8 1.5zm-2.3 8.6c.2 1.3 1 2.1 2.2 2.4l-.3 1.1c-1.7-.4-2.8-1.6-3-3.3z',
 }
 
 export default function NeedIcon({ need, size = 14 }: { need: NeedId; size?: number }) {

@@ -1,5 +1,5 @@
 import type { GameState, NeedId, NeighborhoodDef, ProjectDef } from './types'
-import { NEED_ORDER } from './needs'
+import { visibleNeeds } from './satisfaction'
 import { loadScenario, neighborhoodById } from './scenario'
 import { loadProjects, projectById } from './projects'
 import { loadMilestones } from './milestones'
@@ -313,7 +313,7 @@ function biggestNeedGap(
   projects: readonly ProjectDef[],
 ): NextAction | null {
   let best: { gap: number; neighborhoodId: string; projectId: string; needId: NeedId } | null = null
-  for (const needId of NEED_ORDER) {
+  for (const needId of visibleNeeds(scenario)) {
     const lowest = lowestCoverage(state, scenario, needId)
     const coverage = state.neighborhoods[lowest.id]?.needs[needId] ?? 0
     const gap = 1 - coverage

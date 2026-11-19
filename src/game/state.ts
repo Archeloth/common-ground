@@ -43,8 +43,8 @@ export function initialState(scenario: ScenarioDef): GameState {
     const needs = { ...n.needs }
     neighborhoods[n.id] = {
       needs,
-      satisfaction: satisfactionOf(needs),
-      reasons: shortfalls(needs, TOP_REASONS),
+      satisfaction: satisfactionOf(needs, scenario.needWeights),
+      reasons: shortfalls(needs, TOP_REASONS, scenario.needWeights),
     }
     engagement[n.id] = n.engagement
     messages[n.id] = 'open'

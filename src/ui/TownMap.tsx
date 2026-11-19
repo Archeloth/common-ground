@@ -18,6 +18,7 @@ import type { ExpiryBubble } from './expiryBubbles'
 import HoverChip from './HoverChip'
 import type { GameState, NeedId } from '../game/types'
 import './TownMap.css'
+import { needLabel } from './needLabel'
 
 // Pointer travel below this counts as a click, above it as a drag-pan.
 const DRAG_THRESHOLD_PX = 4
@@ -224,7 +225,7 @@ export default function TownMap({
             floatersRef.current.push({
               neighborhood: item.neighborhood,
               slot: item.slot,
-              text: `+${Math.round(effect.change * 100)}% ${t(`need.${effect.need}`)}`,
+              text: `+${Math.round(effect.change * 100)}% ${needLabel(effect.need)}`,
               colour: NEED_COLORS[effect.need],
               born,
               row: index,

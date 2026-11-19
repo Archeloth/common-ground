@@ -86,9 +86,10 @@ describe('versioned save files', function () {
       7: function (s: unknown) { return { ...(s as object), version: 8, fromSeven: true } },
       8: function (s: unknown) { return { ...(s as object), version: 9, fromEight: true } },
       9: function (s: unknown) { return { ...(s as object), version: 10, fromNine: true } },
+      10: function (s: unknown) { return { ...(s as object), version: 11, fromTen: true } },
     }
     const migrated = migrateSave({ version: 0 } as never, migrations)
-    expect(migrated.version).toBe(10)
+    expect(migrated.version).toBe(11)
     expect((migrated as unknown as { fromFour: boolean }).fromFour).toBe(true)
     expect((migrated as unknown as { fromZero: boolean }).fromZero).toBe(true)
     expect((migrated as unknown as { fromOne: boolean }).fromOne).toBe(true)
@@ -100,9 +101,9 @@ describe('versioned save files', function () {
     expect(function () { migrateSave({ version: 0 } as never) }).toThrow(/no migration/)
   })
 
-  it('the shipped migration table covers the earlier shapes (1 to 9)', function () {
-    expect(CURRENT_SAVE_VERSION).toBe(10)
-    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9])
+  it('the shipped migration table covers the earlier shapes (1 to 10)', function () {
+    expect(CURRENT_SAVE_VERSION).toBe(11)
+    expect(Object.keys(SAVE_MIGRATIONS).map(Number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
 
   it('migrates a version-1 save to version 4, seeding research, engagement, messages and the finished tutorial', function () {
@@ -234,7 +235,7 @@ describe('versioned save files', function () {
     const result = parseAndLoad(JSON.stringify(v8))
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.save.version).toBe(10)
+      expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
       expect(result.save.state.wildlife).toEqual({})
       expect(result.save.state.wildlifeNotices).toEqual([])
       expect(result.save.state.stories).toEqual({})
@@ -262,7 +263,7 @@ describe('saves know their town (Milestone 10)', function () {
     const result = parseAndLoad(JSON.stringify(v9))
     expect(result.ok).toBe(true)
     if (result.ok) {
-      expect(result.save.version).toBe(10)
+      expect(result.save.version).toBe(CURRENT_SAVE_VERSION)
       expect(result.save.state.scenarioId).toBe('willowbrook')
     }
   })
@@ -288,5 +289,23 @@ describe('saves know their town (Milestone 10)', function () {
     const save = createSave(playedState()) as unknown as { state: { scenarioId: string } }
     save.state.scenarioId = 'hollin_green'
     expect(parseAndLoad(JSON.stringify(save)).ok).toBe(false)
+  })
+})
+
+describe('the water need in saves (Milestone 10)', function () {
+  it('migrates a version-10 save to full water everywhere', function () {
+    const v10 = createSave(playedState()) as unknown as {
+      version: number
+      state: { neighborhoods: Record<string, { needs: Record<string, number> }>; history: Array<{ needs: Record<string, number> }> }
+    }
+    v10.version = 10
+    for (const sim of Object.values(v10.state.neighborhoods)) delete sim.needs.water
+    v10.state.history = [{ day: 31, satisfaction: 50, budget: 1, needs: { energy: 0.5, food: 0.5, mobility: 0.5, green: 0.5, waste: 0.5, housing: 0.5 } }] as never
+    const result = parseAndLoad(JSON.stringify(v10))
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      for (const sim of Object.values(result.save.state.neighborhoods)) expect(sim.needs.water).toBe(1)
+      expect(result.save.state.history[0].needs.water).toBe(1)
+    }
   })
 })

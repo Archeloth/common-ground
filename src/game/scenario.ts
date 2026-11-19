@@ -2,6 +2,8 @@ import type { BridgeDef, ScenarioDef, NeighborhoodDef } from './types'
 import { segmentHitsPolyline } from './geometry'
 import { districtOutline, outlineBox } from './outline'
 import { kindById, loadKinds } from './kinds'
+import { NEED_ORDER } from './needs'
+import { SATISFACTION_WEIGHTS } from './satisfaction'
 import willowbrookTown from '../data/scenarios/willowbrook/town.json'
 import willowbrookMilestones from '../data/scenarios/willowbrook/milestones.json'
 import willowbrookMessages from '../data/scenarios/willowbrook/messages.json'
@@ -22,6 +24,14 @@ export function validateScenario(s: ScenarioDef): void {
   for (const [field, value] of [['name', s.name], ['region', s.region], ['tagline', s.tagline], ['blurb', s.blurb], ['theme', s.theme]] as const) {
     if (typeof value !== 'string' || !value.trim()) fail(`the scenario needs a ${field}`, s.id)
   }
+  let weightSum = 0
+  for (const need of NEED_ORDER) {
+    const w = s.needWeights?.[need]
+    if (!Number.isFinite(w) || w < 0) fail(`need weight "${need}" must be a number >= 0`, s.id)
+    weightSum += w
+  }
+  if (Math.abs(weightSum - 1) > 1e-9) fail('need weights must add up to 1', s.id)
+
   const seenIds = new Set<string>()
   const seenNames = new Set<string>()
   for (const n of s.neighborhoods) {
@@ -37,9 +47,10 @@ export function validateScenario(s: ScenarioDef): void {
     if (!(shape.radius > 0)) fail('shape.radius must be positive', n.id)
     if (!Number.isInteger(shape.seed)) fail('shape.seed must be an integer', n.id)
 
-    for (const need of Object.values(n.needs)) {
-      if (!Number.isFinite(need) || need < 0 || need > 1) {
-        fail('need coverage must be a number in [0, 1]', n.id)
+    for (const need of NEED_ORDER) {
+      const value = n.needs[need]
+      if (!Number.isFinite(value) || value < 0 || value > 1) {
+        fail(`need coverage "${need}" must be a number in [0, 1]`, n.id)
       }
     }
     if (!(n.slots > 0)) fail('slots must be positive', n.id)
@@ -155,7 +166,7 @@ const cachedScenarios = new Map<string, ScenarioDef>()
 export function getScenario(id: string): ScenarioDef {
   let scenario = cachedScenarios.get(id)
   if (!scenario) {
-    scenario = scenarioContent(id).town as ScenarioDef
+    scenario = withDefaults(scenarioContent(id).town as ScenarioDef)
     if (scenario.id !== id) fail('the town id must match its registry id', `${scenario.id} != ${id}`)
     validateScenario(scenario)
     cachedScenarios.set(id, scenario)
@@ -167,6 +178,16 @@ export function getScenario(id: string): ScenarioDef {
 // shows as itself rather than crashing the slot list.
 export function scenarioName(id: string): string {
   return hasScenario(id) ? getScenario(id).name : id
+}
+
+// Fill in what a town file may leave out (Milestone 10): the default need
+// weights, and full water coverage where water does not count.
+function withDefaults(raw: ScenarioDef): ScenarioDef {
+  const needWeights = { ...SATISFACTION_WEIGHTS, ...raw.needWeights }
+  const neighborhoods = raw.neighborhoods.map((n) =>
+    needWeights.water === 0 && n.needs.water === undefined ? { ...n, needs: { ...n.needs, water: 1 } } : n,
+  )
+  return { ...raw, needWeights, neighborhoods }
 }
 
 // Every playable town, in registry order (the main menu's picker).

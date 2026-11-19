@@ -20,7 +20,9 @@ export const NEIGHBORHOOD_KINDS = [
 
 export type NeighborhoodKind = (typeof NEIGHBORHOOD_KINDS)[number]
 
-export type NeedId = 'energy' | 'food' | 'mobility' | 'green' | 'waste' | 'housing'
+// Water (Milestone 10) matters in dry regions; elsewhere it has weight 0 and
+// stays hidden and fully covered.
+export type NeedId = 'energy' | 'food' | 'mobility' | 'green' | 'waste' | 'housing' | 'water'
 
 // Need coverage ratios (0 to 1): min(1, supply / demand).
 export interface Needs {
@@ -30,6 +32,7 @@ export interface Needs {
   green: number
   waste: number
   housing: number
+  water: number
 }
 
 // Hand-picked shape of a neighborhood blob (plan: "pick each seed by eye").
@@ -75,6 +78,12 @@ export interface ScenarioDef {
   // The region and look (Milestone 10), e.g. "temperate": which district
   // kinds, research and projects fit, and which RegionTheme draws the town.
   theme: string
+  // Satisfaction weights per need (Milestone 10), filled in from the
+  // defaults by getScenario: today's formula with water at 0. A need with
+  // weight 0 is hidden and never a shortfall.
+  needWeights: Record<NeedId, number>
+  // Hot regions read housing comfort as cooling.
+  needLabels?: { housing?: 'cooling' }
   // Whether the scripted first-steps tutorial runs (default true). Its
   // steps name Willowbrook districts, so other towns switch it off.
   tutorial?: boolean

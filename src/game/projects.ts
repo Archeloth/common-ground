@@ -2,12 +2,12 @@ import type { NeedId, NeighborhoodKind, ProjectDef } from './types'
 import { NEIGHBORHOOD_KINDS } from './types'
 import projectsCatalog from '../data/projects.json'
 import { loadTechnologies } from './technologies'
+import { NEED_ORDER } from './needs'
 
 function fail(what: string): never {
   throw new Error(`Projects data error: ${what}`)
 }
 
-const NEED_IDS: readonly NeedId[] = ['energy', 'food', 'mobility', 'green', 'waste', 'housing']
 
 
 interface RawProjectEffect {
@@ -89,7 +89,7 @@ function buildLoadProjects(): ProjectDef[] {
       fail(`project "${p.id}" durationMonths must be a positive whole number`)
     }
     for (const e of p.effects) {
-      if (!NEED_IDS.includes(e.need)) fail(`project "${p.id}" has an unknown need "${e.need}"`)
+      if (!NEED_ORDER.includes(e.need)) fail(`project "${p.id}" has an unknown need "${e.need}"`)
       if (!(Number.isFinite(e.change) && e.change !== 0)) {
         fail(`project "${p.id}" effect changes must be non-zero numbers`)
       }

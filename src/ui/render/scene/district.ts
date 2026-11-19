@@ -68,7 +68,7 @@ export function districtLook(state: GameState, n: NeighborhoodDef): DistrictLook
   }
   const sim = state.neighborhoods[n.id]
   const needs = sim?.needs ?? n.needs
-  const satisfaction = sim?.satisfaction ?? satisfactionOf(n.needs)
+  const satisfaction = sim?.satisfaction ?? satisfactionOf(n.needs, loadScenario().needWeights)
   // Fewer parked cars as walking, cycling and buses take over.
   const cars = layoutFor(n).cars.length
   const carsShown = Math.round(cars * Math.min(1, Math.max(0, (0.95 - needs.mobility) * 2)))

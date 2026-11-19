@@ -124,7 +124,7 @@ export function tick(state: GameState): GameState {
     target.mobility = clamp01(target.mobility + busBonusOf(state, n.id))
 
     const needs = moveNeedsToward(current?.needs ?? base, target, NEED_DRIFT_PER_TICK)
-    const goal = satisfactionOf(needs)
+    const goal = satisfactionOf(needs, scenario.needWeights)
     const satisfaction = current
       ? clamp(round(current.satisfaction + (goal - current.satisfaction) * SATISFACTION_SMOOTH_PER_TICK, 1), 0, 100)
       : goal
@@ -132,7 +132,7 @@ export function tick(state: GameState): GameState {
     neighborhoods[n.id] = {
       needs,
       satisfaction,
-      reasons: shortfalls(needs, TOP_REASONS),
+      reasons: shortfalls(needs, TOP_REASONS, scenario.needWeights),
     }
   }
 

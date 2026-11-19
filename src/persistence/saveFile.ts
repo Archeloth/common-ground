@@ -11,7 +11,7 @@ import { projectEndsAt } from '../game/expiry'
 // fails validation reports problems instead of crashing. All functions here
 // are pure, so the round-trip, migration and corrupt-save tests run in Node.
 
-export const CURRENT_SAVE_VERSION = 10
+export const CURRENT_SAVE_VERSION = 11
 
 export interface SaveFile {
   version: number
@@ -117,6 +117,19 @@ export const SAVE_MIGRATIONS: SaveMigrations = {
   9: (save) => {
     const s = save as { state: GameState }
     return { ...s, version: 10, state: { ...s.state, scenarioId: 'willowbrook' } }
+  },
+  // 10 -> 11 (Milestone 10): the water need. Every older town is temperate,
+  // where water does not count, so it is fully covered everywhere.
+  10: (save) => {
+    const s = save as { state: GameState }
+    const neighborhoods: GameState['neighborhoods'] = {}
+    for (const [id, sim] of Object.entries(s.state.neighborhoods ?? {})) {
+      neighborhoods[id] = sim && typeof sim === 'object' ? { ...sim, needs: { ...sim.needs, water: 1 } } : sim
+    }
+    const history = Array.isArray(s.state.history)
+      ? s.state.history.map((p) => (p && typeof p === 'object' ? { ...p, needs: { ...p.needs, water: 1 } } : p))
+      : s.state.history
+    return { ...s, version: 11, state: { ...s.state, neighborhoods, history } }
   },
 }
 

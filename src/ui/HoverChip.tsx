@@ -1,12 +1,13 @@
 import type { GameState, NeighborhoodDef } from '../game/types'
 import { kindById, loadKinds } from '../game/kinds'
-import { NEED_ORDER } from '../game/needs'
-import { satisfactionOf } from '../game/satisfaction'
+import { satisfactionOf, visibleNeeds } from '../game/satisfaction'
+import { loadScenario } from '../game/scenario'
 import { expiredSlots } from '../game/expiry'
 import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import NeedIcon from './NeedIcon'
 import { NEED_COLORS } from './render/colors'
+import { needLabel } from './needLabel'
 
 const kinds = loadKinds()
 
@@ -16,10 +17,11 @@ const kinds = loadKinds()
 export default function HoverChip({ neighborhood, state }: { neighborhood: NeighborhoodDef; state: GameState }) {
   const sim = state.neighborhoods[neighborhood.id]
   const needs = sim?.needs ?? neighborhood.needs
-  const satisfaction = sim?.satisfaction ?? satisfactionOf(neighborhood.needs)
+  const satisfaction = sim?.satisfaction ?? satisfactionOf(neighborhood.needs, loadScenario().needWeights)
   const tier = satisfactionTier(satisfaction)
   const engagement = state.engagement[neighborhood.id] ?? neighborhood.engagement
-  const weakest = NEED_ORDER.reduce((a, b) => (needs[a] <= needs[b] ? a : b))
+  const shown = visibleNeeds(loadScenario())
+  const weakest = shown.reduce((a, b) => (needs[a] <= needs[b] ? a : b))
   const lapsed = expiredSlots(state, neighborhood.id).length
 
   return (
@@ -39,11 +41,11 @@ export default function HoverChip({ neighborhood, state }: { neighborhood: Neigh
       </span>
       <span className="chip-weakest">
         <NeedIcon need={weakest} size={12} />{' '}
-        {t('chip.weakest', { need: t(`need.${weakest}`), pct: Math.round(needs[weakest] * 100) })}
+        {t('chip.weakest', { need: needLabel(weakest), pct: Math.round(needs[weakest] * 100) })}
       </span>
       <span className="chip-bars" aria-hidden="true">
-        {NEED_ORDER.map((need) => (
-          <span key={need} className="chip-bar" title={t(`need.${need}`)}>
+        {shown.map((need) => (
+          <span key={need} className="chip-bar" title={needLabel(need)}>
             <span
               className="chip-bar-fill"
               style={{ height: `${Math.round(needs[need] * 100)}%`, background: NEED_COLORS[need] }}

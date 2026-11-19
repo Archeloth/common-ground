@@ -2,8 +2,7 @@ import { useState } from 'react'
 import type { Command, GameState, NeighborhoodDef } from '../game/types'
 import { kindById, loadKinds } from '../game/kinds'
 import { loadScenario, neighborhoodById } from '../game/scenario'
-import { satisfactionOf } from '../game/satisfaction'
-import { NEED_ORDER } from '../game/needs'
+import { satisfactionOf, visibleNeeds } from '../game/satisfaction'
 import { TOWN_MEETING_ENGAGEMENT, TOWN_MEETING_TIME } from '../game/constants'
 import { applyCommand, meetingReadyIn } from '../game/state'
 import { messageForNeighborhood } from '../game/messages'
@@ -13,6 +12,7 @@ import NeedBar from './NeedBar'
 import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import './NeighborhoodPanel.css'
+import { needLabel } from './needLabel'
 
 const kinds = loadKinds()
 
@@ -54,7 +54,7 @@ export default function NeighborhoodPanel({
   // the static scenario values are only a fallback for a stale or missing entry.
   const sim = state.neighborhoods[neighborhood.id]
   const needs = sim?.needs ?? neighborhood.needs
-  const satisfaction = sim?.satisfaction ?? satisfactionOf(neighborhood.needs)
+  const satisfaction = sim?.satisfaction ?? satisfactionOf(neighborhood.needs, scenario.needWeights)
   const engagement = state.engagement[neighborhood.id] ?? neighborhood.engagement
   const neighbors = neighborhood.neighbors.map((id) => neighborhoodById(scenario, id))
   const bridgePartners = scenario.bridges
@@ -136,8 +136,8 @@ export default function NeighborhoodPanel({
         <section className="panel-section">
           <h3>{t('panel.needs')}</h3>
           <div className="needs-grid">
-            {NEED_ORDER.map((need) => (
-              <NeedBar key={`${neighborhood.id}-${need}`} need={need} label={t(`need.${need}`)} value={needs[need]} />
+            {visibleNeeds(scenario).map((need) => (
+              <NeedBar key={`${neighborhood.id}-${need}`} need={need} label={needLabel(need)} value={needs[need]} />
             ))}
           </div>
         </section>
@@ -149,7 +149,7 @@ export default function NeighborhoodPanel({
               {sim.reasons.map((entry) => (
                 <li key={entry.need}>
                   {t('reason.gap', {
-                    need: t(`need.${entry.need}`),
+                    need: needLabel(entry.need),
                     pct: Math.round(entry.coverage * 100),
                   })}
                 </li>

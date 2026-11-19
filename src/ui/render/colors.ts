@@ -37,6 +37,9 @@ const STANDARD_NEED_COLORS: Record<NeedId, string> = {
   green: '#0ca30c',
   waste: '#6250d6',
   housing: '#e87ba4',
+  // Water (Milestone 10): re-validated as a 7th slot after housing; worst
+  // adjacent CVD pair water/housing 9.2 (protan).
+  water: '#007a99',
 }
 
 // The colour-blind palette (Settings > Need colours), built on the Okabe-Ito
@@ -52,6 +55,9 @@ const COLOUR_BLIND_NEED_COLORS: Record<NeedId, string> = {
   green: '#008c66',
   waste: '#56b4e9',
   housing: '#cc79a7',
+  // Water (Milestone 10): re-validated all-pairs with seven colours; the
+  // worst pair is still Green space/Food at 9.0.
+  water: '#0040f0',
 }
 
 export const NEED_PALETTES: Record<NeedPalette, Readonly<Record<NeedId, string>>> = {

@@ -1,11 +1,13 @@
 import { useMemo, useRef, useState } from 'react'
 import type { HistoryPoint, NeedId } from '../game/types'
-import { NEED_ORDER } from '../game/needs'
+import { visibleNeeds } from '../game/satisfaction'
+import { loadScenario } from '../game/scenario'
 import { NEED_COLORS } from './render/colors'
 import NeedIcon from './NeedIcon'
 import { formatGameDate } from './dates'
 import { t } from './i18n'
 import './TownHistory.css'
+import { needLabel } from './needLabel'
 
 type View = 'satisfaction' | 'budget' | 'needs'
 
@@ -125,6 +127,7 @@ function LineChart({
 // scales on one); the six needs are small charts on one shared 0-100% scale,
 // so they compare at a glance without telling lines apart by colour alone.
 export default function TownHistory({ history }: { history: HistoryPoint[] }) {
+  const shownNeeds = visibleNeeds(loadScenario())
   const [view, setView] = useState<View>('satisfaction')
   const [table, setTable] = useState(false)
 
@@ -187,17 +190,17 @@ export default function TownHistory({ history }: { history: HistoryPoint[] }) {
       )}
       {view === 'needs' && (
         <div className="history-needs">
-          {NEED_ORDER.map((need: NeedId) => (
+          {shownNeeds.map((need: NeedId) => (
             <div key={need} className="history-need">
               <span className="history-need-label">
                 <NeedIcon need={need} size={12} />
-                {t(`need.${need}`)}
+                {needLabel(need)}
                 <strong>{Math.round(last.needs[need] * 100)}%</strong>
               </span>
               <LineChart
                 compact
                 points={history}
-                label={t(`need.${need}`)}
+                label={needLabel(need)}
                 series={{
                   values: history.map((p) => p.needs[need] * 100),
                   max: 100,
@@ -223,9 +226,9 @@ export default function TownHistory({ history }: { history: HistoryPoint[] }) {
                 <th scope="col">{t('history.date')}</th>
                 <th scope="col">{t('history.view.satisfaction')}</th>
                 <th scope="col">{t('resources.budget')}</th>
-                {NEED_ORDER.map((need) => (
+                {shownNeeds.map((need) => (
                   <th key={need} scope="col">
-                    {t(`need.${need}`)}
+                    {needLabel(need)}
                   </th>
                 ))}
               </tr>
@@ -238,7 +241,7 @@ export default function TownHistory({ history }: { history: HistoryPoint[] }) {
                     <th scope="row">{formatGameDate(p.day)}</th>
                     <td>{Math.round(p.satisfaction)}</td>
                     <td>{p.budget.toLocaleString('en-GB')}</td>
-                    {NEED_ORDER.map((need) => (
+                    {shownNeeds.map((need) => (
                       <td key={need}>{Math.round(p.needs[need] * 100)}%</td>
                     ))}
                   </tr>

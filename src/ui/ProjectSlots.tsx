@@ -9,6 +9,7 @@ import { NEED_COLORS } from './render/colors'
 import { projectIcon } from './projectIcons'
 import { projectUpkeep } from '../game/economy'
 import './ProjectSlots.css'
+import { needLabel } from './needLabel'
 
 const projects = loadProjects()
 
@@ -22,7 +23,7 @@ function EffectChips({ project }: { project: ProjectDef }) {
           className="effect-chip"
           style={{ background: `color-mix(in srgb, ${NEED_COLORS[effect.need]} 14%, white)` }}
         >
-          <NeedIcon need={effect.need} size={12} />+{Math.round(effect.change * 100)}% {t(`need.${effect.need}`)}
+          <NeedIcon need={effect.need} size={12} />+{Math.round(effect.change * 100)}% {needLabel(effect.need)}
         </span>
       ))}
       {project.engagement > 0 && (

@@ -4,6 +4,7 @@ import { conditionProgress } from '../game/milestones'
 import { loadScenario, neighborhoodById } from '../game/scenario'
 import { loadProjects, projectById } from '../game/projects'
 import { t } from './i18n'
+import { needLabel } from './needLabel'
 
 // Player-facing wording for one milestone task with its live progress, e.g.
 // "Safe streets: 1 of 3 running" (shared by the goal tracker; Milestone 8.6).
@@ -31,7 +32,7 @@ export function taskText(state: GameState, condition: MilestoneCondition): strin
       return t('town.task.satisfaction', { current: Math.round(progress.current), target: progress.target })
     case 'needsAverage':
       return t('town.task.need', {
-        need: t(`need.${condition.need}`),
+        need: needLabel(condition.need),
         current: Math.round(progress.current * 100),
         target: Math.round(progress.target * 100),
       })

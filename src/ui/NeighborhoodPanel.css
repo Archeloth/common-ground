@@ -142,6 +142,10 @@
     repeating-linear-gradient(-45deg, var(--pattern-ink) 0 1.5px, transparent 1.5px 6px);
 }
 
+:root[data-need-patterns='on'] .need-fill[data-need='water'] {
+  background-image: repeating-radial-gradient(circle at 0 100%, var(--pattern-ink) 0 1.5px, transparent 1.5px 5px);
+}
+
 :root[data-need-patterns='on'] .need-fill[data-need='housing'] {
   background-image: conic-gradient(var(--pattern-ink) 25%, transparent 0 50%, var(--pattern-ink) 0 75%, transparent 0);
   background-size: 8px 8px;

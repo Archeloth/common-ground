@@ -4,13 +4,14 @@ import { loadScenario } from '../game/scenario'
 import { loadMilestones, townNeedAverage, townSatisfaction } from '../game/milestones'
 import { loadTechnologies } from '../game/technologies'
 import { allExpired, countActive } from '../game/expiry'
-import { NEED_ORDER } from '../game/needs'
+import { visibleNeeds } from '../game/satisfaction'
 import { monthlyIncome, monthlyUpkeep } from '../game/economy'
 import NeedBar from './NeedBar'
 import TownHistory from './TownHistory'
 import { satisfactionTier } from './satisfactionTier'
 import { t } from './i18n'
 import './TownPanel.css'
+import { needLabel } from './needLabel'
 
 const techCount = loadTechnologies().length
 
@@ -21,10 +22,10 @@ interface TownPanelProps {
   onHighlightNeed?: (need: NeedId | null) => void
 }
 
-function weakestNeed(state: GameState, id: string): { need: NeedId; value: number } {
+function weakestNeed(state: GameState, id: string, shown: readonly NeedId[]): { need: NeedId; value: number } {
   const needs = state.neighborhoods[id]?.needs
-  let best: { need: NeedId; value: number } = { need: NEED_ORDER[0], value: 1 }
-  for (const need of NEED_ORDER) {
+  let best: { need: NeedId; value: number } = { need: shown[0], value: 1 }
+  for (const need of shown) {
     const value = needs?.[need] ?? 0
     if (value < best.value) best = { need, value }
   }
@@ -107,7 +108,7 @@ export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPane
         <h4>{t('town.needs')}</h4>
         <p className="town-hint">{t('town.needHover')}</p>
         <div className="needs-grid" onMouseLeave={() => onHighlightNeed?.(null)}>
-          {NEED_ORDER.map((need) => (
+          {visibleNeeds(scenario).map((need) => (
             <div
               key={need}
               className="need-hover"
@@ -116,7 +117,7 @@ export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPane
               onFocus={() => onHighlightNeed?.(need)}
               onBlur={() => onHighlightNeed?.(null)}
             >
-              <NeedBar need={need} label={t(`need.${need}`)} value={townNeedAverage(state, scenario, need)} />
+              <NeedBar need={need} label={needLabel(need)} value={townNeedAverage(state, scenario, need)} />
             </div>
           ))}
         </div>
@@ -127,7 +128,7 @@ export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPane
         <ul className="town-ranking">
           {ranked.map((n) => {
             const sat = state.neighborhoods[n.id]?.satisfaction ?? 0
-            const weak = weakestNeed(state, n.id)
+            const weak = weakestNeed(state, n.id, visibleNeeds(scenario))
             const rowTier = satisfactionTier(sat)
             return (
               <li key={n.id}>
@@ -135,7 +136,7 @@ export default function TownPanel({ state, onSelect, onHighlightNeed }: TownPane
                   <span className={`tier-dot tier-${rowTier}`} aria-hidden="true" />
                   <span className="town-rank-name">{n.name}</span>
                   <span className="town-rank-weak">
-                    {t('town.weakest', { need: t(`need.${weak.need}`), pct: Math.round(weak.value * 100) })}
+                    {t('town.weakest', { need: needLabel(weak.need), pct: Math.round(weak.value * 100) })}
                   </span>
                   <span className="town-rank-sat">{Math.round(sat)}</span>
                 </button>

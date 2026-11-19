@@ -1,7 +1,8 @@
 import type { NeedId, Needs, ProjectEffect } from './types'
 
-// The six needs in display order; also the tie-break order for reasons, so the
-// simulation is deterministic on equal gaps.
+// The needs in display order; also the tie-break order for reasons, so the
+// simulation is deterministic on equal gaps. Water comes last (Milestone 10)
+// so the older tie-breaks are unchanged.
 export const NEED_ORDER: readonly NeedId[] = [
   'energy',
   'food',
@@ -9,6 +10,7 @@ export const NEED_ORDER: readonly NeedId[] = [
   'green',
   'waste',
   'housing',
+  'water',
 ]
 
 export function clamp01(value: number): number {
