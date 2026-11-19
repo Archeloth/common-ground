@@ -2,6 +2,7 @@ import type { Ctx } from './kit'
 import { PALETTE, circle, fillOutlined } from './kit'
 import { SAHEL_SPECIES } from './regions/sahel'
 import { EAST_ASIA_SPECIES } from './regions/eastAsia'
+import { AMAZON_SKY_POSES, AMAZON_SPECIES } from './regions/amazon'
 
 // Wildlife sprites (post-Milestone 9): one small, code-drawn animal per
 // species in the journal. Each draws around a ground point (x, y) at scale s
@@ -305,6 +306,7 @@ export const SPECIES_SPRITES: Record<string, SpeciesSprite> = {
   peregrine,
   ...SAHEL_SPECIES,
   ...EAST_ASIA_SPECIES,
+  ...AMAZON_SPECIES,
 }
 
 // Birds in flight are drawn well above their ground point, on a loop. For a
@@ -316,6 +318,7 @@ export const SKY_POSES: Readonly<Record<string, { t: number; lift: number; dx: n
   skylark: { t: 0, lift: 21, dx: -1 },
   barn_owl: { t: Math.PI * 2, lift: 16, dx: 0 },
   peregrine: { t: Math.PI / 0.9, lift: 21, dx: 0 },
+  ...AMAZON_SKY_POSES,
 }
 
 export function drawSpecies(ctx: Ctx, id: string, x: number, y: number, s: number, t: number): void {

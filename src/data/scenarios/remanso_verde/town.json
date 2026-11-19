@@ -1,0 +1,467 @@
+{
+  "id": "remanso_verde",
+  "name": "Remanso Verde",
+  "region": "A river town in the Amazon",
+  "theme": "amazon",
+  "tagline": "Twelve neighbourhoods on a wide river, the forest all around.",
+  "blurb": "The river is the road and the flood is part of the year. Bring clean water and light, grow food with the forest, and help the families who keep the forest standing. Five chapters, no tutorial.",
+  "tutorial": false,
+  "preview": true,
+  "seasons": "floodplain",
+  "transport": {
+    "mode": "boat",
+    "requiresTech": "river_boats"
+  },
+  "needWeights": {
+    "energy": 0.15,
+    "food": 0.2,
+    "mobility": 0.15,
+    "green": 0.2,
+    "waste": 0.1,
+    "housing": 0.1,
+    "water": 0.1
+  },
+  "start": {
+    "budget": 8000,
+    "time": 6,
+    "knowledge": 12,
+    "unlockedTech": [
+      "energy_audits",
+      "community_gardens",
+      "agroforestry",
+      "community_forest_management"
+    ]
+  },
+  "neighborhoods": [
+    {
+      "id": "castanha_forest",
+      "name": "Brazil-Nut Forest",
+      "kind": "forest_community",
+      "residents": 120,
+      "slots": 3,
+      "engagement": 60,
+      "needs": {
+        "energy": 0.4,
+        "food": 0.7,
+        "mobility": 0.35,
+        "green": 0.92,
+        "waste": 0.6,
+        "housing": 0.55,
+        "water": 0.55
+      },
+      "shape": {
+        "x": 170,
+        "y": 110,
+        "radius": 68,
+        "seed": 5101
+      },
+      "neighbors": [
+        "acai_groves",
+        "port_square"
+      ]
+    },
+    {
+      "id": "acai_groves",
+      "name": "Açaí Groves",
+      "kind": "agroforest",
+      "residents": 180,
+      "slots": 3,
+      "engagement": 58,
+      "needs": {
+        "energy": 0.42,
+        "food": 0.8,
+        "mobility": 0.4,
+        "green": 0.85,
+        "waste": 0.6,
+        "housing": 0.55,
+        "water": 0.55
+      },
+      "shape": {
+        "x": 410,
+        "y": 110,
+        "radius": 68,
+        "seed": 5203
+      },
+      "neighbors": [
+        "north_varzea",
+        "church_square",
+        "castanha_forest"
+      ]
+    },
+    {
+      "id": "north_varzea",
+      "name": "North Várzea",
+      "kind": "floodplain_village",
+      "residents": 200,
+      "slots": 3,
+      "engagement": 52,
+      "needs": {
+        "energy": 0.38,
+        "food": 0.78,
+        "mobility": 0.38,
+        "green": 0.8,
+        "waste": 0.55,
+        "housing": 0.5,
+        "water": 0.5
+      },
+      "shape": {
+        "x": 650,
+        "y": 110,
+        "radius": 68,
+        "seed": 5307
+      },
+      "neighbors": [
+        "seringal",
+        "market_wharf",
+        "acai_groves"
+      ]
+    },
+    {
+      "id": "seringal",
+      "name": "Rubber Trail",
+      "kind": "forest_community",
+      "residents": 110,
+      "slots": 3,
+      "engagement": 62,
+      "needs": {
+        "energy": 0.38,
+        "food": 0.68,
+        "mobility": 0.32,
+        "green": 0.93,
+        "waste": 0.62,
+        "housing": 0.55,
+        "water": 0.55
+      },
+      "shape": {
+        "x": 890,
+        "y": 115,
+        "radius": 68,
+        "seed": 5409
+      },
+      "neighbors": [
+        "fishers_landing",
+        "north_varzea"
+      ]
+    },
+    {
+      "id": "port_square",
+      "name": "Port Square",
+      "kind": "town_center",
+      "residents": 600,
+      "slots": 4,
+      "engagement": 45,
+      "needs": {
+        "energy": 0.58,
+        "food": 0.7,
+        "mobility": 0.55,
+        "green": 0.55,
+        "waste": 0.5,
+        "housing": 0.58,
+        "water": 0.55
+      },
+      "shape": {
+        "x": 230,
+        "y": 270,
+        "radius": 70,
+        "seed": 5511
+      },
+      "neighbors": [
+        "church_square",
+        "stilt_street",
+        "castanha_forest"
+      ]
+    },
+    {
+      "id": "church_square",
+      "name": "Church Square",
+      "kind": "town_center",
+      "residents": 550,
+      "slots": 4,
+      "engagement": 48,
+      "needs": {
+        "energy": 0.56,
+        "food": 0.7,
+        "mobility": 0.52,
+        "green": 0.55,
+        "waste": 0.5,
+        "housing": 0.58,
+        "water": 0.56
+      },
+      "shape": {
+        "x": 470,
+        "y": 270,
+        "radius": 70,
+        "seed": 5613
+      },
+      "neighbors": [
+        "market_wharf",
+        "island_fields",
+        "acai_groves",
+        "port_square"
+      ]
+    },
+    {
+      "id": "market_wharf",
+      "name": "Market Wharf",
+      "kind": "riverfront",
+      "residents": 400,
+      "slots": 3,
+      "engagement": 44,
+      "needs": {
+        "energy": 0.5,
+        "food": 0.74,
+        "mobility": 0.5,
+        "green": 0.6,
+        "waste": 0.45,
+        "housing": 0.52,
+        "water": 0.5
+      },
+      "shape": {
+        "x": 710,
+        "y": 270,
+        "radius": 68,
+        "seed": 5719
+      },
+      "neighbors": [
+        "fishers_landing",
+        "quintais",
+        "north_varzea",
+        "church_square"
+      ]
+    },
+    {
+      "id": "fishers_landing",
+      "name": "Fishers' Landing",
+      "kind": "riverfront",
+      "residents": 300,
+      "slots": 3,
+      "engagement": 50,
+      "needs": {
+        "energy": 0.45,
+        "food": 0.76,
+        "mobility": 0.45,
+        "green": 0.65,
+        "waste": 0.5,
+        "housing": 0.5,
+        "water": 0.48
+      },
+      "shape": {
+        "x": 930,
+        "y": 270,
+        "radius": 66,
+        "seed": 5821
+      },
+      "neighbors": [
+        "school_ridge",
+        "seringal",
+        "market_wharf"
+      ]
+    },
+    {
+      "id": "stilt_street",
+      "name": "Stilt Street",
+      "kind": "riverfront",
+      "residents": 450,
+      "slots": 3,
+      "engagement": 46,
+      "needs": {
+        "energy": 0.45,
+        "food": 0.72,
+        "mobility": 0.45,
+        "green": 0.62,
+        "waste": 0.45,
+        "housing": 0.5,
+        "water": 0.45
+      },
+      "shape": {
+        "x": 190,
+        "y": 560,
+        "radius": 70,
+        "seed": 5923
+      },
+      "neighbors": [
+        "island_fields",
+        "port_square"
+      ]
+    },
+    {
+      "id": "island_fields",
+      "name": "Island Fields",
+      "kind": "floodplain_village",
+      "residents": 220,
+      "slots": 3,
+      "engagement": 52,
+      "needs": {
+        "energy": 0.4,
+        "food": 0.8,
+        "mobility": 0.38,
+        "green": 0.78,
+        "waste": 0.55,
+        "housing": 0.5,
+        "water": 0.5
+      },
+      "shape": {
+        "x": 410,
+        "y": 560,
+        "radius": 68,
+        "seed": 6027
+      },
+      "neighbors": [
+        "quintais",
+        "church_square",
+        "stilt_street"
+      ]
+    },
+    {
+      "id": "quintais",
+      "name": "Home Gardens",
+      "kind": "agroforest",
+      "residents": 260,
+      "slots": 3,
+      "engagement": 56,
+      "needs": {
+        "energy": 0.45,
+        "food": 0.8,
+        "mobility": 0.42,
+        "green": 0.82,
+        "waste": 0.58,
+        "housing": 0.55,
+        "water": 0.55
+      },
+      "shape": {
+        "x": 690,
+        "y": 560,
+        "radius": 68,
+        "seed": 6131
+      },
+      "neighbors": [
+        "school_ridge",
+        "market_wharf",
+        "island_fields"
+      ]
+    },
+    {
+      "id": "school_ridge",
+      "name": "School Ridge",
+      "kind": "town_center",
+      "residents": 480,
+      "slots": 4,
+      "engagement": 46,
+      "needs": {
+        "energy": 0.56,
+        "food": 0.7,
+        "mobility": 0.5,
+        "green": 0.58,
+        "waste": 0.52,
+        "housing": 0.58,
+        "water": 0.56
+      },
+      "shape": {
+        "x": 930,
+        "y": 560,
+        "radius": 70,
+        "seed": 6233
+      },
+      "neighbors": [
+        "fishers_landing",
+        "quintais"
+      ]
+    }
+  ],
+  "water": [
+    {
+      "id": "river",
+      "kind": "river",
+      "halfDepth": 40,
+      "points": [
+        {
+          "x": 0,
+          "y": 395
+        },
+        {
+          "x": 350,
+          "y": 410
+        },
+        {
+          "x": 700,
+          "y": 392
+        },
+        {
+          "x": 1120,
+          "y": 405
+        }
+      ]
+    },
+    {
+      "id": "igarape",
+      "kind": "river",
+      "halfDepth": 11,
+      "points": [
+        {
+          "x": 548,
+          "y": 430
+        },
+        {
+          "x": 562,
+          "y": 560
+        },
+        {
+          "x": 540,
+          "y": 700
+        }
+      ]
+    }
+  ],
+  "crossings": [
+    {
+      "from": "port_square",
+      "to": "stilt_street",
+      "point": {
+        "x": 212,
+        "y": 404
+      },
+      "kind": "ferry",
+      "water": "river"
+    },
+    {
+      "from": "church_square",
+      "to": "island_fields",
+      "point": {
+        "x": 442,
+        "y": 405
+      },
+      "kind": "ferry",
+      "water": "river"
+    },
+    {
+      "from": "market_wharf",
+      "to": "quintais",
+      "point": {
+        "x": 702,
+        "y": 392
+      },
+      "kind": "ferry",
+      "water": "river"
+    },
+    {
+      "from": "fishers_landing",
+      "to": "school_ridge",
+      "point": {
+        "x": 930,
+        "y": 400
+      },
+      "kind": "ferry",
+      "water": "river"
+    },
+    {
+      "from": "island_fields",
+      "to": "quintais",
+      "point": {
+        "x": 561,
+        "y": 560
+      },
+      "kind": "bridge",
+      "water": "igarape"
+    }
+  ]
+}

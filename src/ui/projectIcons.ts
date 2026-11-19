@@ -38,6 +38,16 @@ export const PROJECT_ICONS: Record<string, string> = {
   veggieBoxes: '📦',
   akiyaHouse: '🏠',
   spongeLane: '🌧️',
+  agroforest: '🌳',
+  forestCamp: '🗺️',
+  acaiCoop: '🫐',
+  reserveMarker: '🪧',
+  watchtower: '🔭',
+  boatDock: '🚤',
+  homeSolar: '💡',
+  rainTank: '🪣',
+  floatingGarden: '🛟',
+  assembly: '🗳️',
 }
 
 export function projectIcon(visual: string): string {

@@ -243,6 +243,60 @@
           "url": "https://en.wikipedia.org/wiki/Luciola_cruciata"
         }
       ]
+    },
+    {
+      "id": "scarlet_macaw",
+      "name": "Scarlet macaw",
+      "where": [
+        "forest_community",
+        "agroforest"
+      ],
+      "conditions": [
+        {
+          "type": "need",
+          "need": "green",
+          "min": 0.85
+        }
+      ],
+      "hint": "Flies over where the big trees still stand.",
+      "note": "Scarlet macaws nest in holes high in large old trees and fly long distances to feed on fruit and seeds, often in noisy pairs.",
+      "confidence": "established",
+      "readMore": [
+        {
+          "title": "Scarlet macaw",
+          "url": "https://en.wikipedia.org/wiki/Scarlet_macaw"
+        }
+      ]
+    },
+    {
+      "id": "amazon_river_dolphin",
+      "name": "Amazon river dolphin",
+      "where": [
+        "riverfront",
+        "floodplain_village"
+      ],
+      "conditions": [
+        {
+          "type": "season",
+          "seasons": [
+            "high_water"
+          ]
+        },
+        {
+          "type": "need",
+          "need": "waste",
+          "min": 0.7
+        }
+      ],
+      "hint": "Swims into the flooded forest at high water, where the river is clean.",
+      "note": "The boto, a pink river dolphin, follows the rising water into flooded forest to hunt fish. Fishing nets and mercury pollution are its main threats.",
+      "confidence": "established",
+      "readMore": [
+        {
+          "title": "Amazon river dolphin",
+          "url": "https://en.wikipedia.org/wiki/Amazon_river_dolphin"
+        }
+      ]
     }
   ]
 }

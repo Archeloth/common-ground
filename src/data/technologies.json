@@ -774,6 +774,235 @@
           "url": "https://en.wikipedia.org/wiki/Demand-responsive_transport"
         }
       ]
+    },
+    {
+      "id": "agroforestry",
+      "name": "Agroforestry",
+      "branch": "food",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "acai_nut_harvest"
+      ],
+      "benefit": "Grow fruit trees, palms, manioc and timber together, as families along the river have long done.",
+      "limit": "Takes years to mature, and markets for many of the crops are far away.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Agroforestry",
+          "url": "https://en.wikipedia.org/wiki/Agroforestry"
+        }
+      ]
+    },
+    {
+      "id": "community_forest_management",
+      "name": "Community forest management",
+      "branch": "ecology",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 0,
+      "prerequisites": [],
+      "unlocks": [
+        "extractive_reserve",
+        "territory_monitoring"
+      ],
+      "benefit": "The community draws up its own plan for which trees to harvest and which areas to rest.",
+      "limit": "Needs secure rights to the land and money for surveys; a plan means little without enforcement.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Community forestry",
+          "url": "https://en.wikipedia.org/wiki/Community_forestry"
+        }
+      ]
+    },
+    {
+      "id": "acai_nut_harvest",
+      "name": "Sustainable açaí and Brazil-nut harvesting",
+      "branch": "food",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 15,
+      "prerequisites": [
+        "agroforestry"
+      ],
+      "unlocks": [],
+      "benefit": "Harvest açaí fruit and Brazil nuts from the standing forest, for food and income.",
+      "limit": "Booming demand can turn varied floodplain forest into açaí monoculture, and nut prices swing from year to year.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Açaí palm",
+          "url": "https://en.wikipedia.org/wiki/Euterpe_oleracea"
+        },
+        {
+          "title": "Brazil nut",
+          "url": "https://en.wikipedia.org/wiki/Brazil_nut"
+        }
+      ]
+    },
+    {
+      "id": "extractive_reserve",
+      "name": "Extractive reserves",
+      "branch": "ecology",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 25,
+      "prerequisites": [
+        "community_forest_management"
+      ],
+      "unlocks": [],
+      "benefit": "Protect the forest by law for the families who live from it: rubber, nuts and fish.",
+      "limit": "Incomes from forest products are often low, and keeping out illegal loggers is hard.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Extractive reserve",
+          "url": "https://en.wikipedia.org/wiki/Extractive_reserve"
+        }
+      ]
+    },
+    {
+      "id": "territory_monitoring",
+      "name": "Community territory monitoring",
+      "branch": "ecology",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 20,
+      "prerequisites": [
+        "community_forest_management"
+      ],
+      "unlocks": [],
+      "benefit": "Residents map and patrol their land with phones and GPS, reporting illegal logging and fires.",
+      "limit": "Monitors can face real danger, and reports only help if the authorities act on them.",
+      "confidence": "emerging",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Deforestation of the Amazon rainforest",
+          "url": "https://en.wikipedia.org/wiki/Deforestation_of_the_Amazon_rainforest"
+        }
+      ]
+    },
+    {
+      "id": "offgrid_solar",
+      "name": "Solar for off-grid homes",
+      "branch": "energy",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 15,
+      "prerequisites": [
+        "energy_audits"
+      ],
+      "unlocks": [],
+      "benefit": "Solar home kits light houses the grid never reached, and charge phones and radios.",
+      "limit": "Batteries need replacing every few years; cheap kits fail quickly in heat and damp.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Off-the-grid",
+          "url": "https://en.wikipedia.org/wiki/Off-the-grid"
+        }
+      ]
+    },
+    {
+      "id": "rainwater_tanks",
+      "name": "Rainwater tanks",
+      "branch": "water",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 10,
+      "prerequisites": [],
+      "unlocks": [],
+      "benefit": "Collect rain from the roofs for drinking, when the river is muddy or polluted.",
+      "limit": "Gutters and tanks need cleaning, and a long dry spell empties them.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Rainwater harvesting",
+          "url": "https://en.wikipedia.org/wiki/Rainwater_harvesting"
+        }
+      ]
+    },
+    {
+      "id": "floating_gardens",
+      "name": "Floating gardens",
+      "branch": "food",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 20,
+      "prerequisites": [
+        "community_gardens"
+      ],
+      "unlocks": [],
+      "benefit": "Vegetables on rafts and raised beds that rise and fall with the river.",
+      "limit": "Small harvests, and rafts rot and need rebuilding.",
+      "confidence": "emerging",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Chinampa",
+          "url": "https://en.wikipedia.org/wiki/Chinampa"
+        }
+      ]
+    },
+    {
+      "id": "participatory_budgeting",
+      "name": "Participatory budgeting",
+      "branch": "community",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 15,
+      "prerequisites": [],
+      "unlocks": [],
+      "benefit": "Residents decide together how part of the town budget is spent, an idea that began in Porto Alegre.",
+      "limit": "Takes time and good facilitation; without care the loudest voices still win.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Participatory budgeting",
+          "url": "https://en.wikipedia.org/wiki/Participatory_budgeting"
+        }
+      ]
+    },
+    {
+      "id": "river_boats",
+      "name": "School and ambulance boats",
+      "branch": "mobility",
+      "regions": [
+        "amazon"
+      ],
+      "cost": 15,
+      "prerequisites": [],
+      "unlocks": [],
+      "benefit": "Unlocks boat routes between neighbouring parts of town, and school and ambulance boats.",
+      "limit": "Fuel is costly, and journeys are slow in the low-water months.",
+      "confidence": "established",
+      "sources": [],
+      "readMore": [
+        {
+          "title": "Riverboat",
+          "url": "https://en.wikipedia.org/wiki/Riverboat"
+        }
+      ]
     }
   ]
 }

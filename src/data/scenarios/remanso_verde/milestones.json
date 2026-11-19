@@ -1,0 +1,127 @@
+{
+  "milestones": [
+    {
+      "id": "rv_clean_water",
+      "name": "Water you can drink",
+      "chapter": 1,
+      "goal": "Average water coverage 0.7",
+      "explain": "The river is everywhere, but not safe to drink. Put up three rainwater tanks and lift average water coverage to 0.7.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "rain_tank",
+          "min": 3
+        },
+        {
+          "type": "needsAverage",
+          "need": "water",
+          "min": 0.7
+        }
+      ],
+      "reward": {
+        "knowledge": 8
+      }
+    },
+    {
+      "id": "rv_forest_gardens",
+      "name": "Forest gardens",
+      "chapter": 2,
+      "goal": "Average food coverage 0.85",
+      "explain": "Grow food with the forest: plant two agroforest plots, start an açaí and nut co-op, and reach average food coverage of 0.85.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "agroforest_plot",
+          "min": 2
+        },
+        {
+          "type": "projectCount",
+          "project": "acai_coop",
+          "min": 1
+        },
+        {
+          "type": "needsAverage",
+          "need": "food",
+          "min": 0.85
+        }
+      ],
+      "reward": {
+        "knowledge": 10
+      }
+    },
+    {
+      "id": "rv_river_roads",
+      "name": "River roads",
+      "chapter": 3,
+      "goal": "Average mobility 0.6",
+      "explain": "The river is the road. Run two boat routes, launch a school and ambulance boat, and lift average mobility to 0.6.",
+      "conditions": [
+        {
+          "type": "busLineCount",
+          "min": 2
+        },
+        {
+          "type": "projectCount",
+          "project": "school_boat",
+          "min": 1
+        },
+        {
+          "type": "needsAverage",
+          "need": "mobility",
+          "min": 0.6
+        }
+      ],
+      "reward": {
+        "knowledge": 12
+      }
+    },
+    {
+      "id": "rv_lights",
+      "name": "Lights on the river",
+      "chapter": 4,
+      "goal": "Average energy coverage 0.7",
+      "explain": "Most houses run on a noisy diesel generator, or nothing. Fit solar kits in three neighbourhoods and reach average energy coverage of 0.7.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "home_solar",
+          "min": 3
+        },
+        {
+          "type": "needsAverage",
+          "need": "energy",
+          "min": 0.7
+        }
+      ],
+      "reward": {
+        "knowledge": 12
+      }
+    },
+    {
+      "id": "rv_keepers",
+      "name": "Keepers of the forest",
+      "chapter": 5,
+      "goal": "Town satisfaction 66",
+      "explain": "Secure an extractive reserve, train a monitoring team, and reach town satisfaction 66.",
+      "conditions": [
+        {
+          "type": "projectCount",
+          "project": "reserve_charter",
+          "min": 1
+        },
+        {
+          "type": "projectCount",
+          "project": "monitoring_team",
+          "min": 1
+        },
+        {
+          "type": "townSatisfaction",
+          "min": 66
+        }
+      ],
+      "reward": {
+        "knowledge": 15
+      }
+    }
+  ]
+}

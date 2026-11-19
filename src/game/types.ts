@@ -27,6 +27,11 @@ export const NEIGHBORHOOD_KINDS = [
   'rice_terraces',
   'satoyama',
   'river_hamlet',
+  'riverfront',
+  'floodplain_village',
+  'town_center',
+  'forest_community',
+  'agroforest',
 ] as const
 
 export type NeighborhoodKind = (typeof NEIGHBORHOOD_KINDS)[number]

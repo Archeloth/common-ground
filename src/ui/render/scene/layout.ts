@@ -16,10 +16,12 @@ export type BuildingStyle =
   // Milestone 10 regions
   | 'mudhouse' | 'ksarTower' | 'tent'
   | 'minka' | 'tiledHouse' | 'kura'
+  | 'stilt' | 'thatchHut' | 'paintedHouse'
 export type GreeneryStyle =
   | 'tree' | 'conifer' | 'reeds' | 'field'
   | 'palm' | 'acacia' | 'millet'
   | 'pine' | 'cherry' | 'bamboo' | 'paddy'
+  | 'kapok' | 'acai' | 'manioc'
 
 export interface Plot {
   x: number

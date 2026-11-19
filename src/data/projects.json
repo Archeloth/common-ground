@@ -34,7 +34,11 @@
         "market_square",
         "village_core",
         "river_hamlet",
-        "rice_terraces"
+        "rice_terraces",
+        "town_center",
+        "riverfront",
+        "floodplain_village",
+        "agroforest"
       ],
       "visual": "garden",
       "buildDays": 14
@@ -64,7 +68,8 @@
         "market_square",
         "ksar",
         "village_core",
-        "river_hamlet"
+        "river_hamlet",
+        "town_center"
       ],
       "visual": "solar",
       "buildDays": 21
@@ -201,7 +206,12 @@
         "village_core",
         "rice_terraces",
         "satoyama",
-        "river_hamlet"
+        "river_hamlet",
+        "riverfront",
+        "floodplain_village",
+        "town_center",
+        "forest_community",
+        "agroforest"
       ],
       "visual": "compost",
       "buildDays": 10
@@ -235,7 +245,9 @@
         "market_square",
         "new_quarter",
         "village_core",
-        "river_hamlet"
+        "river_hamlet",
+        "town_center",
+        "riverfront"
       ],
       "visual": "market",
       "buildDays": 14
@@ -322,7 +334,9 @@
         "ksar",
         "new_quarter",
         "village_core",
-        "river_hamlet"
+        "river_hamlet",
+        "town_center",
+        "riverfront"
       ],
       "visual": "repairCafe",
       "buildDays": 21
@@ -352,7 +366,8 @@
         "market_square",
         "new_quarter",
         "village_core",
-        "river_hamlet"
+        "river_hamlet",
+        "town_center"
       ],
       "visual": "recycling",
       "buildDays": 10
@@ -467,7 +482,9 @@
         "new_quarter",
         "market_square",
         "village_core",
-        "river_hamlet"
+        "river_hamlet",
+        "town_center",
+        "riverfront"
       ],
       "visual": "workshop",
       "buildDays": 7
@@ -1029,6 +1046,261 @@
       ],
       "visual": "spongeLane",
       "buildDays": 21
+    },
+    {
+      "id": "agroforest_plot",
+      "name": "Agroforest plot",
+      "explain": "Plant fruit trees, palms and manioc together on a tired field.",
+      "cost": 400,
+      "time": 2,
+      "engagement": 5,
+      "requiresTech": "agroforestry",
+      "durationMonths": 48,
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.1
+        },
+        {
+          "need": "green",
+          "change": 0.1
+        }
+      ],
+      "allowedKinds": [
+        "agroforest",
+        "forest_community",
+        "floodplain_village"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "agroforest",
+      "buildDays": 21
+    },
+    {
+      "id": "forest_plan",
+      "name": "Forest management plan",
+      "explain": "Map the forest together and agree what to harvest and what to rest.",
+      "cost": 500,
+      "time": 3,
+      "engagement": 6,
+      "requiresTech": "community_forest_management",
+      "durationMonths": 60,
+      "effects": [
+        {
+          "need": "green",
+          "change": 0.12
+        }
+      ],
+      "allowedKinds": [
+        "forest_community"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "forestCamp",
+      "buildDays": 21
+    },
+    {
+      "id": "acai_coop",
+      "name": "Açaí and nut co-op",
+      "explain": "Pool the harvest, process it locally and sell it together.",
+      "cost": 600,
+      "time": 2,
+      "engagement": 6,
+      "requiresTech": "acai_nut_harvest",
+      "durationMonths": 36,
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.08
+        }
+      ],
+      "allowedKinds": [
+        "agroforest",
+        "forest_community",
+        "riverfront"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "acaiCoop",
+      "buildDays": 14
+    },
+    {
+      "id": "reserve_charter",
+      "name": "Extractive reserve",
+      "explain": "Secure the forest by law for the families who live from it.",
+      "cost": 900,
+      "time": 3,
+      "engagement": 5,
+      "requiresTech": "extractive_reserve",
+      "effects": [
+        {
+          "need": "green",
+          "change": 0.15
+        },
+        {
+          "need": "food",
+          "change": 0.03
+        }
+      ],
+      "allowedKinds": [
+        "forest_community"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "reserveMarker",
+      "buildDays": 45
+    },
+    {
+      "id": "monitoring_team",
+      "name": "Territory monitoring",
+      "explain": "Train and equip residents to map and watch over their land.",
+      "cost": 350,
+      "time": 2,
+      "engagement": 6,
+      "requiresTech": "territory_monitoring",
+      "durationMonths": 24,
+      "effects": [
+        {
+          "need": "green",
+          "change": 0.06
+        }
+      ],
+      "allowedKinds": [
+        "forest_community",
+        "floodplain_village"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "watchtower",
+      "buildDays": 14
+    },
+    {
+      "id": "school_boat",
+      "name": "School and ambulance boat",
+      "explain": "A boat for the school run that doubles as the river ambulance.",
+      "cost": 800,
+      "time": 1,
+      "engagement": 4,
+      "requiresTech": "river_boats",
+      "durationMonths": 48,
+      "effects": [
+        {
+          "need": "mobility",
+          "change": 0.12
+        }
+      ],
+      "allowedKinds": [
+        "riverfront",
+        "floodplain_village"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "boatDock",
+      "buildDays": 21
+    },
+    {
+      "id": "home_solar",
+      "name": "Solar home kits",
+      "explain": "Panels, batteries and lights for houses off the grid.",
+      "cost": 700,
+      "time": 1,
+      "engagement": 3,
+      "requiresTech": "offgrid_solar",
+      "effects": [
+        {
+          "need": "energy",
+          "change": 0.18
+        }
+      ],
+      "allowedKinds": [
+        "riverfront",
+        "floodplain_village",
+        "forest_community",
+        "town_center"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "homeSolar",
+      "buildDays": 10
+    },
+    {
+      "id": "rain_tank",
+      "name": "Rainwater tank",
+      "explain": "A tank and gutters: clean drinking water from the roof.",
+      "cost": 350,
+      "time": 1,
+      "engagement": 2,
+      "requiresTech": "rainwater_tanks",
+      "effects": [
+        {
+          "need": "water",
+          "change": 0.15
+        }
+      ],
+      "allowedKinds": [
+        "riverfront",
+        "floodplain_village",
+        "town_center",
+        "forest_community",
+        "agroforest"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "rainTank",
+      "buildDays": 10
+    },
+    {
+      "id": "floating_garden",
+      "name": "Floating garden",
+      "explain": "Planted rafts that rise with the flood instead of drowning.",
+      "cost": 300,
+      "time": 2,
+      "engagement": 4,
+      "requiresTech": "floating_gardens",
+      "durationMonths": 24,
+      "effects": [
+        {
+          "need": "food",
+          "change": 0.1
+        }
+      ],
+      "allowedKinds": [
+        "riverfront",
+        "floodplain_village"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "visual": "floatingGarden",
+      "buildDays": 10
+    },
+    {
+      "id": "people_budget",
+      "name": "Budget assembly",
+      "explain": "Residents meet to decide what the town spends next.",
+      "cost": 300,
+      "time": 2,
+      "engagement": 10,
+      "requiresTech": "participatory_budgeting",
+      "durationMonths": 24,
+      "effects": [],
+      "allowedKinds": [
+        "town_center"
+      ],
+      "regions": [
+        "amazon"
+      ],
+      "knowledgePerMonth": 1,
+      "visual": "assembly",
+      "buildDays": 7
     }
   ]
 }

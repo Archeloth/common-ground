@@ -1,0 +1,148 @@
+{
+  "messages": [
+    {
+      "id": "castanha_forest_message",
+      "neighborhood": "castanha_forest",
+      "text": "Outsiders come for our trees at night. Help us map the forest and decide together what we harvest.",
+      "request": {
+        "type": "projectIn",
+        "project": "forest_plan"
+      },
+      "reward": {
+        "knowledge": 6
+      }
+    },
+    {
+      "id": "acai_groves_message",
+      "neighborhood": "acai_groves",
+      "text": "We sell our açaí to the first boat that comes, at its price. Together we could sell it ourselves.",
+      "request": {
+        "type": "projectIn",
+        "project": "acai_coop"
+      },
+      "reward": {
+        "budget": 400
+      }
+    },
+    {
+      "id": "north_varzea_message",
+      "neighborhood": "north_varzea",
+      "text": "Every flood drowns our vegetables. Gardens that float would rise with the water.",
+      "request": {
+        "type": "projectIn",
+        "project": "floating_garden"
+      },
+      "reward": {
+        "time": 2
+      }
+    },
+    {
+      "id": "seringal_message",
+      "neighborhood": "seringal",
+      "text": "Our grandparents tapped rubber on these trails. Make the forest ours by law and we will keep it standing.",
+      "request": {
+        "type": "projectIn",
+        "project": "reserve_charter"
+      },
+      "reward": {
+        "knowledge": 6
+      }
+    },
+    {
+      "id": "port_square_message",
+      "neighborhood": "port_square",
+      "text": "The children drink river water and get sick. A tank on the school roof would change that.",
+      "request": {
+        "type": "projectIn",
+        "project": "rain_tank"
+      },
+      "reward": {
+        "budget": 300
+      }
+    },
+    {
+      "id": "church_square_message",
+      "neighborhood": "church_square",
+      "text": "Let the town decide together what we spend: the people know what we need.",
+      "request": {
+        "type": "projectIn",
+        "project": "people_budget"
+      },
+      "reward": {
+        "knowledge": 5
+      }
+    },
+    {
+      "id": "market_wharf_message",
+      "neighborhood": "market_wharf",
+      "text": "The generator runs all night and costs a fortune. Panels on our roofs would be quieter and cheaper.",
+      "request": {
+        "type": "projectIn",
+        "project": "home_solar"
+      },
+      "reward": {
+        "budget": 350
+      }
+    },
+    {
+      "id": "fishers_landing_message",
+      "neighborhood": "fishers_landing",
+      "text": "When someone is sick, it takes half a day to reach the clinic. We need a boat that can carry them.",
+      "request": {
+        "type": "projectIn",
+        "project": "school_boat"
+      },
+      "reward": {
+        "time": 3
+      }
+    },
+    {
+      "id": "stilt_street_message",
+      "neighborhood": "stilt_street",
+      "text": "Rain falls every afternoon. Tanks and gutters would give us clean water all year.",
+      "request": {
+        "type": "projectIn",
+        "project": "rain_tank"
+      },
+      "reward": {
+        "knowledge": 4
+      }
+    },
+    {
+      "id": "island_fields_message",
+      "neighborhood": "island_fields",
+      "text": "Our fields are good, but the soil wears out. Mix in trees the way our grandmothers did.",
+      "request": {
+        "type": "projectIn",
+        "project": "agroforest_plot"
+      },
+      "reward": {
+        "time": 2
+      }
+    },
+    {
+      "id": "quintais_message",
+      "neighborhood": "quintais",
+      "text": "Our home gardens feed half the town already. A co-op would let us sell the rest.",
+      "request": {
+        "type": "projectIn",
+        "project": "acai_coop"
+      },
+      "reward": {
+        "budget": 300
+      }
+    },
+    {
+      "id": "school_ridge_message",
+      "neighborhood": "school_ridge",
+      "text": "The school has no light after dark. Solar kits would let the evening classes start again.",
+      "request": {
+        "type": "projectIn",
+        "project": "home_solar"
+      },
+      "reward": {
+        "knowledge": 5
+      }
+    }
+  ]
+}

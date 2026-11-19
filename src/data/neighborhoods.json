@@ -136,6 +136,51 @@
       "regions": [
         "east_asia"
       ]
+    },
+    {
+      "id": "riverfront",
+      "name": "Riverfront",
+      "description": "Wooden houses on stilts along the bank, with boats tied below: the river is the street.",
+      "defaultSlots": 3,
+      "regions": [
+        "amazon"
+      ]
+    },
+    {
+      "id": "floodplain_village",
+      "name": "Floodplain village",
+      "description": "Fields and houses on the fertile floodplain, under water for part of every year.",
+      "defaultSlots": 3,
+      "regions": [
+        "amazon"
+      ]
+    },
+    {
+      "id": "town_center",
+      "name": "Town centre",
+      "description": "Painted wooden houses, the church square, shops and the school: the busiest part of town.",
+      "defaultSlots": 4,
+      "regions": [
+        "amazon"
+      ]
+    },
+    {
+      "id": "forest_community",
+      "name": "Forest community",
+      "description": "Families on the higher ground who live from the standing forest: nuts, rubber, fish and game.",
+      "defaultSlots": 3,
+      "regions": [
+        "amazon"
+      ]
+    },
+    {
+      "id": "agroforest",
+      "name": "Agroforest",
+      "description": "Home gardens where fruit trees, palms, manioc and timber grow together.",
+      "defaultSlots": 3,
+      "regions": [
+        "amazon"
+      ]
     }
   ]
 }

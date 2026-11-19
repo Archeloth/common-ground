@@ -4,6 +4,7 @@ import type { Building, BuildingStyle, Greenery, GreeneryStyle, Plot } from '../
 import { acacia, ksarTower, millet, mudhouse, palm, tent } from './regions/sahel'
 import { snowOnPath } from '../scene/season'
 import { bamboo, cherry, kura, minka, paddy, pine, tiledHouse } from './regions/eastAsia'
+import { acai, kapok, manioc, paintedHouse, stilt, thatchHut } from './regions/amazon'
 
 // Buildings and greenery for the districts (Milestone 9). Every sprite is drawn
 // around its ground point (x, y in screen pixels) at scale s. The overlay
@@ -254,7 +255,7 @@ function barn(ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays): 
 
 type Builder = (ctx: Ctx, b: Plot, x: number, y: number, s: number, o: Overlays) => void
 
-const BUILDERS: Record<BuildingStyle, Builder> = { house, terrace, block, shed, store, barn, mudhouse, ksarTower, tent, minka, tiledHouse, kura }
+const BUILDERS: Record<BuildingStyle, Builder> = { house, terrace, block, shed, store, barn, mudhouse, ksarTower, tent, minka, tiledHouse, kura, stilt, thatchHut, paintedHouse }
 
 export function drawBuilding(ctx: Ctx, b: Building, x: number, y: number, s: number, o: Overlays = NONE): void {
   ctx.save()
@@ -362,6 +363,9 @@ const GREENERY: Record<GreeneryStyle, GreeneryDrawer> = {
   cherry,
   bamboo,
   paddy,
+  kapok,
+  acai,
+  manioc,
 }
 
 export function drawGreenery(ctx: Ctx, g: Greenery, x: number, y: number, s: number): void {

@@ -14,6 +14,9 @@ import willowbrookStories from '../data/scenarios/willowbrook/stories.json'
 import hollinTown from '../data/scenarios/hollin_green/town.json'
 import hollinMilestones from '../data/scenarios/hollin_green/milestones.json'
 import hollinMessages from '../data/scenarios/hollin_green/messages.json'
+import remansoTown from '../data/scenarios/remanso_verde/town.json'
+import remansoMilestones from '../data/scenarios/remanso_verde/milestones.json'
+import remansoMessages from '../data/scenarios/remanso_verde/messages.json'
 import kumoTown from '../data/scenarios/kumonotani/town.json'
 import kumoMilestones from '../data/scenarios/kumonotani/milestones.json'
 import kumoMessages from '../data/scenarios/kumonotani/messages.json'
@@ -171,6 +174,11 @@ const SCENARIOS: Record<string, ScenarioContent> = {
     town: hollinTown,
     milestones: hollinMilestones,
     messages: hollinMessages,
+  },
+  remanso_verde: {
+    town: remansoTown,
+    milestones: remansoMilestones,
+    messages: remansoMessages,
   },
   kumonotani: {
     town: kumoTown,

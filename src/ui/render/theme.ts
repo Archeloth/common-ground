@@ -10,6 +10,7 @@ import type { GreeneryStyle } from './scene/layout'
 import type { WildStyle } from './scene/wilds'
 import { SAHEL } from './themes/sahel'
 import { EAST_ASIA } from './themes/eastAsia'
+import { AMAZON } from './themes/amazon'
 
 // A region's look (Milestone 10). Every sprite is drawn in code, so a region
 // is a theme object: palette overrides, kind colours and layout recipes,
@@ -54,7 +55,7 @@ export const TEMPERATE: RegionTheme = {
   wilds: { density: 1, swap: {} },
 }
 
-export const THEMES: Record<string, RegionTheme> = { temperate: TEMPERATE, sahel: SAHEL, east_asia: EAST_ASIA }
+export const THEMES: Record<string, RegionTheme> = { temperate: TEMPERATE, sahel: SAHEL, east_asia: EAST_ASIA, amazon: AMAZON }
 
 export function hasTheme(id: string): boolean {
   return Object.hasOwn(THEMES, id)

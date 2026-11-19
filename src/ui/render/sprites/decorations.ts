@@ -3,6 +3,7 @@ import { PALETTE, circle, fillOutlined, groundShadow, pick, roundRect } from './
 import { tree } from './buildings'
 import { SAHEL_DECORATIONS } from './regions/sahel'
 import { EAST_ASIA_DECORATIONS } from './regions/eastAsia'
+import { AMAZON_DECORATIONS } from './regions/amazon'
 
 // One small scene per project, drawn on the project's own plot (Milestone 9:
 // "progress should be visible"). Some projects also change the buildings
@@ -47,6 +48,16 @@ export const VISUAL_IDS = [
   'veggieBoxes',
   'akiyaHouse',
   'spongeLane',
+  'agroforest',
+  'forestCamp',
+  'acaiCoop',
+  'reserveMarker',
+  'watchtower',
+  'boatDock',
+  'homeSolar',
+  'rainTank',
+  'floatingGarden',
+  'assembly',
 ] as const
 
 export type VisualId = (typeof VISUAL_IDS)[number]
@@ -534,6 +545,7 @@ export const DECORATIONS: Record<VisualId, Draw> = {
   workshop,
   ...SAHEL_DECORATIONS,
   ...EAST_ASIA_DECORATIONS,
+  ...AMAZON_DECORATIONS,
 }
 
 export function drawDecoration(ctx: Ctx, visual: VisualId, x: number, y: number, s: number, variant: number): void {
