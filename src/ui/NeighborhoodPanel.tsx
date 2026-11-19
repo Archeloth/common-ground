@@ -57,9 +57,12 @@ export default function NeighborhoodPanel({
   const satisfaction = sim?.satisfaction ?? satisfactionOf(neighborhood.needs, scenario.needWeights)
   const engagement = state.engagement[neighborhood.id] ?? neighborhood.engagement
   const neighbors = neighborhood.neighbors.map((id) => neighborhoodById(scenario, id))
-  const bridgePartners = scenario.bridges
-    .filter(({ from, to }) => from === neighborhood.id || to === neighborhood.id)
-    .map(({ from, to }) => (from === neighborhood.id ? to : from))
+  // Neighbours reached over water, and how (Milestone 10: bridge, ford or ferry).
+  const crossingTo = new Map(
+    scenario.crossings
+      .filter(({ from, to }) => from === neighborhood.id || to === neighborhood.id)
+      .map(({ from, to, kind }) => [from === neighborhood.id ? to : from, kind] as const),
+  )
 
   // Milestone 7: organizer controls — town meeting, resident request, bus links.
   const meeting = applyCommand(state, { type: 'townMeeting', neighborhood: neighborhood.id })
@@ -251,7 +254,7 @@ export default function NeighborhoodPanel({
               {neighbors.map((n) => (
                 <li key={n.id}>
                   {n.name}
-                  {bridgePartners.includes(n.id) && <span className="bridge-tag">{t('panel.bridgeTo')}</span>}
+                  {crossingTo.has(n.id) && <span className="bridge-tag">{t(`panel.crossing.${crossingTo.get(n.id)}`)}</span>}
                 </li>
               ))}
             </ul>

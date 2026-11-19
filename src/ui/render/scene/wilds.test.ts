@@ -9,8 +9,9 @@ const scenario = loadScenario()
 const items = wildsLayout(scenario)
 const outlines = scenario.neighborhoods.map((n) => districtOutline(scenario, n.id))
 
+// Distance from the river's centre line (Willowbrook has one river).
 function riverDistance(p: Point): number {
-  const pts = scenario.river.points
+  const pts = scenario.water[0].points
   let best = Infinity
   for (let i = 0; i < pts.length - 1; i++) best = Math.min(best, distanceToSegment(p, pts[i], pts[i + 1]))
   return best
@@ -40,7 +41,7 @@ describe('the countryside around the town', () => {
   })
 
   it('keeps land plants out of the water, reeds on the banks and lily pads on the river', () => {
-    const half = scenario.river.halfDepth
+    const half = scenario.water[0].halfDepth
     for (const item of items) {
       const d = riverDistance(item)
       if (item.style === 'lilypad') expect(d).toBeLessThan(half)

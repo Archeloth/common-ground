@@ -49,10 +49,26 @@ export interface WorldPoint {
   y: number
 }
 
-export interface BridgeDef {
+// Water on the map (Milestone 10): rivers and wadis are polylines with a
+// half width; an oasis is a closed pool (its points are the outline).
+export type WaterKind = 'river' | 'wadi' | 'oasis'
+
+export interface WaterFeature {
+  id: string
+  kind: WaterKind
+  points: WorldPoint[]
+  halfDepth: number // half the width of a river or wadi; unused for a pool
+}
+
+// Where a link between two districts crosses a river or wadi.
+export type CrossingKind = 'bridge' | 'ford' | 'ferry'
+
+export interface CrossingDef {
   from: string
   to: string
   point: WorldPoint
+  kind: CrossingKind
+  water: string // the WaterFeature id it crosses
 }
 
 export interface NeighborhoodDef {
@@ -64,7 +80,7 @@ export interface NeighborhoodDef {
   engagement: number // 0 to 100
   needs: Needs
   shape: Shape
-  neighbors: string[] // ids of adjacent neighborhoods (incl. across bridges)
+  neighbors: string[] // ids of adjacent neighborhoods (incl. across crossings)
 }
 
 export interface ScenarioDef {
@@ -96,10 +112,10 @@ export interface ScenarioDef {
     unlockedTech: string[]
   }
   neighborhoods: NeighborhoodDef[]
-  // The river is content too (Milestone 8.5): a polyline to draw and to test
-  // bus-line crossings against, plus the two fixed bridges that span it.
-  river: { points: WorldPoint[]; halfDepth: number }
-  bridges: BridgeDef[]
+  // Water is content too (Milestone 8.5, a list since Milestone 10): what to
+  // draw and to test links against, and where links cross it.
+  water: WaterFeature[]
+  crossings: CrossingDef[]
 }
 
 // ---------------------------------------------------------------------------
@@ -245,8 +261,8 @@ export interface GameState {
   // capped at HISTORY_MAX_POINTS).
   history: HistoryPoint[]
   // Bus links between adjacent neighborhoods (Milestone 7): each pair adds
-  // BUS_MOBILITY_BONUS to both endpoints' mobility target. Only bridge pairs
-  // are adjacent across the river, so lines cross only at the fixed bridges.
+  // BUS_MOBILITY_BONUS to both endpoints' mobility target. Only pairs with a
+  // crossing are adjacent across water, so lines cross only there.
   busLines: [string, string][]
   // Resident message status per neighborhood (Milestone 7): 'open' until the
   // request is fulfilled, then 'done' (the reward is paid once).

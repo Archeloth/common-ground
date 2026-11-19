@@ -58,16 +58,20 @@
       "neighbors": ["chapel_row", "brook_meadows"]
     }
   ],
-  "river": {
-    "points": [
-      { "x": 40, "y": 270 },
-      { "x": 320, "y": 282 },
-      { "x": 600, "y": 266 }
-    ],
-    "halfDepth": 22
-  },
-  "bridges": [
-    { "from": "hollin_square", "to": "brook_meadows", "point": { "x": 205, "y": 277 } },
-    { "from": "chapel_row", "to": "hazel_copse", "point": { "x": 435, "y": 276 } }
+  "water": [
+    {
+      "id": "brook",
+      "kind": "river",
+      "points": [
+        { "x": 40, "y": 270 },
+        { "x": 320, "y": 282 },
+        { "x": 600, "y": 266 }
+      ],
+      "halfDepth": 22
+    }
+  ],
+  "crossings": [
+    { "from": "hollin_square", "to": "brook_meadows", "point": { "x": 205, "y": 277 }, "kind": "bridge", "water": "brook" },
+    { "from": "chapel_row", "to": "hazel_copse", "point": { "x": 435, "y": 276 }, "kind": "bridge", "water": "brook" }
   ]
 }

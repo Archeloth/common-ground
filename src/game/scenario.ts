@@ -1,5 +1,5 @@
-import type { BridgeDef, ScenarioDef, NeighborhoodDef } from './types'
-import { segmentHitsPolyline } from './geometry'
+import type { CrossingDef, ScenarioDef, NeighborhoodDef } from './types'
+import { CROSSING_KINDS, WATER_KINDS, crossingsBetween, isPool, linkCrossesWater, waterById } from './water'
 import { districtOutline, outlineBox } from './outline'
 import { kindById, loadKinds } from './kinds'
 import { NEED_ORDER } from './needs'
@@ -72,37 +72,52 @@ export function validateScenario(s: ScenarioDef): void {
     }
   }
 
-  // The river (Milestone 8.5) is content: a polyline of at least two finite
-  // points, plus fixed bridges that sit on it between two neighbours.
-  if (!s.river || s.river.points.length < 2) fail('the river needs at least two points')
-  for (const p of s.river.points) {
-    if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) fail('river points must be finite')
+  // Water (Milestone 8.5, a list of features since Milestone 10): rivers and
+  // wadis are polylines, an oasis a closed pool; crossings sit between two
+  // neighbours, on a river or wadi.
+  const waterIds = new Set<string>()
+  for (const w of s.water) {
+    if (!w.id || waterIds.has(w.id)) fail('water needs a unique id', w.id)
+    waterIds.add(w.id)
+    if (!(WATER_KINDS as readonly string[]).includes(w.kind)) fail(`unknown water kind "${w.kind}"`, w.id)
+    const minPoints = isPool(w) ? 3 : 2
+    if (w.points.length < minPoints) fail(`a ${w.kind} needs at least ${minPoints} points`, w.id)
+    for (const p of w.points) {
+      if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) fail('water points must be finite', w.id)
+    }
+    if (!isPool(w) && !(w.halfDepth > 0)) fail('halfDepth must be positive', w.id)
   }
-  if (!(s.river.halfDepth > 0)) fail('river.halfDepth must be positive')
 
-  const bridgeKeys = new Set<string>()
-  for (const bridge of s.bridges) {
-    const { from, to, point } = bridge
-    if (!seenIds.has(from) || !seenIds.has(to)) fail('bridge endpoint does not exist', `${from} -> ${to}`)
-    if (from === to) fail('a bridge cannot link a neighborhood to itself', from)
+  const crossingKeys = new Set<string>()
+  for (const crossing of s.crossings) {
+    const { from, to, point, kind } = crossing
+    if (!seenIds.has(from) || !seenIds.has(to)) fail('crossing endpoint does not exist', `${from} -> ${to}`)
+    if (from === to) fail('a crossing cannot link a neighborhood to itself', from)
+    if (!(CROSSING_KINDS as readonly string[]).includes(kind)) fail(`unknown crossing kind "${kind}"`, `${from} <-> ${to}`)
+    const water = waterById(s, crossing.water)
+    if (!water) fail('crossing names unknown water', `${from} <-> ${to}: ${crossing.water}`)
+    if (isPool(water)) fail('nothing crosses an oasis; districts sit around it', `${from} <-> ${to}`)
     const a = neighborhoodById(s, from)
     const b = neighborhoodById(s, to)
     if (!a.neighbors.includes(to) || !b.neighbors.includes(from)) {
-      fail('bridge endpoints must list each other as neighbors', `${from} <-> ${to}`)
+      fail('crossing endpoints must list each other as neighbors', `${from} <-> ${to}`)
     }
-    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) fail('bridge needs a finite point', `${from} <-> ${to}`)
-    bridgeKeys.add(pairKey(from, to))
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) fail('crossing needs a finite point', `${from} <-> ${to}`)
+    crossingKeys.add(`${pairKey(from, to)}|${water.id}`)
   }
 
-  // Buses may only cross the river at a bridge. Adjacency is what bus lines
-  // follow, so every neighbour link that crosses the water must be a bridge.
+  // Links may only cross a river or wadi at a crossing, and never an oasis.
+  // Adjacency is what bus lines follow, so this is checked once, here.
   for (const n of s.neighborhoods) {
     for (const neighborId of n.neighbors) {
       if (n.id > neighborId) continue
       const other = neighborhoodById(s, neighborId)
-      const crosses = segmentHitsPolyline(n.shape, other.shape, s.river.points)
-      if (crosses && !bridgeKeys.has(pairKey(n.id, neighborId))) {
-        fail('neighbors across the river need a bridge', `${n.id} <-> ${neighborId}`)
+      for (const w of s.water) {
+        if (!linkCrossesWater(w, n.shape, other.shape)) continue
+        if (isPool(w)) fail('neighbors cannot link across an oasis', `${n.id} <-> ${neighborId}`)
+        if (!crossingKeys.has(`${pairKey(n.id, neighborId)}|${w.id}`)) {
+          fail(`neighbors across the ${w.kind} need a crossing`, `${n.id} <-> ${neighborId}`)
+        }
       }
     }
   }
@@ -112,9 +127,9 @@ function pairKey(a: string, b: string): string {
   return a < b ? `${a}|${b}` : `${b}|${a}`
 }
 
-// The bridge between two neighbourhoods, if their link crosses the river.
-export function bridgeBetween(s: ScenarioDef, a: string, b: string): BridgeDef | null {
-  return s.bridges.find((br) => (br.from === a && br.to === b) || (br.from === b && br.to === a)) ?? null
+// The first crossing between two neighbourhoods, if their link crosses water.
+export function crossingBetween(s: ScenarioDef, a: string, b: string): CrossingDef | null {
+  return crossingsBetween(s, a, b)[0] ?? null
 }
 
 // The scenario registry (Milestone 10). Each town is a folder under

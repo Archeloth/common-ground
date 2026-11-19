@@ -137,7 +137,7 @@
       "unlocks": [
         "shared_mobility"
       ],
-      "benefit": "Unlocks bus lines between neighbouring neighbourhoods (they cross the river only at the bridges).",
+      "benefit": "Unlocks bus lines between neighbouring neighbourhoods (they cross water only at a bridge, ford or ferry).",
       "limit": "Frequency and reliability matter more than coverage; low-density areas are harder to serve.",
       "confidence": "established",
       "sources": [],

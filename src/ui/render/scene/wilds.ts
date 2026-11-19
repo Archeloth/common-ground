@@ -4,6 +4,7 @@ import { distanceToSegment, pointInPolygon } from '../../../game/geometry'
 import { districtOutline, outlineBox } from '../../../game/outline'
 import { scenarioBounds } from '../../../game/scenario'
 import { mulberry32 } from '../../../game/random'
+import { isPool, nearCrossing, ring, townWaterClearance } from '../../../game/water'
 
 // The countryside around the town (post-Milestone 9 playtest: "the world
 // outside the districts should have something to it"). Pure and seeded, like
@@ -53,12 +54,6 @@ const DISTRICT_CLEARANCE = 8 // open ground kept around every district
 const BANK = 5 // the drawn bank stroke reaches this far past halfDepth
 const BRIDGE_CLEARANCE = 34
 
-function riverDistance(river: readonly Point[], p: Point): number {
-  let best = Infinity
-  for (let i = 0; i < river.length - 1; i++) best = Math.min(best, distanceToSegment(p, river[i], river[i + 1]))
-  return best
-}
-
 function distanceToOutline(p: Point, outline: readonly Point[]): number {
   let best = Infinity
   for (let i = 0; i < outline.length - 1; i++) best = Math.min(best, distanceToSegment(p, outline[i], outline[i + 1]))
@@ -84,8 +79,20 @@ export function alongRiver(river: readonly Point[], along: number): { p: Point; 
   return { p: river[0], normal: { x: 0, y: 1 } }
 }
 
-export function nearBridge(s: ScenarioDef, p: Point, clearance = BRIDGE_CLEARANCE): boolean {
-  return s.bridges.some((b) => Math.abs(b.point.x - p.x) < clearance)
+// How far along a polyline (0..1) the point nearest to p lies.
+export function alongOf(line: readonly Point[], p: Point): number {
+  let walked = 0
+  let best = { d: Infinity, at: 0 }
+  for (let i = 0; i < line.length - 1; i++) {
+    const a = line[i]
+    const b = line[i + 1]
+    const len = Math.hypot(b.x - a.x, b.y - a.y)
+    const k = len === 0 ? 0 : Math.max(0, Math.min(1, ((p.x - a.x) * (b.x - a.x) + (p.y - a.y) * (b.y - a.y)) / (len * len)))
+    const d = Math.hypot(a.x + (b.x - a.x) * k - p.x, a.y + (b.y - a.y) * k - p.y)
+    if (d < best.d) best = { d, at: walked + len * k }
+    walked += len
+  }
+  return walked === 0 ? 0 : best.at / walked
 }
 
 export function wildsLayout(s: ScenarioDef): WildItem[] {
@@ -95,7 +102,6 @@ export function wildsLayout(s: ScenarioDef): WildItem[] {
     const points = districtOutline(s, n.id)
     return { points, box: outlineBox(points) }
   })
-  const river = s.river.points
   const minX = town.minX - MARGIN_X
   const minY = town.minY - MARGIN_Y
   const width = town.width + MARGIN_X * 2
@@ -148,23 +154,32 @@ export function wildsLayout(s: ScenarioDef): WildItem[] {
     else grid.set(key, [item])
   }
 
-  // Reeds along both banks and lily pads on the water, away from the bridges.
-  for (let along = 0.01; along < 0.99; along += 0.012) {
-    const { p, normal } = alongRiver(river, along)
-    for (const side of [-1, 1]) {
-      if (rand() < 0.45) continue
-      const off = s.river.halfDepth + BANK - 1 + rand() * 4
-      const at = { x: p.x + normal.x * off * side + (rand() - 0.5) * 6, y: p.y + normal.y * off * side }
-      if (nearBridge(s, at) || !clearOfDistricts(at.x, at.y, WILD_HEIGHT.reeds)) continue
-      if (!roomFor(at.x, at.y, SIZE.reeds)) continue
-      add({ x: at.x, y: at.y, style: 'reeds', size: SIZE.reeds, variant: rand() })
-    }
-    if (rand() < 0.22) {
-      const side = rand() < 0.5 ? -1 : 1
-      const off = s.river.halfDepth - 8 - rand() * 6
-      const at = { x: p.x + normal.x * off * side, y: p.y + normal.y * off * side }
-      if (!nearBridge(s, at) && roomFor(at.x, at.y, SIZE.lilypad)) {
-        add({ x: at.x, y: at.y, style: 'lilypad', size: SIZE.lilypad, variant: rand() })
+  // Reeds along the banks and lily pads on open water, away from crossings.
+  // A wadi is a dry bed most of the year, so nothing grows in it.
+  for (const w of s.water) {
+    if (w.kind === 'wadi') continue
+    const pool = isPool(w)
+    const line = pool ? ring(w.points) : w.points
+    const half = pool ? 0 : w.halfDepth
+    for (let along = 0.01; along < 0.99; along += 0.012) {
+      const { p, normal } = alongRiver(line, along)
+      for (const side of [-1, 1]) {
+        if (rand() < 0.45) continue
+        const off = half + BANK - 1 + rand() * 4
+        const at = { x: p.x + normal.x * off * side + (rand() - 0.5) * 6, y: p.y + normal.y * off * side }
+        if (pool && pointInPolygon(w.points, at.x, at.y)) continue
+        if (nearCrossing(s, at, BRIDGE_CLEARANCE) || !clearOfDistricts(at.x, at.y, WILD_HEIGHT.reeds)) continue
+        if (!roomFor(at.x, at.y, SIZE.reeds)) continue
+        add({ x: at.x, y: at.y, style: 'reeds', size: SIZE.reeds, variant: rand() })
+      }
+      if (rand() < 0.22) {
+        let side = rand() < 0.5 ? -1 : 1
+        const off = pool ? 8 + rand() * 6 : half - 8 - rand() * 6
+        if (pool && !pointInPolygon(w.points, p.x + normal.x * off * side, p.y + normal.y * off * side)) side = -side
+        const at = { x: p.x + normal.x * off * side, y: p.y + normal.y * off * side }
+        if (!nearCrossing(s, at, BRIDGE_CLEARANCE) && roomFor(at.x, at.y, SIZE.lilypad)) {
+          add({ x: at.x, y: at.y, style: 'lilypad', size: SIZE.lilypad, variant: rand() })
+        }
       }
     }
   }
@@ -194,7 +209,7 @@ export function wildsLayout(s: ScenarioDef): WildItem[] {
     }
     if (keepRoll > keep * (0.25 + 0.75 * fade)) continue
     const size = SIZE[style]
-    if (riverDistance(river, { x, y }) < s.river.halfDepth + BANK + size + 2) continue
+    if (townWaterClearance(s, { x, y }) < BANK + size + 2) continue
     if (!clearOfDistricts(x, y, WILD_HEIGHT[style])) continue
     if (!roomFor(x, y, size)) continue
     add({ x, y, style, size, variant })
@@ -203,27 +218,42 @@ export function wildsLayout(s: ScenarioDef): WildItem[] {
   return items.sort((a, b) => a.y - b.y)
 }
 
-// River life: spots where fish leap, and stretches where ducks paddle.
+// River life: spots where fish leap, and stretches where ducks paddle. Only
+// rivers have them (a wadi is mostly dry; a pool is too small for a stretch).
 export interface RiverLife {
-  fish: Array<{ along: number; side: number; seed: number }>
-  ducks: Array<{ along: number; range: number; side: number; seed: number }>
+  fish: Array<{ water: string; along: number; side: number; seed: number }>
+  ducks: Array<{ water: string; along: number; range: number; side: number; seed: number }>
 }
 
 export function riverLife(s: ScenarioDef): RiverLife {
   const rand = mulberry32(SEED ^ 0xf15)
   const fish: RiverLife['fish'] = []
-  for (let i = 0; i < 7; i++) {
-    const along = 0.06 + (i / 7) * 0.88 + rand() * 0.05
-    if (nearBridge(s, alongRiver(s.river.points, along).p, 40)) continue
-    fish.push({ along, side: rand() * 2 - 1, seed: rand() * 10 })
+  const ducks: RiverLife['ducks'] = []
+  for (const w of s.water) {
+    if (w.kind !== 'river') continue
+    for (let i = 0; i < 7; i++) {
+      const along = 0.06 + (i / 7) * 0.88 + rand() * 0.05
+      if (nearCrossing(s, alongRiver(w.points, along).p, 40)) continue
+      fish.push({ water: w.id, along, side: rand() * 2 - 1, seed: rand() * 10 })
+    }
+    // Ducks keep to the longest stretch of open water between crossings.
+    const stops = [0, 1, ...s.crossings.filter((c) => c.water === w.id).map((c) => alongOf(w.points, c.point))].sort(
+      (a, b) => a - b,
+    )
+    let gap = { from: stops[0], to: stops[1] }
+    for (let i = 1; i < stops.length - 1; i++) {
+      if (stops[i + 1] - stops[i] > gap.to - gap.from) gap = { from: stops[i], to: stops[i + 1] }
+    }
+    for (const at of [0.22, 0.5, 0.77]) {
+      ducks.push({
+        water: w.id,
+        along: gap.from + (gap.to - gap.from) * at,
+        range: 0.04 + rand() * 0.03,
+        side: rand() * 2 - 1,
+        seed: rand() * 10,
+      })
+    }
   }
-  // Stretches of open water between the two bridges.
-  const ducks: RiverLife['ducks'] = [0.3, 0.52, 0.72].map((along) => ({
-    along,
-    range: 0.04 + rand() * 0.03,
-    side: rand() * 2 - 1,
-    seed: rand() * 10,
-  }))
   return { fish, ducks }
 }
 

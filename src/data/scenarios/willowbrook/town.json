@@ -189,17 +189,21 @@
       "neighbors": ["station_quarter", "southgate_retail"]
     }
   ],
-  "river": {
-    "points": [
-      { "x": 60, "y": 340 },
-      { "x": 560, "y": 352 },
-      { "x": 1040, "y": 336 }
-    ],
-    "halfDepth": 34
-  },
-  "bridges": [
-    { "from": "old_town", "to": "riverside", "point": { "x": 186, "y": 343 } },
-    { "from": "linden_flats", "to": "station_quarter", "point": { "x": 946, "y": 339 } }
+  "water": [
+    {
+      "id": "river",
+      "kind": "river",
+      "points": [
+        { "x": 60, "y": 340 },
+        { "x": 560, "y": 352 },
+        { "x": 1040, "y": 336 }
+      ],
+      "halfDepth": 34
+    }
+  ],
+  "crossings": [
+    { "from": "old_town", "to": "riverside", "point": { "x": 186, "y": 343 }, "kind": "bridge", "water": "river" },
+    { "from": "linden_flats", "to": "station_quarter", "point": { "x": 946, "y": 339 }, "kind": "bridge", "water": "river" }
   ]
 }
 

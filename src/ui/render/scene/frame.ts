@@ -1,11 +1,12 @@
 import type { NeedId, NeighborhoodDef, ScenarioDef } from '../../../game/types'
 import type { Point } from '../../../game/geometry'
-import { bridgeBetween, neighborhoodById } from '../../../game/scenario'
+import { neighborhoodById } from '../../../game/scenario'
+import { crossingFrame, crossingsBetween, waterById } from '../../../game/water'
 import { districtOutline } from '../../../game/outline'
 import type { Camera } from '../camera'
 import { worldToScreen } from '../camera'
 import { COLORS, NEED_COLORS } from '../colors'
-import { buildPath2D, drawBadge, drawBridge, drawBusLine, drawPulseRing, drawRiver } from '../draw'
+import { buildPath2D, drawBadge, drawBusLine, drawCrossing, drawPulseRing, drawWater } from '../draw'
 import { CHIMNEY_TOP } from '../sprites/buildings'
 import { drawBuildRing, drawDecoration, turbineHub } from '../sprites/decorations'
 import type { VisualId } from '../sprites/decorations'
@@ -85,8 +86,7 @@ export function zoomBucket(zoom: number): number {
 function routeOf(scenario: ScenarioDef, a: string, b: string): Point[] {
   const from = neighborhoodById(scenario, a).shape
   const to = neighborhoodById(scenario, b).shape
-  const bridge = bridgeBetween(scenario, a, b)
-  return bridge ? [from, bridge.point, to] : [from, to]
+  return [from, ...crossingsBetween(scenario, a, b).map((c) => c.point), to]
 }
 
 // Position along a polyline, ping-ponging: u in [0, 2).
@@ -172,7 +172,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): boolean
   // so there are no gaps left for a route drawn underneath to show through.
   for (const [a, b] of f.busLines) drawBusLine(ctx, cam, routeOf(scenario, a, b))
 
-  // Buses drive along their lines, across the bridges.
+  // Buses drive along their lines, over the crossings.
   for (const [a, b] of f.busLines) {
     const route = routeOf(scenario, a, b)
     const total = route.slice(1).reduce((sum, pt, i) => sum + Math.hypot(pt.x - route[i].x, pt.y - route[i].y), 0)
@@ -227,15 +227,15 @@ export function drawFrame(ctx: CanvasRenderingContext2D, f: FrameInput): boolean
   return complete
 }
 
-// The ground, the river and the bridges are a few shapes, drawn directly; the
+// The ground, the water and its crossings are a few shapes, drawn directly; the
 // countryside's sprites come from tiles cached per zoom bucket (countryside.ts).
 // Returns false while countryside tiles are still being built.
 function drawBackground(ctx: CanvasRenderingContext2D, f: FrameInput, season: SeasonLook): boolean {
   const { cam, scenario } = f
   ctx.fillStyle = seasonalGround(COLORS.ground, season)
   ctx.fillRect(0, 0, f.cssWidth, f.cssHeight)
-  drawRiver(ctx, cam, scenario.river.points, scenario.river.halfDepth)
-  for (const bridge of scenario.bridges) drawBridge(ctx, cam, bridge.point, scenario.river.halfDepth)
+  for (const water of scenario.water) drawWater(ctx, cam, water)
+  for (const crossing of scenario.crossings) drawCrossing(ctx, cam, crossing, crossingFrame(scenario, crossing))
   return drawCountryside(ctx, scenario, cam, zoomBucket(cam.zoom), f.cssWidth, f.cssHeight, f.dpr, season)
 }
 
@@ -243,17 +243,21 @@ function drawBackground(ctx: CanvasRenderingContext2D, f: FrameInput, season: Se
 function drawRiverLife(ctx: CanvasRenderingContext2D, f: FrameInput, season: SeasonLook, t: number, s: number): void {
   if (season.life < 0.5) return
   const { cam, scenario } = f
-  const river = scenario.river.points
-  const half = scenario.river.halfDepth
   const life = wildsFor(scenario).life
   for (const fish of life.fish) {
-    const { p, normal } = alongRiver(river, fish.along)
+    const water = waterById(scenario, fish.water)
+    if (!water) continue
+    const half = water.halfDepth
+    const { p, normal } = alongRiver(water.points, fish.along)
     const at = worldToScreen(cam, p.x + normal.x * fish.side * half * 0.5, p.y + normal.y * fish.side * half * 0.5)
     leapingFish(ctx, at.x, at.y, s, t, fish.seed)
   }
   life.ducks.forEach((d, i) => {
+    const water = waterById(scenario, d.water)
+    if (!water) return
+    const half = water.halfDepth
     const phase = t * 0.035 + d.seed
-    const { p, normal } = alongRiver(river, d.along + Math.sin(phase) * d.range)
+    const { p, normal } = alongRiver(water.points, d.along + Math.sin(phase) * d.range)
     const at = worldToScreen(cam, p.x + normal.x * d.side * half * 0.45, p.y + normal.y * d.side * half * 0.45)
     duck(ctx, at.x, at.y, s, Math.cos(phase) >= 0 ? 1 : -1, t + d.seed, i % 2 === 0)
   })

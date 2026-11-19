@@ -1,5 +1,5 @@
-﻿import type { Point } from './geometry'
-import { distanceToSegment } from './geometry'
+﻿import { townWaterClearance } from './water'
+import type { Point } from './geometry'
 import { BLOB_Y_SQUASH, blobRadius } from './blob'
 import { mulberry32 } from './random'
 import type { NeighborhoodDef, ScenarioDef } from './types'
@@ -110,17 +110,11 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
 
 function landNeighbours(s: ScenarioDef, n: NeighborhoodDef): NeighborhoodDef[] {
   return n.neighbors
-    .filter((id) => !s.bridges.some((b) => (b.from === n.id && b.to === id) || (b.from === id && b.to === n.id)))
+    .filter((id) => !s.crossings.some((c) => (c.from === n.id && c.to === id) || (c.from === id && c.to === n.id)))
     .map((id) => s.neighborhoods.find((o) => o.id === id))
     .filter((o): o is NeighborhoodDef => o !== undefined)
 }
 
-function riverDistance(s: ScenarioDef, p: Point): number {
-  const pts = s.river.points
-  let best = Infinity
-  for (let i = 0; i < pts.length - 1; i++) best = Math.min(best, distanceToSegment(p, pts[i], pts[i + 1]))
-  return best
-}
 
 function computeOutline(s: ScenarioDef, n: NeighborhoodDef): Point[] {
   const c = unsquash(n.shape)
@@ -140,7 +134,8 @@ function computeOutline(s: ScenarioDef, n: NeighborhoodDef): Point[] {
     const co = unsquash(o.shape)
     return Math.atan2(co.y - c.y, co.x - c.x)
   })
-  const minRiver = s.river.halfDepth + RIVER_BANK + RIVER_MARGIN
+  const minClearance = RIVER_BANK + RIVER_MARGIN
+  const nearWater = (p: Point) => townWaterClearance(s, p) < minClearance
   const at = (a: number, t: number): Point => ({
     x: n.shape.x + Math.cos(a) * t,
     y: n.shape.y + Math.sin(a) * t * BLOB_Y_SQUASH,
@@ -165,13 +160,13 @@ function computeOutline(s: ScenarioDef, n: NeighborhoodDef): Point[] {
     })
     // Never cross any seam (neighbours meet on it, others keep a gap).
     for (const entry of others) r = Math.min(r, rayToSeam(c, e, entry.seam, entry.offset))
-    // Stay on this side of the river, with a strip of bank.
-    if (riverDistance(s, at(a, r)) < minRiver || riverDistance(s, at(a, r * 0.5)) < minRiver) {
+    // Stay clear of the water, with a strip of bank.
+    if (nearWater(at(a, r)) || nearWater(at(a, r * 0.5))) {
       let lo = 0
       let hi = r
       // March to the first point too close to the water, then bisect.
       for (let t = 4; t < r; t += 4) {
-        if (riverDistance(s, at(a, t)) < minRiver) {
+        if (nearWater(at(a, t))) {
           hi = t
           break
         }
@@ -179,7 +174,7 @@ function computeOutline(s: ScenarioDef, n: NeighborhoodDef): Point[] {
       }
       for (let k = 0; k < 12; k++) {
         const mid = (lo + hi) / 2
-        if (riverDistance(s, at(a, mid)) < minRiver) hi = mid
+        if (nearWater(at(a, mid))) hi = mid
         else lo = mid
       }
       r = lo

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { loadScenario, bridgeBetween } from './scenario'
+import { loadScenario, crossingBetween } from './scenario'
+import { townWaterClearance } from './water'
 import { districtOutline, OUTLINE_STEPS } from './outline'
 import { distanceToSegment, pointInPolygon } from './geometry'
 import type { Point } from './geometry'
@@ -21,7 +22,7 @@ function gapBetween(a: NeighborhoodDef, b: NeighborhoodDef): number {
 }
 
 function landLinked(a: NeighborhoodDef, b: NeighborhoodDef): boolean {
-  return a.neighbors.includes(b.id) && bridgeBetween(scenario, a.id, b.id) === null
+  return a.neighbors.includes(b.id) && crossingBetween(scenario, a.id, b.id) === null
 }
 
 describe('district outlines', () => {
@@ -80,14 +81,9 @@ describe('district outlines', () => {
     }
   })
 
-  it('stays clear of the river and its bank', () => {
-    const river = scenario.river
+  it('stays clear of the water and its bank', () => {
     for (const n of all) {
-      for (const p of districtOutline(scenario, n.id)) {
-        let d = Infinity
-        for (let i = 0; i < river.points.length - 1; i++) d = Math.min(d, distanceToSegment(p, river.points[i], river.points[i + 1]))
-        expect(d, n.id).toBeGreaterThan(river.halfDepth + 5)
-      }
+      for (const p of districtOutline(scenario, n.id)) expect(townWaterClearance(scenario, p), n.id).toBeGreaterThan(5)
     }
   })
 })
