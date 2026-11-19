@@ -1241,7 +1241,7 @@
       "effects": [
         {
           "need": "water",
-          "change": 0.15
+          "change": 0.18
         }
       ],
       "allowedKinds": [

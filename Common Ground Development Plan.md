@@ -692,6 +692,16 @@ checking against sources.
 technology has sources and a limits line, and a playtester from or familiar with
 the region finds nothing that feels wrong or patronising.
 
+**Playtest previews (in the game now).** All three regions exist as rough
+previews, marked "Preview - rough and unbalanced" in the picker: Tala Ifri
+(oasis), Kumonotani (mountain village) and Remanso Verde (river town). Each
+has 12 districts, its own district kinds, research, projects, two species,
+seasons, water, transport, five chapters, resident messages and a theme with
+its own building and plant sprites. They do not meet the exit test yet: the
+names and texts are first drafts that need a reader from each region, the
+technologies have no sources, the music is still Willowbrook's, and a simple
+bot only reaches chapter 1 in four years, so balance is untouched.
+
 **Later:** seeded freeplay for each region, and more European towns (coastal,
 mountain).
 

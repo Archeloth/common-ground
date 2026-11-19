@@ -15,16 +15,16 @@ function path(points: readonly { x: number; y: number }[], closed = true): strin
   return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ') + (closed ? ' Z' : '')
 }
 
-function Water({ w }: { w: WaterFeature }) {
+function Water({ w, river, bank }: { w: WaterFeature; river: string; bank: string }) {
   if (w.kind === 'oasis') {
-    return <path d={path(w.points)} fill={COLORS.river} stroke={COLORS.riverBank} strokeWidth={10} strokeLinejoin="round" />
+    return <path d={path(w.points)} fill={river} stroke={bank} strokeWidth={10} strokeLinejoin="round" />
   }
   const d = path(w.points, false)
-  const [bank, bed] = w.kind === 'wadi' ? [COLORS.wadiBank, COLORS.wadiBed] : [COLORS.riverBank, COLORS.river]
+  const [edge, bed] = w.kind === 'wadi' ? [COLORS.wadiBank, COLORS.wadiBed] : [bank, river]
   const line = { fill: 'none', strokeLinecap: 'round', strokeLinejoin: 'round' } as const
   return (
     <>
-      <path d={d} {...line} stroke={bank} strokeWidth={w.halfDepth * 2 + 10} />
+      <path d={d} {...line} stroke={edge} strokeWidth={w.halfDepth * 2 + 10} />
       <path d={d} {...line} stroke={bed} strokeWidth={w.halfDepth * 2} />
     </>
   )
@@ -32,12 +32,15 @@ function Water({ w }: { w: WaterFeature }) {
 
 export default function TownPreview({ town }: { town: ScenarioDef }) {
   const box = scenarioBounds(town)
-  const kindColors = themeById(town.theme).kindColors
+  const theme = themeById(town.theme)
+  const kindColors = theme.kindColors
+  const river = theme.colors.river ?? COLORS.river
+  const bank = theme.colors.riverBank ?? COLORS.riverBank
   const viewBox = `${box.minX - PAD} ${box.minY - PAD} ${box.width + PAD * 2} ${box.height + PAD * 2}`
   return (
     <svg className="town-preview" viewBox={viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       {town.water.map((w) => (
-        <Water key={w.id} w={w} />
+        <Water key={w.id} w={w} river={river} bank={bank} />
       ))}
       {town.crossings.map((c) => {
         const { normal, halfDepth } = crossingFrame(town, c)

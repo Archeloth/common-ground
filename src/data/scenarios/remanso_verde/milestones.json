@@ -4,8 +4,8 @@
       "id": "rv_clean_water",
       "name": "Water you can drink",
       "chapter": 1,
-      "goal": "Average water coverage 0.7",
-      "explain": "The river is everywhere, but not safe to drink. Put up three rainwater tanks and lift average water coverage to 0.7.",
+      "goal": "Average water coverage 0.62",
+      "explain": "The river is everywhere, but not safe to drink. Put up three rainwater tanks and lift average water coverage to 0.62.",
       "conditions": [
         {
           "type": "projectCount",
@@ -15,7 +15,7 @@
         {
           "type": "needsAverage",
           "need": "water",
-          "min": 0.7
+          "min": 0.62
         }
       ],
       "reward": {

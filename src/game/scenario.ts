@@ -175,20 +175,21 @@ const SCENARIOS: Record<string, ScenarioContent> = {
     milestones: hollinMilestones,
     messages: hollinMessages,
   },
-  remanso_verde: {
-    town: remansoTown,
-    milestones: remansoMilestones,
-    messages: remansoMessages,
+  // Milestone 10 preview regions, in the plan's order (10.1 to 10.3).
+  tala_ifri: {
+    town: talaTown,
+    milestones: talaMilestones,
+    messages: talaMessages,
   },
   kumonotani: {
     town: kumoTown,
     milestones: kumoMilestones,
     messages: kumoMessages,
   },
-  tala_ifri: {
-    town: talaTown,
-    milestones: talaMilestones,
-    messages: talaMessages,
+  remanso_verde: {
+    town: remansoTown,
+    milestones: remansoMilestones,
+    messages: remansoMessages,
   },
 }
 
